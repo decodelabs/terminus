@@ -1,0 +1,35 @@
+{
+    "name": "decodelabs/terminus",
+    "description": "Simple CLI interactions",
+    "type": "library",
+    "keywords": ["cli", "terminal"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tom Wright",
+            "email": "tom@inflatablecookie.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "decodelabs/glitch": "<2"
+        "decodelabs/systemic": "~0.6"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.11.16",
+        "decodelabs/phpstan-decodelabs": "dev-develop"
+    },
+    "autoload": {
+        "psr-4": {
+            "DecodeLabs\\Terminus\\": "src/Terminus"
+        },
+        "files": [
+            "src/global.php"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.x-dev"
+        }
+    }
+}
