@@ -81,4 +81,53 @@ class Context implements FacadeTarget
 
         return new Definition($name);
     }
+
+
+
+    /**
+     * Prepare command in session and generate args
+     */
+    public function prepareCommand(callable $builder): Session
+    {
+        $session = $this->getSession();
+        $builder($session->getCommandDefinition());
+        $session->prepareArguments();
+        return $session;
+    }
+
+
+
+    /**
+     * Get TTY width
+     */
+    public function getShellWidth(): int
+    {
+        return Systemic::$os->getShellWidth();
+    }
+
+    /**
+     * Get TTY height
+     */
+    public function getShellHeight(): int
+    {
+        return Systemic::$os->getShellHeight();
+    }
+
+    /**
+     * Can color output?
+     */
+    public function canColor(): bool
+    {
+        return Systemic::$os->canColorShell();
+    }
+
+
+    /**
+     * Pass method calls through to active session
+     */
+    public function __call(string $method, array $args)
+    {
+        $session = $this->getSession();
+        return $session->{$method}(...$args);
+    }
 }
