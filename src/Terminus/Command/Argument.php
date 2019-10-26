@@ -38,7 +38,7 @@ class Argument
 
         if (false !== strpos($name, '=')) {
             $parts = explode('=', $name);
-            $name = array_shift($parts);
+            $name = (string)array_shift($parts);
             $this->setDefaultValue(array_shift($parts));
             $this->setBoolean(false);
         }
@@ -285,7 +285,7 @@ class Argument
     /**
      * String to boolean
      */
-    protected function stringToBoolean(string $string): bool
+    protected function stringToBoolean(string $string, bool $default=null): ?bool
     {
         switch ($string = strtolower(trim($string))) {
             case 'false':
@@ -307,11 +307,5 @@ class Argument
             default:
                 return $default;
         }
-
-        if (is_numeric($string)) {
-            return (int)$string > 0;
-        }
-
-        return (bool)$string;
     }
 }

@@ -29,7 +29,7 @@ class Request
     /**
      * Alias withScript()
      */
-    public function setScript(string $script): IRequest
+    public function setScript(string $script): Request
     {
         return $this->withScript($script);
     }
@@ -52,7 +52,11 @@ class Request
         }
 
         if (false === strpos(str_replace('\\', '/', $this->script), '/')) {
-            return realpath($this->script);
+            if (false !== ($output = realpath($this->script))) {
+                return $output;
+            }
+            
+            return null;
         }
 
         return $this->script;
@@ -61,7 +65,7 @@ class Request
     /**
      * New instance with script set
      */
-    public function withScript(string $script): IRequest
+    public function withScript(string $script): Request
     {
         $output = clone $this;
         $output->script = $script;
@@ -73,7 +77,7 @@ class Request
     /**
      * Alias withCommandParams()
      */
-    public function setCommandParams(array $params): IRequest
+    public function setCommandParams(array $params): Request
     {
         return $this->withCommandParams($params);
     }
@@ -109,7 +113,7 @@ class Request
     /**
      * New instance with params set
      */
-    public function withCommandParams(array $params): IRequest
+    public function withCommandParams(array $params): Request
     {
         $output = clone $this;
         $output->args = $params;

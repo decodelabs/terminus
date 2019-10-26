@@ -40,7 +40,11 @@ class Context implements FacadeTarget
     {
         if (!$this->session) {
             $request = $this->createRequest();
-            $name = $request->getScript();
+
+            if (null === ($name = $request->getScript())) {
+                $name = $_SERVER['PHP_SELF'];
+            }
+
             $name = pathinfo($name, \PATHINFO_FILENAME) ?? $name;
 
             $this->session = new Session(
@@ -75,7 +79,10 @@ class Context implements FacadeTarget
     public function newCommandDefinition(?string $name=null): Definition
     {
         if ($name === null) {
-            $name = $this->getSession()->getRequest()->getScript();
+            if (null === ($name = $this->getSession()->getRequest()->getScript())) {
+                $name = $_SERVER['PHP_SELF'];
+            }
+
             $name = pathinfo($name, \PATHINFO_FILENAME) ?? $name;
         }
 

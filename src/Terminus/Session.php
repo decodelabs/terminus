@@ -9,20 +9,24 @@ namespace DecodeLabs\Terminus;
 use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Io\Style;
+use DecodeLabs\Terminus\Io\Controller;
 
 use DecodeLabs\Atlas\Broker;
 use DecodeLabs\Atlas\DataProvider;
 use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\ErrorDataReceiver;
 use DecodeLabs\Atlas\Channel\Buffer;
+
+use DecodeLabs\Systemic;
 use ArrayAccess;
 
-class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataReceiver
+class Session implements ArrayAccess, Controller
 {
     protected $arguments = [];
     protected $request;
     protected $definition;
     protected $broker;
+    protected $isAnsi = true;
 
     /**
      * Init with IO broker and command info
@@ -32,6 +36,7 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
         $this->request = $request;
         $this->definition = $definition;
         $this->broker = $broker;
+        $this->isAnsi = Systemic::$os->canColorShell();
     }
 
     /**
@@ -57,6 +62,16 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     {
         return $this->broker;
     }
+
+
+    /**
+     * Is this an ANSI supporting TTY?
+     */
+    public function isAnsi(): bool
+    {
+        return $this->isAnsi;
+    }
+
 
     /**
      * Prepare arguments from command definition
@@ -266,7 +281,7 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * New line
      */
-    public function newLine(int $times=1): Session
+    public function newLine(int $times=1): Controller
     {
         for ($i = 0; $i < $times; $i++) {
             $this->broker->writeLine('');
@@ -278,7 +293,7 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * New error line
      */
-    public function newErrorLine(int $times=1): Session
+    public function newErrorLine(int $times=1): Controller
     {
         for ($i = 0; $i < $times; $i++) {
             $this->broker->writeErrorLine('');
@@ -290,8 +305,12 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * Delete n previous lines
      */
-    public function deleteLine(int $times=1): Session
+    public function deleteLine(int $times=1): Controller
     {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
         $this->broker->write(str_repeat("\e[1A\e[K", $times));
         return $this;
     }
@@ -299,8 +318,12 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * Delete n previous error lines
      */
-    public function deleteErrorLine(int $times=1): Session
+    public function deleteErrorLine(int $times=1): Controller
     {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
         $this->broker->writeError(str_repeat("\e[1A\e[K", $times));
         return $this;
     }
@@ -308,8 +331,12 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * Clear current line
      */
-    public function clearLine(): Session
+    public function clearLine(): Controller
     {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
         $this->broker->write("\e[2K\e[0G");
         return $this;
     }
@@ -317,16 +344,72 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * Clear current error line
      */
-    public function clearErrorLine(): Session
+    public function clearErrorLine(): Controller
     {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
         $this->broker->writeError("\e[2K\e[0G");
+        return $this;
+    }
+
+    /**
+     * Clear current line before cursor
+     */
+    public function clearLineBefore(): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[1K\e[0G");
+        return $this;
+    }
+
+    /**
+     * Clear current error line before cursor
+     */
+    public function clearErrorLineBefore(): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[1K\e[0G");
+        return $this;
+    }
+
+    /**
+     * Clear current line after cursor
+     */
+    public function clearLineAfter(): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[0K");
+        return $this;
+    }
+
+    /**
+     * Clear current error line after cursor
+     */
+    public function clearErrorLineAfter(): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[0K");
         return $this;
     }
 
     /**
      * Clear single char
      */
-    public function backspace(int $times=1): Session
+    public function backspace(int $times=1): Controller
     {
         $this->broker->write(str_repeat(chr(8), $times));
         return $this;
@@ -335,7 +418,7 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * Clear single error char
      */
-    public function backspaceError(int $times=1): Session
+    public function backspaceError(int $times=1): Controller
     {
         $this->broker->writeError(str_repeat(chr(8), $times));
         return $this;
@@ -344,7 +427,7 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * Write tabs to line
      */
-    public function tab(int $times=1): Session
+    public function tab(int $times=1): Controller
     {
         $this->broker->write(str_repeat("\t", $times));
         return $this;
@@ -353,7 +436,7 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
     /**
      * Write tabs to error line
      */
-    public function tabError(int $times=1): Session
+    public function tabError(int $times=1): Controller
     {
         $this->broker->writeError(str_repeat("\t", $times));
         return $this;
@@ -361,19 +444,345 @@ class Session implements ArrayAccess, DataReceiver, DataProvider, ErrorDataRecei
 
 
 
+    /**
+     * Move cursor up a line
+     */
+    public function cursorUp(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[${times}A");
+        return $this;
+    }
+
+    /**
+     * Move cursor up a line pos 0
+     */
+    public function cursorLineUp(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[${times}F");
+        return $this;
+    }
+
+    /**
+     * Move cursor down a line
+     */
+    public function cursorDown(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[${times}B");
+        return $this;
+    }
+
+    /**
+     * Move cursor down a line pos 0
+     */
+    public function cursorLineDown(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[${times}E");
+        return $this;
+    }
+
+    /**
+     * Move cursor left
+     */
+    public function cursorLeft(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[${times}D");
+        return $this;
+    }
+
+    /**
+     * Move cursor right
+     */
+    public function cursorRight(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[${times}C");
+        return $this;
+    }
+
+    /**
+     * Move error cursor up a line
+     */
+    public function errorCursorUp(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[${times}A");
+        return $this;
+    }
+
+    /**
+     * Move error cursor up a line pos 0
+     */
+    public function errorCursorLineUp(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[${times}F");
+        return $this;
+    }
+
+    /**
+     * Move error cursor down a line
+     */
+    public function errorCursorDown(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[${times}B");
+        return $this;
+    }
+
+    /**
+     * Move error cursor down a line
+     */
+    public function errorCursorLineDown(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[${times}E");
+        return $this;
+    }
+
+    /**
+     * Move error cursor left
+     */
+    public function errorCursorLeft(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[${times}D");
+        return $this;
+    }
+
+    /**
+     * Move error cursor right
+     */
+    public function errorCursorRight(int $times=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[${times}C");
+        return $this;
+    }
+
+
+    /**
+     * Set cursor line position
+     */
+    public function setCursor(int $pos): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[${pos}G");
+        return $this;
+    }
+
+    /**
+     * Set error cursor line position
+     */
+    public function setErrorCursor(int $pos): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[${pos}G");
+        return $this;
+    }
+
+    /**
+     * Set cursor absolute position
+     */
+    public function setCursorLine(int $line, int $pos=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[${line};${pos}H");
+        return $this;
+    }
+
+    /**
+     * Set cursor absolute position
+     */
+    public function setErrorCursorLine(int $line, int $pos=1): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[${line};${pos}H");
+        return $this;
+    }
+
+
+
+    /**
+     * Get cursor horizontal position
+     */
+    /*
+    public function getCursor(): int
+    {
+       if (!$this->isAnsi) {
+           throw Glitch::ERuntime('Unable to detect cursor position');
+       }
+
+       $this->broker->write("\e[6n");
+       dd($this->broker->readLine());
+    }
+    */
+
+    /**
+     * Get error cursor horizontal position
+     */
+    /*
+    public function getErrorCursor(): int
+    {
+       if (!$this->isAnsi) {
+           throw Glitch::ERuntime('Unable to detect cursor position');
+       }
+    }
+    */
+
+    /**
+     * Get cursor vertical position
+     */
+    /*
+    public function getCursorLine(): int
+    {
+       if (!$this->isAnsi) {
+           throw Glitch::ERuntime('Unable to detect cursor position');
+       }
+    }
+    */
+
+    /**
+     * Get error cursor vertical position
+     */
+    /*
+    public function getErrorCursorLine(): int
+    {
+       if (!$this->isAnsi) {
+           throw Glitch::ERuntime('Unable to detect cursor position');
+       }
+    }
+    */
+
+
+
+
+
+    /**
+     * Store cursor position
+     */
+    public function saveCursor(): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[s");
+        return $this;
+    }
+
+    /**
+     * Store error cursor position
+     */
+    public function saveErrorCursor(): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[s");
+        return $this;
+    }
+
+    /**
+     * Restore cursor position
+     */
+    public function restoreCursor(): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->write("\e[u");
+        return $this;
+    }
+
+    /**
+     * Restore error cursor position
+     */
+    public function restoreErrorCursor(): Controller
+    {
+        if (!$this->isAnsi) {
+            return $this;
+        }
+
+        $this->broker->writeError("\e[u");
+        return $this;
+    }
+
+
+
+
+
 
     /**
      * Shortcut style generation
      */
-    public function __call(string $method, array $args): Session
+    public function __call(string $method, array $args): Controller
     {
+        if (!preg_match('/^([^a-zA-Z0-9]*)([a-z0-9\:\|]*)$/', $method)) {
+            throw Glitch::EBadMethodCall('CLI method not found: '.$method);
+        }
+
         return $this->style($method, ...$args);
     }
 
     /**
      * Style an output line
      */
-    public function style(string $style, ?string $message=null): Session
+    public function style(string $style, ?string $message=null): Controller
     {
         $style = Style::parse($style);
         $style->apply($message, $this);

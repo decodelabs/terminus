@@ -6,6 +6,7 @@
 declare(strict_types=1);
 namespace DecodeLabs\Terminus\Command;
 
+use DecodeLabs\Terminus\Session;
 use DecodeLabs\Terminus\Command\Argument;
 use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Glitch;
@@ -267,9 +268,9 @@ class Definition
     public function renderHelp(Session $session): void
     {
         $session->writeLine();
-        $session->render($this->name, '+yellow|bold');
-        $session->render(' - ', '+');
-        $session->render($this->help, 'bold');
+        $session->style('yellow|bold', $this->name);
+        $session->write(' - ');
+        $session->style('.bold', $this->help);
 
         $session->writeLine();
 
@@ -293,15 +294,15 @@ class Definition
     private function renderArg(Session $session, Argument $arg)
     {
         if (!$arg->isNamed()) {
-            $session->render($arg->getName(), '+cyan|bold');
+            $session->style('cyan|bold', $arg->getName());
 
             if ($default = $arg->getDefaultValue()) {
-                $session->render(' [=', '+');
-                $session->render($default, '+green');
-                $session->render(']', '+');
+                $session->write(' [=');
+                $session->style('green', $default);
+                $session->write(']');
             }
 
-            $session->writeLine();
+            $session->newLine();
         } else {
             $name = '--'.$arg->getName();
 
@@ -309,28 +310,28 @@ class Definition
                 $name .= ' | -'.$shortcut;
             }
 
-            $session->render($name, '+magenta|bold');
+            $session->style('magenta|bold', $name);
 
             if (!$arg->isBoolean()) {
                 if ($pattern = $arg->getPattern()) {
-                    $session->render('<', '+');
-                    $session->render($pattern, '+yellow');
-                    $session->render('>', '+');
+                    $session->write(' <');
+                    $session->style('yellow', $pattern);
+                    $session->write('>');
                 } elseif ($default = $arg->getDefaultValue()) {
-                    $session->render('[=', '+');
-                    $session->render($default, '+green');
-                    $session->render(']', '+');
+                    $session->write(' [=');
+                    $session->style('green', $default);
+                    $session->write(']');
                 } else {
-                    $session->render('<', '+');
-                    $session->render('value', '+cyan');
-                    $session->render('>', '+');
+                    $session->write(' <');
+                    $session->style('cyan', 'value');
+                    $session->write('>');
                 }
             }
 
-            $session->writeLine();
+            $session->newLine();
         }
 
-        $session->render($arg->getDescription(), '>white|bold');
-        $session->writeLine();
+        $session->style('>.white|bold', $arg->getDescription());
+        $session->newLine();
     }
 }
