@@ -20,8 +20,16 @@ class Style
         'magenta' => 35,
         'cyan' => 36,
         'white' => 37,
-        'select' => 38,
-        'reset' => 39
+        '_select' => 38,
+        'reset' => 39,
+        'brightBlack' => 90,
+        'brightRed' => 91,
+        'brightGreen' => 92,
+        'brightYellow' => 93,
+        'brightBlue' => 94,
+        'brightMagenta' => 95,
+        'brightCyan' => 96,
+        'brightWhite' => 97
     ];
 
     const BG_COLORS = [
@@ -33,8 +41,16 @@ class Style
         'magenta' => 45,
         'cyan' => 46,
         'white' => 47,
-        'select' => 48,
-        'reset' => 49
+        '_select' => 48,
+        'reset' => 49,
+        'brightBlack' => 100,
+        'brightRed' => 101,
+        'brightGreen' => 102,
+        'brightYellow' => 103,
+        'brightBlue' => 104,
+        'brightMagenta' => 105,
+        'brightCyan' => 106,
+        'brightWhite' => 107
     ];
 
     const OPTIONS = [
@@ -50,15 +66,23 @@ class Style
     ];
 
     protected $foreground = 'reset';
-    protected $foregroundSelect = null;
+    protected $foregroundBits = 4;
     protected $background = 'reset';
-    protected $backgroundSelect = null;
+    protected $backgroundBits = 4;
     protected $options = [];
     protected $error = false;
     protected $linesBefore = 0;
     protected $linesAfter = 0;
     protected $tabs = 0;
     protected $backspaces = 0;
+
+    /**
+     * Is string a color or option keyword?
+     */
+    public static function isKeyword(string $string): bool
+    {
+        return isset(self::FG_COLORS[$string]) || isset(self::OPTION[$string]);
+    }
 
     /**
      * Parse modifier string
@@ -68,7 +92,8 @@ class Style
         $newLines = 1;
         $isError = false;
 
-        if (!preg_match('/^([^a-zA-Z0-9]*)([a-z0-9\:\|]*)$/', $modifier, $matches)) {
+
+        if (!preg_match('/^([\^\+\.\<\>\!]*)((([a-zA-Z0-9]+|\#[a-fA-F0-9]+|\:[0-9]+)\|?)*)$/', $modifier, $matches)) {
             throw Glitch::EInvalidArgument('Invalid style modifier: '.$modifier);
         }
 
@@ -79,19 +104,19 @@ class Style
         $options = [];
 
         foreach ($parts as $part) {
-            $select = null;
+            $testPart = $part;
 
-            if (false !== (strpos($part, ':'))) {
-                [$part, $select] = explode(':', $part, 2);
+            if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $part, $colorMatches)) {
+                $testPart = '_select';
             }
 
-            if (isset(self::FG_COLORS[$part])) {
+            if (isset(self::FG_COLORS[$testPart])) {
                 if (!$fg) {
-                    $fg = $part.':'.$select;
+                    $fg = $part;
                 } elseif (!$bg) {
-                    $bg = $part.':'.$select;
+                    $bg = $part;
                 }
-            } elseif (isset(self::OPTIONS[$part])) {
+            } elseif (isset(self::OPTIONS[$testPart])) {
                 $options[] = $part;
             } elseif (!empty($part)) {
                 throw Glitch::EInvalidArgument('Invalid style part: '.$part);
@@ -146,26 +171,29 @@ class Style
      */
     public function setForeground(?string $foreground): Style
     {
-        $select = null;
+        $bits = 4;
 
         if ($foreground !== null) {
-            if (false !== (strpos($foreground, ':'))) {
-                [$foreground, $select] = explode(':', $foreground, 2);
-            }
+            if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $foreground, $colorMatches)) {
+                $testPart = '_select';
 
-            if (!isset(self::FG_COLORS[$foreground])) {
+                if (isset($colorMatches[1]) && !empty($colorMatches[1])) {
+                    $bits = 8;
+                    $foreground = $colorMatches[1];
+                } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
+                    $bits = 24;
+                    $foreground = $colorMatches[2];
+                } elseif (isset($colorMatches[3]) && !empty($colorMatches[3])) {
+                    $bits = 24;
+                    $foreground = $this->hexToRgb($colorMatches[3]);
+                }
+            } elseif (!isset(self::FG_COLORS[$foreground])) {
                 throw Glitch::EInvalidArgument('Invalid foreground color: '.$foreground);
-            }
-
-            if ($foreground !== 'select') {
-                $select = null;
-            } else {
-                $select = (int)$select;
             }
         }
 
         $this->foreground = $foreground;
-        $this->foregroundSelect = $select;
+        $this->foregroundBits = $bits;
         return $this;
     }
 
@@ -180,9 +208,9 @@ class Style
     /**
      * Get foreground select color
      */
-    public function getForegroundSelectIndex(): ?int
+    public function getForegroundBits(): int
     {
-        return $this->foregroundSelect;
+        return $this->foregroundBits;
     }
 
     /**
@@ -190,26 +218,29 @@ class Style
      */
     public function setBackground(?string $background): Style
     {
-        $select = null;
+        $bits = 4;
 
         if ($background !== null) {
-            if (false !== (strpos($background, ':'))) {
-                [$background, $select] = explode(':', $background, 2);
-            }
+            if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $background, $colorMatches)) {
+                $testPart = '_select';
 
-            if (!isset(self::BG_COLORS[$background])) {
+                if (isset($colorMatches[1]) && !empty($colorMatches[1])) {
+                    $bits = 8;
+                    $background = $colorMatches[1];
+                } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
+                    $bits = 24;
+                    $background = $colorMatches[2];
+                } elseif (isset($colorMatches[3]) && !empty($colorMatches[3])) {
+                    $bits = 24;
+                    $background = $this->hexToRgb($colorMatches[3]);
+                }
+            } elseif (!isset(self::FG_COLORS[$background])) {
                 throw Glitch::EInvalidArgument('Invalid background color: '.$background);
-            }
-
-            if ($background !== 'select') {
-                $select = null;
-            } else {
-                $select = (int)$select;
             }
         }
 
         $this->background = $background;
-        $this->backgroundSelect = $select;
+        $this->backgroundBits = $bits;
         return $this;
     }
 
@@ -224,9 +255,38 @@ class Style
     /**
      * Get background select color
      */
-    public function getbackgroundSelectIndex(): ?int
+    public function getbackgroundBits(): ?int
     {
-        return $this->backgroundSelect;
+        return $this->backgroundBits;
+    }
+
+    /**
+     * Convert hex color to rgb
+     */
+    protected function hexToRgb(string $hex): string
+    {
+        $hex = str_replace('#', '', $hex);
+        $length = strlen($hex);
+
+        switch ($length) {
+            case 6:
+                $rx = substr($hex, 0, 2);
+                $gx = substr($hex, 2, 2);
+                $bx = substr($hex, 4, 2);
+                break;
+
+            case 3:
+                $rx = str_repeat(substr($hex, 0, 1), 2);
+                $gx = str_repeat(substr($hex, 1, 1), 2);
+                $bx = str_repeat(substr($hex, 2, 1), 2);
+                break;
+
+            default:
+                $rx = $gx = $bx = 0;
+                break;
+        }
+
+        return hexdec($rx).','.hexdec($gx).','.hexdec($bx);
     }
 
     /**
@@ -402,20 +462,36 @@ class Style
         $unsetCodes = [];
 
         if ($this->foreground !== null) {
-            if ($this->foreground === 'select') {
-                $setCodes[] = static::FG_COLORS[$this->foreground].';5;'.$this->foregroundSelect;
-            } else {
-                $setCodes[] = static::FG_COLORS[$this->foreground];
+            switch ($this->foregroundBits) {
+                case 4:
+                    $setCodes[] = static::FG_COLORS[$this->foreground];
+                    break;
+
+                case 8:
+                    $setCodes[] = static::FG_COLORS['_select'].';5;'.$this->foreground;
+                    break;
+
+                case 24:
+                    $setCodes[] = static::FG_COLORS['_select'].';2;'.str_replace(',', ';', $this->foreground);
+                    break;
             }
 
             $unsetCodes[] = static::FG_COLORS['reset'];
         }
 
         if ($this->background !== null) {
-            if ($this->background === 'select') {
-                $setCodes[] = static::BG_COLORS[$this->background].';5;'.$this->backgroundSelect;
-            } else {
-                $setCodes[] = static::BG_COLORS[$this->background];
+            switch ($this->backgroundBits) {
+                case 4:
+                    $setCodes[] = static::BG_COLORS[$this->background];
+                    break;
+
+                case 8:
+                    $setCodes[] = static::BG_COLORS['_select'].';5;'.$this->background;
+                    break;
+
+                case 24:
+                    $setCodes[] = static::BG_COLORS['_select'].';2;'.str_replace(',', ';', $this->background);
+                    break;
             }
 
             $unsetCodes[] = static::BG_COLORS['reset'];

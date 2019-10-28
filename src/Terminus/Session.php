@@ -763,16 +763,12 @@ class Session implements ArrayAccess, Controller
     }
 
 
-
-
-
-
     /**
      * Shortcut style generation
      */
     public function __call(string $method, array $args): Controller
     {
-        if (!preg_match('/^([^a-zA-Z0-9]*)([a-z0-9\:\|]*)$/', $method)) {
+        if (preg_match('/^[a-z][a-zA-Z0-9]+$/', $method) && !Style::isKeyword($method)) {
             throw Glitch::EBadMethodCall('CLI method not found: '.$method);
         }
 
