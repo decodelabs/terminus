@@ -39,32 +39,46 @@ class Context implements FacadeTarget
     public function getSession(): Session
     {
         if (!$this->session) {
-            $request = $this->createRequest();
-
-            if (null === ($name = $request->getScript())) {
-                $name = $_SERVER['PHP_SELF'];
-            }
-
-            $name = pathinfo($name, \PATHINFO_FILENAME) ?? $name;
-
-            $this->session = new Session(
-                defined('STDOUT') ?
-                    Atlas::newCliBroker() :
-                    Atlas::newHttpBroker(),
-                $request,
-                $this->newCommandDefinition($name)
-            );
+            $this->session = $this->newSession();
         }
 
         return $this->session;
     }
 
     /**
+     * Create a new session from defaults
+     */
+    public function newSession(?Request $request=null, ?Broker $broker=null): Session
+    {
+        if ($request === null) {
+            $request = $this->newRequest();
+        }
+
+        if (null === ($name = $request->getScript())) {
+            $name = $_SERVER['PHP_SELF'];
+        }
+
+        $name = pathinfo($name, \PATHINFO_FILENAME) ?? $name;
+
+        if ($broker === null) {
+            $broker = defined('STDOUT') ?
+                Atlas::newCliBroker() :
+                Atlas::newHttpBroker();
+        }
+
+        return new Session(
+            $broker,
+            $request,
+            $this->newCommandDefinition($name)
+        );
+    }
+
+    /**
      * Create request from environment
      */
-    public function createRequest(
-        array $server=null,
-        array $argv=null
+    public function newRequest(
+        array $argv=null,
+        array $server=null
     ): Request {
         $server = $server ?? $_SERVER;
         $args = $argv ?? $_SERVER['argv'];
