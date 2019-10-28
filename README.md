@@ -277,5 +277,22 @@ Cli::alert('alert alert alert');
 Cli::emergency('Oh no this is an emergency!');
 ```
 
+
+### Argument parsing
+Quickly parse input arguments from the request into the session:
+
+```php
+$session = Cli::prepareCommand(function ($command) {
+    $command
+        ->setHelp('Test out Terminus functionality')
+        ->addArgument('action', 'Unnamed action argument')
+        ->addArgument('?-test|t=Test arg', 'Named test argument with default value');
+});
+
+$action = $session['action'];
+$test = $session['test'];
+```
+
+
 ## Licensing
 Terminus is licensed under the MIT License. See [LICENSE](./LICENSE) for the full license text.
