@@ -15,55 +15,65 @@ use DecodeLabs\Glitch;
 
 interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
 {
-    public function newLine(int $times=1): Controller;
-    public function newErrorLine(int $times=1): Controller;
+    public function isAnsi(): bool;
+    public function hasStty(): bool;
+    public function snapshotStty(): ?string;
+    public function resetStty(?string $snapshot=null): bool;
 
-    public function deleteLine(int $times=1): Controller;
-    public function deleteErrorLine(int $times=1): Controller;
+    public function newLine(int $times=1): bool;
+    public function newErrorLine(int $times=1): bool;
 
-    public function clearLine(): Controller;
-    public function clearErrorLine(): Controller;
-    public function clearLineBefore(): Controller;
-    public function clearErrorLineBefore(): Controller;
-    public function clearLineAfter(): Controller;
-    public function clearErrorLineAfter(): Controller;
+    public function deleteLine(int $times=1): bool;
+    public function deleteErrorLine(int $times=1): bool;
 
-    public function backspace(int $times=1): Controller;
-    public function backspaceError(int $times=1): Controller;
+    public function clearLine(): bool;
+    public function clearErrorLine(): bool;
+    public function clearLineBefore(): bool;
+    public function clearErrorLineBefore(): bool;
+    public function clearLineAfter(): bool;
+    public function clearErrorLineAfter(): bool;
 
-    public function tab(int $times=1): Controller;
-    public function tabError(int $times=1): Controller;
+    public function backspace(int $times=1): bool;
+    public function backspaceError(int $times=1): bool;
 
-    public function cursorUp(int $times=1): Controller;
-    public function cursorLineUp(int $times=1): Controller;
-    public function cursorDown(int $times=1): Controller;
-    public function cursorLineDown(int $times=1): Controller;
-    public function errorCursorUp(int $times=1): Controller;
-    public function errorCursorLineUp(int $times=1): Controller;
-    public function errorCursorDown(int $times=1): Controller;
-    public function errorCursorLineDown(int $times=1): Controller;
+    public function tab(int $times=1): bool;
+    public function tabError(int $times=1): bool;
 
-    public function cursorLeft(int $times=1): Controller;
-    public function cursorRight(int $times=1): Controller;
-    public function errorCursorLeft(int $times=1): Controller;
-    public function errorCursorRight(int $times=1): Controller;
+    public function cursorUp(int $times=1): bool;
+    public function cursorLineUp(int $times=1): bool;
+    public function cursorDown(int $times=1): bool;
+    public function cursorLineDown(int $times=1): bool;
+    public function errorCursorUp(int $times=1): bool;
+    public function errorCursorLineUp(int $times=1): bool;
+    public function errorCursorDown(int $times=1): bool;
+    public function errorCursorLineDown(int $times=1): bool;
 
-    public function setCursor(int $pos): Controller;
-    public function setErrorCursor(int $pos): Controller;
-    public function setCursorLine(int $line, int $pos=1): Controller;
-    public function setErrorCursorLine(int $line, int $pos=1): Controller;
+    public function cursorLeft(int $times=1): bool;
+    public function cursorRight(int $times=1): bool;
+    public function errorCursorLeft(int $times=1): bool;
+    public function errorCursorRight(int $times=1): bool;
 
-    /*
-    public function getCursor(): int;
-    public function getErrorCursor(): int;
-    public function getCursorLine(): int;
-    public function getErrorCursorLine(): int;
-    */
+    public function setCursor(int $pos): bool;
+    public function setErrorCursor(int $pos): bool;
+    public function setCursorLine(int $line, int $pos=1): bool;
+    public function setErrorCursorLine(int $line, int $pos=1): bool;
 
-    public function saveCursor(): Controller;
-    public function saveErrorCursor(): Controller;
-    public function restoreCursor(): Controller;
-    public function restoreErrorCursor(): Controller;
+    public function getCursor(): array;
+    public function getErrorCursor(): array;
+    public function getCursorH(): int;
+    public function getErrorCursorH(): int;
+    public function getCursorV(): int;
+    public function getErrorCursorV(): int;
+
+    public function saveCursor(): bool;
+    public function saveErrorCursor(): bool;
+    public function restoreCursor(): bool;
+    public function restoreErrorCursor(): bool;
+
+    //public function getDefaultBackgroundColor(): ?string;
+
+    public function toggleInputEcho(bool $flag): bool;
+    public function toggleInputBuffer(bool $flag): bool;
 
     public function __call(string $method, array $args): Controller;
     public function style(string $style, ?string $message=null): Controller;

@@ -27,6 +27,8 @@ class Session implements ArrayAccess, Controller
     protected $definition;
     protected $broker;
     protected $isAnsi = true;
+    protected $hasStty = false;
+    protected $sttyReset;
 
     /**
      * Init with IO broker and command info
@@ -37,6 +39,19 @@ class Session implements ArrayAccess, Controller
         $this->definition = $definition;
         $this->broker = $broker;
         $this->isAnsi = Systemic::$os->canColorShell();
+
+        if ($this->isAnsi) {
+            $this->hasStty = Systemic::$os->which('stty') !== 'stty';
+            $this->sttyReset = $this->snapshotStty();
+        }
+    }
+
+    /**
+     * Ensure stty is reset at end of run
+     */
+    public function __destruct()
+    {
+        $this->resetStty();
     }
 
     /**
@@ -70,6 +85,39 @@ class Session implements ArrayAccess, Controller
     public function isAnsi(): bool
     {
         return $this->isAnsi;
+    }
+
+    /**
+     * Is stty available?
+     */
+    public function hasStty(): bool
+    {
+        return $this->hasStty;
+    }
+
+    /**
+     * Get current snapshot of stty state
+     */
+    public function snapshotStty(): ?string
+    {
+        if (!$this->hasStty) {
+            return null;
+        }
+
+        return trim(`stty -g`);
+    }
+
+    /**
+     * Reset stty back to value at script start
+     */
+    public function resetStty(?string $shapshot=null): bool
+    {
+        if (!$this->hasStty) {
+            return false;
+        }
+
+        system('stty \''.($snapshot ?? $this->sttyReset).'\'');
+        return true;
     }
 
 
@@ -281,165 +329,165 @@ class Session implements ArrayAccess, Controller
     /**
      * New line
      */
-    public function newLine(int $times=1): Controller
+    public function newLine(int $times=1): bool
     {
         for ($i = 0; $i < $times; $i++) {
             $this->broker->writeLine('');
         }
 
-        return $this;
+        return true;
     }
 
     /**
      * New error line
      */
-    public function newErrorLine(int $times=1): Controller
+    public function newErrorLine(int $times=1): bool
     {
         for ($i = 0; $i < $times; $i++) {
             $this->broker->writeErrorLine('');
         }
 
-        return $this;
+        return true;
     }
 
     /**
      * Delete n previous lines
      */
-    public function deleteLine(int $times=1): Controller
+    public function deleteLine(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write(str_repeat("\e[1A\e[K", $times));
-        return $this;
+        return true;
     }
 
     /**
      * Delete n previous error lines
      */
-    public function deleteErrorLine(int $times=1): Controller
+    public function deleteErrorLine(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError(str_repeat("\e[1A\e[K", $times));
-        return $this;
+        return true;
     }
 
     /**
      * Clear current line
      */
-    public function clearLine(): Controller
+    public function clearLine(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[2K\e[0G");
-        return $this;
+        return true;
     }
 
     /**
      * Clear current error line
      */
-    public function clearErrorLine(): Controller
+    public function clearErrorLine(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[2K\e[0G");
-        return $this;
+        return true;
     }
 
     /**
      * Clear current line before cursor
      */
-    public function clearLineBefore(): Controller
+    public function clearLineBefore(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[1K\e[0G");
-        return $this;
+        return true;
     }
 
     /**
      * Clear current error line before cursor
      */
-    public function clearErrorLineBefore(): Controller
+    public function clearErrorLineBefore(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[1K\e[0G");
-        return $this;
+        return true;
     }
 
     /**
      * Clear current line after cursor
      */
-    public function clearLineAfter(): Controller
+    public function clearLineAfter(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[0K");
-        return $this;
+        return true;
     }
 
     /**
      * Clear current error line after cursor
      */
-    public function clearErrorLineAfter(): Controller
+    public function clearErrorLineAfter(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[0K");
-        return $this;
+        return true;
     }
 
     /**
      * Clear single char
      */
-    public function backspace(int $times=1): Controller
+    public function backspace(int $times=1): bool
     {
         $this->broker->write(str_repeat(chr(8), $times));
-        return $this;
+        return true;
     }
 
     /**
      * Clear single error char
      */
-    public function backspaceError(int $times=1): Controller
+    public function backspaceError(int $times=1): bool
     {
         $this->broker->writeError(str_repeat(chr(8), $times));
-        return $this;
+        return true;
     }
 
     /**
      * Write tabs to line
      */
-    public function tab(int $times=1): Controller
+    public function tab(int $times=1): bool
     {
         $this->broker->write(str_repeat("\t", $times));
-        return $this;
+        return true;
     }
 
     /**
      * Write tabs to error line
      */
-    public function tabError(int $times=1): Controller
+    public function tabError(int $times=1): bool
     {
         $this->broker->writeError(str_repeat("\t", $times));
-        return $this;
+        return true;
     }
 
 
@@ -447,264 +495,281 @@ class Session implements ArrayAccess, Controller
     /**
      * Move cursor up a line
      */
-    public function cursorUp(int $times=1): Controller
+    public function cursorUp(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[${times}A");
-        return $this;
+        return true;
     }
 
     /**
      * Move cursor up a line pos 0
      */
-    public function cursorLineUp(int $times=1): Controller
+    public function cursorLineUp(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[${times}F");
-        return $this;
+        return true;
     }
 
     /**
      * Move cursor down a line
      */
-    public function cursorDown(int $times=1): Controller
+    public function cursorDown(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[${times}B");
-        return $this;
+        return true;
     }
 
     /**
      * Move cursor down a line pos 0
      */
-    public function cursorLineDown(int $times=1): Controller
+    public function cursorLineDown(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[${times}E");
-        return $this;
+        return true;
     }
 
     /**
      * Move cursor left
      */
-    public function cursorLeft(int $times=1): Controller
+    public function cursorLeft(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[${times}D");
-        return $this;
+        return true;
     }
 
     /**
      * Move cursor right
      */
-    public function cursorRight(int $times=1): Controller
+    public function cursorRight(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[${times}C");
-        return $this;
+        return true;
     }
 
     /**
      * Move error cursor up a line
      */
-    public function errorCursorUp(int $times=1): Controller
+    public function errorCursorUp(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[${times}A");
-        return $this;
+        return true;
     }
 
     /**
      * Move error cursor up a line pos 0
      */
-    public function errorCursorLineUp(int $times=1): Controller
+    public function errorCursorLineUp(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[${times}F");
-        return $this;
+        return true;
     }
 
     /**
      * Move error cursor down a line
      */
-    public function errorCursorDown(int $times=1): Controller
+    public function errorCursorDown(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[${times}B");
-        return $this;
+        return true;
     }
 
     /**
      * Move error cursor down a line
      */
-    public function errorCursorLineDown(int $times=1): Controller
+    public function errorCursorLineDown(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[${times}E");
-        return $this;
+        return true;
     }
 
     /**
      * Move error cursor left
      */
-    public function errorCursorLeft(int $times=1): Controller
+    public function errorCursorLeft(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[${times}D");
-        return $this;
+        return true;
     }
 
     /**
      * Move error cursor right
      */
-    public function errorCursorRight(int $times=1): Controller
+    public function errorCursorRight(int $times=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[${times}C");
-        return $this;
+        return true;
     }
 
 
     /**
      * Set cursor line position
      */
-    public function setCursor(int $pos): Controller
+    public function setCursor(int $pos): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[${pos}G");
-        return $this;
+        return true;
     }
 
     /**
      * Set error cursor line position
      */
-    public function setErrorCursor(int $pos): Controller
+    public function setErrorCursor(int $pos): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[${pos}G");
-        return $this;
+        return true;
     }
 
     /**
      * Set cursor absolute position
      */
-    public function setCursorLine(int $line, int $pos=1): Controller
+    public function setCursorLine(int $line, int $pos=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[${line};${pos}H");
-        return $this;
+        return true;
     }
 
     /**
      * Set cursor absolute position
      */
-    public function setErrorCursorLine(int $line, int $pos=1): Controller
+    public function setErrorCursorLine(int $line, int $pos=1): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[${line};${pos}H");
-        return $this;
+        return true;
     }
 
 
+
+    /**
+     * Get cursor position
+     */
+    public function getCursor(): array
+    {
+        if (null === ($response = $this->captureAnsi("\e[6n"))) {
+            throw Glitch::ERuntime('Unable to detect cursor position');
+        }
+
+        if (!preg_match('/^\e\[(\d+);(\d+)R$/', $response, $matches)) {
+            throw Glitch::EInvalidArgument('Invalid cursor response from terminal: '.$response);
+        }
+
+        return [(int)$matches[1], (int)$matches[2]];
+    }
+
+    /**
+     * Get error cursor position
+     */
+    public function getErrorCursor(): array
+    {
+        if (null === ($response = $this->captureAnsi("\e[6n", true))) {
+            throw Glitch::ERuntime('Unable to detect cursor position');
+        }
+
+        if (!preg_match('/^\e\[(\d+);(\d+)R$/', $response, $matches)) {
+            throw Glitch::EInvalidArgument('Invalid cursor response from terminal: '.$response);
+        }
+
+        return [(int)$matches[1], (int)$matches[2]];
+    }
 
     /**
      * Get cursor horizontal position
      */
-    /*
-    public function getCursor(): int
+    public function getCursorH(): int
     {
-       if (!$this->isAnsi) {
-           throw Glitch::ERuntime('Unable to detect cursor position');
-       }
-
-       $this->broker->write("\e[6n");
-       dd($this->broker->readLine());
+        return $this->getCursor()[1];
     }
-    */
 
     /**
      * Get error cursor horizontal position
      */
-    /*
-    public function getErrorCursor(): int
+    public function getErrorCursorH(): int
     {
-       if (!$this->isAnsi) {
-           throw Glitch::ERuntime('Unable to detect cursor position');
-       }
+        if (null === ($response = $this->captureAnsi("\e[6n", true))) {
+            throw Glitch::ERuntime('Unable to detect cursor position');
+        }
+
+        return $this->getErrorCursor()[1];
     }
-    */
 
     /**
      * Get cursor vertical position
      */
-    /*
-    public function getCursorLine(): int
+    public function getCursorV(): int
     {
-       if (!$this->isAnsi) {
-           throw Glitch::ERuntime('Unable to detect cursor position');
-       }
+        return $this->getCursor()[0];
     }
-    */
 
     /**
      * Get error cursor vertical position
      */
-    /*
-    public function getErrorCursorLine(): int
+    public function getErrorCursorV(): int
     {
-       if (!$this->isAnsi) {
-           throw Glitch::ERuntime('Unable to detect cursor position');
-       }
+        return $this->getErrorCursor()[0];
     }
-    */
 
 
 
@@ -713,53 +778,146 @@ class Session implements ArrayAccess, Controller
     /**
      * Store cursor position
      */
-    public function saveCursor(): Controller
+    public function saveCursor(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[s");
-        return $this;
+        return true;
     }
 
     /**
      * Store error cursor position
      */
-    public function saveErrorCursor(): Controller
+    public function saveErrorCursor(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[s");
-        return $this;
+        return true;
     }
 
     /**
      * Restore cursor position
      */
-    public function restoreCursor(): Controller
+    public function restoreCursor(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->write("\e[u");
-        return $this;
+        return true;
     }
 
     /**
      * Restore error cursor position
      */
-    public function restoreErrorCursor(): Controller
+    public function restoreErrorCursor(): bool
     {
         if (!$this->isAnsi) {
-            return $this;
+            return false;
         }
 
         $this->broker->writeError("\e[u");
-        return $this;
+        return true;
+    }
+
+
+
+    /**
+     * Detect current background color
+     */
+    /*
+    public function getDefaultBackgroundColor(): ?string
+    {
+       if (null === ($response = $this->captureAnsi("\e]11;?\a"))) {
+           return null;
+       }
+
+       if (!preg_match('#^rgb\:([a-f0-9]{2,4})/([a-f0-9]{2,4})/([a-f0-9]{2,4})$#', $response, $matches)) {
+           return null;
+       }
+
+       $r = dechex(255 * (hexdec($matches[1]) / 65535));
+       $g = dechex(255 * (hexdec($matches[2]) / 65535));
+       $b = dechex(255 * (hexdec($matches[3]) / 65535));
+
+       return '#'.$r.$g.$b;
+    }
+    */
+
+
+    /**
+     * Capture ansi response call
+     */
+    protected function captureAnsi(string $command, bool $error=false): ?string
+    {
+        if (!$this->isAnsi || !$this->hasStty) {
+            return null;
+        }
+
+        $ttyprops = $this->snapshotStty();
+        $this->toggleInputEcho(false);
+        $this->toggleInputBuffer(false);
+
+        $error ?
+            $this->broker->write($command) :
+            $this->broker->writeError($command);
+
+        $blocking = $this->broker->isReadBlocking();
+
+        if ($blocking) {
+            $this->broker->setReadBlocking(false);
+        }
+
+        $count = 0;
+
+        do {
+            usleep(3000);
+            $data = $this->broker->read(16);
+        } while ($data === null && ++$count < 5);
+
+
+        if ($blocking) {
+            $this->broker->setReadBlocking(true);
+        }
+
+        $this->toggleInputEcho(true);
+        $this->toggleInputBuffer(true);
+
+        return $data;
+    }
+
+
+    /**
+     * Switch echo on and off via stty
+     */
+    public function toggleInputEcho(bool $flag): bool
+    {
+        if (!$this->hasStty) {
+            return false;
+        }
+
+        system('stty '.($flag ? '' : '-').'echo');
+        return true;
+    }
+
+    /**
+     * Switch icanon on and off via stty
+     */
+    public function toggleInputBuffer(bool $flag): bool
+    {
+        if (!$this->hasStty) {
+            return false;
+        }
+
+        system('stty '.($flag ? '' : '-').'icanon');
+        return true;
     }
 
 

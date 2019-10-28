@@ -81,7 +81,7 @@ class Style
      */
     public static function isKeyword(string $string): bool
     {
-        return isset(self::FG_COLORS[$string]) || isset(self::OPTION[$string]);
+        return isset(self::FG_COLORS[$string]) || isset(self::OPTIONS[$string]);
     }
 
     /**
@@ -282,7 +282,7 @@ class Style
                 break;
 
             default:
-                $rx = $gx = $bx = 0;
+                $rx = $gx = $bx = '0';
                 break;
         }
 
