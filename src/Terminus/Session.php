@@ -24,10 +24,14 @@ use DecodeLabs\Atlas\ErrorDataReceiver;
 use DecodeLabs\Atlas\Channel\Buffer;
 
 use DecodeLabs\Systemic;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 use ArrayAccess;
 
 class Session implements ArrayAccess, Controller
 {
+    use LoggerTrait;
+
     protected $arguments = [];
     protected $request;
     protected $definition;
@@ -1055,5 +1059,61 @@ class Session implements ArrayAccess, Controller
             default:
                 return $default;
         }
+    }
+
+
+
+    const LOG_STYLES = [
+        'debug' => ['β ', '.#996300'],
+        'info' => ['ℹ ', '.cyan'],
+        'notice' => ['☛ ', '.cyan|bold'],
+        'success' => ['✓ ', '.green|bold'],
+        'warning' => ['⚠ ', '!.yellow'],
+        'error' => ['✗ ', '!.brightRed'],
+        'critical' => ['⚠ ', '!.white|red|bold'],
+        'alert' => ['☉ ', '!.#ffa500|bold'],
+        'emergency' => ['☎ ', '!.white|red|bold|underline'],
+    ];
+
+    /**
+     * Render success log
+     */
+    public function success($message, array $context=[])
+    {
+        $this->log('success', $message, $context);
+    }
+
+    /**
+     * Render generic log message
+     */
+    public function log($level, $message, array $context=[])
+    {
+        $message = $this->interpolate((string)$message, $context);
+
+        if (!isset(self::LOG_STYLES[$level])) {
+            $this->writeLine($message);
+            return;
+        }
+
+        [$prefix, $style] = self::LOG_STYLES[$level];
+
+        $message = $prefix.$message;
+        $this->style($style, $message);
+    }
+
+    /**
+     * Interpolate log message with context
+     */
+    private function interpolate(string $message, array $context=[]): string
+    {
+        $replace = [];
+
+        foreach ($context as $key => $val) {
+            if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
+                $replace['{'.$key.'}'] = $val;
+            }
+        }
+
+        return strtr($message, $replace);
     }
 }

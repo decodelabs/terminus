@@ -19,6 +19,7 @@ use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\ErrorDataReceiver;
 
 use DecodeLabs\Glitch;
+use Psr\Log\LoggerInterface;
 
 interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
 {
@@ -96,4 +97,6 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function confirm(string $message, bool $default=null): Confirmation;
     public function newSpinner(string $style=null): Spinner;
     public function newProgressBar(float $min=0.0, float $max=100.0, ?int $precision=null): ProgressBar;
+
+    public function success($message, array $context=[]);
 }

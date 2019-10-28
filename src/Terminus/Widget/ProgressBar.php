@@ -35,9 +35,9 @@ class ProgressBar
         $this->setRange($min, $max);
 
         if ($precision === null) {
-            if ($max > 100 || $min < 100) {
+            if ($max > 100 || $min < -100) {
                 $precision = 0;
-            } elseif ($max > 10 || $min < 10) {
+            } elseif ($max > 10 || $min < -10) {
                 $precision = 1;
             } else {
                 $precision = 2;
@@ -214,12 +214,14 @@ class ProgressBar
             }
 
             if ($this->showCompleted) {
-                $stringVal = (string)round($value, $this->precision);
+                $stringVal = (string)number_format($value, $this->precision);
                 $maxVal = (string)round($this->max, $this->precision);
-                $numLength = strlen($stringVal) + 3 + strlen($maxVal);
+                $stringLength = strlen($stringVal);
+                $valLength = strlen($maxVal);
+                $numLength = $stringLength + 3 + $valLength;
 
                 if ($value < $this->max) {
-                    $this->session->style('#ffa500', $stringVal);
+                    $this->session->style('#ffa500', str_pad($stringVal, $valLength));
                 } else {
                     $this->session->style('brightWhite', $stringVal);
                 }
