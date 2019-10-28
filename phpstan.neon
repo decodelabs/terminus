@@ -1,0 +1,6 @@
+includes:
+    - ./vendor/decodelabs/phpstan-decodelabs/extension.neon
+parameters:
+    paths:
+        - src
+    level: max
