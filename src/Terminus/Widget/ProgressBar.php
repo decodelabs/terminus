@@ -40,7 +40,7 @@ class ProgressBar
             } elseif ($max > 1 || $min < -1) {
                 $precision = min(2, max(
                     strlen(substr((string)strrchr(rtrim(number_format($this->min, 14 - (int)log10($this->min)), '0'), "."), 1)),
-                    strlen(substr((string)strrchr(rtrim(number_format($this->max, 14 - (int)log10($this->max)), '0'), "."), 1)),
+                    strlen(substr((string)strrchr(rtrim(number_format($this->max, 14 - (int)log10($this->max)), '0'), "."), 1))
                 ));
             } else {
                 $precision = 2;
