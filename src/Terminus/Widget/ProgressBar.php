@@ -37,8 +37,11 @@ class ProgressBar
         if ($precision === null) {
             if ($max > 100 || $min < -100) {
                 $precision = 0;
-            } elseif ($max > 10 || $min < -10) {
-                $precision = 1;
+            } elseif ($max > 1 || $min < -1) {
+                $precision = min(2, max(
+                    strlen(substr(strrchr(rtrim(number_format($this->min, 14 - (int)log10($this->min)), '0'), "."), 1)),
+                    strlen(substr(strrchr(rtrim(number_format($this->max, 14 - (int)log10($this->max)), '0'), "."), 1)),
+                ));
             } else {
                 $precision = 2;
             }
@@ -257,6 +260,7 @@ class ProgressBar
      */
     public function complete(): ProgressBar
     {
+        $this->advance($this->max);
         $this->session->newLine();
 
         return $this;
