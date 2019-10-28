@@ -6,6 +6,8 @@
 declare(strict_types=1);
 namespace DecodeLabs\Terminus\Command;
 
+use DecodeLabs\Terminus\Session;
+
 use DecodeLabs\Glitch;
 
 class Argument
@@ -247,7 +249,7 @@ class Argument
     {
         if ($this->boolean) {
             if (is_string($value)) {
-                $value = $this->stringToBoolean($value);
+                $value = Session::stringToBoolean($value);
 
                 if ($value === null) {
                     throw Glitch::EUnexpectedValue(
@@ -279,33 +281,6 @@ class Argument
             }
 
             return $value;
-        }
-    }
-
-    /**
-     * String to boolean
-     */
-    protected function stringToBoolean(string $string, bool $default=null): ?bool
-    {
-        switch ($string = strtolower(trim($string))) {
-            case 'false':
-            case '0':
-            case 'no':
-            case 'n':
-            case 'off':
-            case 'disabled':
-                return false;
-
-            case 'true':
-            case '1':
-            case 'yes':
-            case 'y':
-            case 'on':
-            case 'enabled':
-                return true;
-
-            default:
-                return $default;
         }
     }
 }

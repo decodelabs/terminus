@@ -11,6 +11,12 @@ use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Io\Style;
 use DecodeLabs\Terminus\Io\Controller;
 
+use DecodeLabs\Terminus\Widget\Question;
+use DecodeLabs\Terminus\Widget\Password;
+use DecodeLabs\Terminus\Widget\Confirmation;
+use DecodeLabs\Terminus\Widget\Spinner;
+use DecodeLabs\Terminus\Widget\ProgressBar;
+
 use DecodeLabs\Atlas\Broker;
 use DecodeLabs\Atlas\DataProvider;
 use DecodeLabs\Atlas\DataReceiver;
@@ -110,14 +116,46 @@ class Session implements ArrayAccess, Controller
     /**
      * Reset stty back to value at script start
      */
-    public function resetStty(?string $shapshot=null): bool
+    public function restoreStty(?string $snapshot): bool
+    {
+        if (!$this->hasStty) {
+            return false;
+        } elseif ($snapshot === null) {
+            return true;
+        }
+
+        system('stty \''.$snapshot.'\'');
+        return true;
+    }
+
+    /**
+     * Reset stty back to value at script start
+     */
+    public function resetStty(): bool
     {
         if (!$this->hasStty) {
             return false;
         }
 
-        system('stty \''.($snapshot ?? $this->sttyReset).'\'');
+        system('stty \''.$this->sttyReset.'\'');
         return true;
+    }
+
+
+    /**
+     * Get TTY width
+     */
+    public function getWidth(): int
+    {
+        return Systemic::$os->getShellWidth();
+    }
+
+    /**
+     * Get TTY height
+     */
+    public function getHeight(): int
+    {
+        return Systemic::$os->getShellHeight();
     }
 
 
@@ -938,8 +976,84 @@ class Session implements ArrayAccess, Controller
      */
     public function style(string $style, ?string $message=null): Controller
     {
+        if ($message === null) {
+            return $this;
+        }
+
         $style = Style::parse($style);
         $style->apply($message, $this);
         return $this;
+    }
+
+
+
+    /**
+     * Ask a question
+     */
+    public function ask(string $message, string $default=null): Question
+    {
+        return new Question($this, $message, $default);
+    }
+
+    /**
+     * Ask for password
+     */
+    public function askPassword(string $message): Password
+    {
+        return new Password($this, $message);
+    }
+
+    /**
+     * Ask for confirmation
+     */
+    public function confirm(string $message, bool $default=null): Confirmation
+    {
+        return new Confirmation($this, $message, $default);
+    }
+
+
+
+    /**
+     * Show progress indicator
+     */
+    public function newSpinner(string $style=null): Spinner
+    {
+        return new Spinner($this, $style);
+    }
+
+    /**
+     * Show progress bar
+     */
+    public function newProgressBar(float $min=0.0, float $max=100.0, ?int $precision=null): ProgressBar
+    {
+        return new ProgressBar($this, $min, $max);
+    }
+
+
+    /**
+     * String to boolean
+     */
+    public static function stringToBoolean(string $string, bool $default=null): ?bool
+    {
+        switch ($string = strtolower(trim($string))) {
+            case 'false':
+            case '0':
+            case 'no':
+            case 'n':
+            case 'off':
+            case 'disabled':
+                return false;
+
+            case 'true':
+            case '1':
+            case 'yes':
+            case 'y':
+            case 'on':
+            case 'enabled':
+                return true;
+
+            default:
+                return $default;
+        }
     }
 }

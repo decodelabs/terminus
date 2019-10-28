@@ -7,6 +7,13 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Io;
 
 use DecodeLabs\Terminus\Session;
+
+use DecodeLabs\Terminus\Widget\Question;
+use DecodeLabs\Terminus\Widget\Password;
+use DecodeLabs\Terminus\Widget\Confirmation;
+use DecodeLabs\Terminus\Widget\Spinner;
+use DecodeLabs\Terminus\Widget\ProgressBar;
+
 use DecodeLabs\Atlas\DataProvider;
 use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\ErrorDataReceiver;
@@ -18,7 +25,11 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function isAnsi(): bool;
     public function hasStty(): bool;
     public function snapshotStty(): ?string;
-    public function resetStty(?string $snapshot=null): bool;
+    public function restoreStty(?string $snapshot): bool;
+    public function resetStty(): bool;
+
+    public function getWidth(): int;
+    public function getHeight(): int;
 
     public function newLine(int $times=1): bool;
     public function newErrorLine(int $times=1): bool;
@@ -77,4 +88,12 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
 
     public function __call(string $method, array $args): Controller;
     public function style(string $style, ?string $message=null): Controller;
+
+
+
+    public function ask(string $message, string $default=null): Question;
+    public function askPassword(string $message): Password;
+    public function confirm(string $message, bool $default=null): Confirmation;
+    public function newSpinner(string $style=null): Spinner;
+    public function newProgressBar(float $min=0.0, float $max=100.0, ?int $precision=null): ProgressBar;
 }
