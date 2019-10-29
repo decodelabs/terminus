@@ -1064,15 +1064,16 @@ class Session implements ArrayAccess, Controller
 
 
     const LOG_STYLES = [
-        'debug' => ['β ', '.#996300'],
-        'info' => ['ℹ ', '.cyan'],
-        'notice' => ['☛ ', '.cyan|bold'],
-        'success' => ['✓ ', '.green|bold'],
-        'warning' => ['⚠ ', '!.yellow'],
-        'error' => ['✗ ', '!.brightRed'],
-        'critical' => ['⚠ ', '!.white|red|bold'],
-        'alert' => ['☉ ', '!.#ffa500|bold'],
-        'emergency' => ['☎ ', '!.white|red|bold|underline'],
+        'debug' => ['β ', '#996300'],
+        'info' => ['ℹ ', 'cyan'],
+        'notice' => ['☛ ', 'cyan|bold'],
+        'comment' => ['# ', 'yellow|dim'],
+        'success' => ['✓ ', 'green|bold'],
+        'warning' => ['⚠ ', '!yellow'],
+        'error' => ['✗ ', '!brightRed'],
+        'critical' => ['⚠ ', '!white|red|bold'],
+        'alert' => ['☉ ', '!#ffa500|bold'],
+        'emergency' => ['☎ ', '!white|red|bold|underline'],
     ];
 
     /**
@@ -1084,9 +1085,108 @@ class Session implements ArrayAccess, Controller
     }
 
     /**
+     * Render comment line
+     */
+    public function comment($message, array $context=[])
+    {
+        $this->log('comment', $message, $context);
+    }
+
+    /**
+     * Render inline debug log
+     */
+    public function inlineDebug($message, array $context=[])
+    {
+        $this->inlineLog('debug', $message, $context);
+    }
+
+    /**
+     * Render inline info log
+     */
+    public function inlineInfo($message, array $context=[])
+    {
+        $this->inlineLog('info', $message, $context);
+    }
+
+    /**
+     * Render inline notice log
+     */
+    public function inlineNotice($message, array $context=[])
+    {
+        $this->inlineLog('notice', $message, $context);
+    }
+
+    /**
+     * Render inline success log
+     */
+    public function inlineSuccess($message, array $context=[])
+    {
+        $this->inlineLog('success', $message, $context);
+    }
+
+    /**
+     * Render inline warning log
+     */
+    public function inlineWarning($message, array $context=[])
+    {
+        $this->inlineLog('warning', $message, $context);
+    }
+
+    /**
+     * Render inline error log
+     */
+    public function inlineError($message, array $context=[])
+    {
+        $this->inlineLog('error', $message, $context);
+    }
+
+    /**
+     * Render inline critical log
+     */
+    public function inlineCritical($message, array $context=[])
+    {
+        $this->inlineLog('critical', $message, $context);
+    }
+
+    /**
+     * Render inline alert log
+     */
+    public function inlineAlert($message, array $context=[])
+    {
+        $this->inlineLog('alert', $message, $context);
+    }
+
+    /**
+     * Render inline emergency log
+     */
+    public function inlineEmergency($message, array $context=[])
+    {
+        $this->inlineLog('emergency', $message, $context);
+    }
+
+
+    /**
      * Render generic log message
      */
     public function log($level, $message, array $context=[])
+    {
+        $message = $this->interpolate((string)$message, $context);
+
+        if (!isset(self::LOG_STYLES[$level])) {
+            $this->writeLine($message);
+            return;
+        }
+
+        [$prefix, $style] = self::LOG_STYLES[$level];
+
+        $message = $prefix.$message;
+        $this->style('.'.$style, $message);
+    }
+
+    /**
+     * Render inline generic log message
+     */
+    public function inlineLog($level, $message, array $context=[])
     {
         $message = $this->interpolate((string)$message, $context);
 
