@@ -38,7 +38,7 @@ class Context implements FacadeTarget
      */
     public function setSession(Session $session): Context
     {
-        $ths->session = $session;
+        $this->session = $session;
         return $this;
     }
 
