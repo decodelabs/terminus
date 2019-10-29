@@ -35,7 +35,7 @@ class ProgressBar
         $this->setRange($min, $max);
 
         if ($precision === null) {
-            if ($max > 100 || $min < -100) {
+            if ($max > 100 || $min < -100 || ($max == 0 && $min == 0)) {
                 $precision = 0;
             } elseif ($max > 1 || $min < -1) {
                 $precision = min(2, max(
@@ -198,7 +198,21 @@ class ProgressBar
         }
 
         $barSize = $space - ($numSpace + $percentSpace);
-        $percent = ($value - $this->min) / ($this->max - $this->min);
+
+        if ($this->min < 0) {
+            $xMin = 0 - $this->min;
+            $xMax = $this->max - $this->min;
+        } else {
+            $xMin = $this->min;
+            $xMax = $this->max;
+        }
+
+        if ($xMax - $xMin == 0) {
+            $percent = 1;
+        } else {
+            $percent = ($value - $xMin) / ($xMax - $xMin);
+        }
+
         $chars = ceil($percent * $barSize);
 
         if ($percent < 0.99) {
