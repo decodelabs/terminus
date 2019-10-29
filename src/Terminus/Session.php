@@ -81,6 +81,15 @@ class Session implements ArrayAccess, Controller
     }
 
     /**
+     * Replace IO broker
+     */
+    public function setBroker(Broker $broker): Session
+    {
+        $this->broker = $broker;
+        return $this;
+    }
+
+    /**
      * Get broker
      */
     public function getBroker(): Broker
