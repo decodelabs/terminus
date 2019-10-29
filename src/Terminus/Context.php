@@ -26,6 +26,14 @@ class Context implements FacadeTarget
     protected $session;
 
     /**
+     * Is CLI sapi?
+     */
+    public function isCliSapi(): bool
+    {
+        return \PHP_SAPI === 'cli';
+    }
+
+    /**
      * Set active session
      */
     public function setSession(Session $session): Context
