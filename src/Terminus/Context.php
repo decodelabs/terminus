@@ -28,7 +28,7 @@ class Context implements FacadeTarget
     /**
      * Is CLI sapi?
      */
-    public function isCliSapi(): bool
+    public function isActiveSapi(): bool
     {
         return \PHP_SAPI === 'cli';
     }
