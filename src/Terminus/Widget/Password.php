@@ -156,8 +156,7 @@ class Password
      */
     protected function renderQuestion(string $message): ?string
     {
-        $this->session->style('.cyan', $message.' ');
-        $this->session->write('> ');
+        $this->session->style('cyan', $message.': ');
 
         if ($this->session->hasStty()) {
             $snapshot = $this->session->snapshotStty();
@@ -166,7 +165,7 @@ class Password
             $this->session->restoreStty($snapshot);
 
             if (strlen($password)) {
-                $this->session->style('.brightRed', '••••••••');
+                $this->session->style('.brightYellow', '••••••••');
             } else {
                 $this->session->newLine();
             }

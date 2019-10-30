@@ -14,7 +14,7 @@ class Confirmation
     protected $message;
     protected $showOptions = true;
     protected $default;
-
+    protected $input;
     protected $session;
 
     /**
@@ -23,8 +23,17 @@ class Confirmation
     public function __construct(Session $session, string $message, bool $default=null)
     {
         $this->session = $session;
-        $this->message = $message;
+        $this->setMessage($message);
         $this->setDefaultValue($default);
+    }
+
+    /**
+     * Set message body
+     */
+    public function setMessage(string $message): Confirmation
+    {
+        $this->message = $message;
+        return $this;
     }
 
     /**
@@ -33,6 +42,23 @@ class Confirmation
     public function getMessage(): string
     {
         return $this->message;
+    }
+
+    /**
+     * Set message input
+     */
+    public function setMessageInput(?string $input): Confirmation
+    {
+        $this->input = $input;
+        return $this;
+    }
+
+    /**
+     * Get message input
+     */
+    public function getMessageInput(): ?string
+    {
+        return $this->input;
     }
 
 
@@ -89,11 +115,17 @@ class Confirmation
                 $answer = $this->session->read(1);
                 $this->session->restoreStty($snapshot);
 
-                if ($answer === "\n") {
-                    if ($this->default !== null) {
-                        $answer = $this->default ? 'y' : 'n';
-                        $this->session->{'.yellow|dim'}($answer);
-                    }
+                if ($answer === "\n" && $this->default !== null) {
+                    $answer = $this->default ? 'y' : 'n';
+                }
+
+                $answer = rtrim($answer, "\n");
+                $bool = Session::stringToBoolean($answer);
+
+                if ($bool === null) {
+                    $this->session->{'.red'}($answer);
+                } elseif ($bool === true) {
+                    $this->session->{'.brightGreen'}($answer);
                 } else {
                     $this->session->{'.brightYellow'}($answer);
                 }
@@ -116,16 +148,17 @@ class Confirmation
     {
         $this->session->style('cyan', $this->message.' ');
 
+        if ($this->input !== null) {
+            $this->session->style('brightYellow', $this->input.' ');
+        }
+
         if ($this->showOptions) {
             $this->session->style('white', '[');
             $this->session->style($this->default === true ? 'brightWhite|bold|underline' : 'white', 'y');
             $this->session->style('white', '/');
             $this->session->style($this->default === false ? 'brightWhite|bold|underline' : 'white', 'n');
-            $this->session->style('white', ']');
+            $this->session->style('white', '] ');
         }
-
-        $this->session->newLine();
-        $this->session->write('> ');
     }
 
     /**
