@@ -1003,9 +1003,17 @@ class Session implements ArrayAccess, Controller
     /**
      * Ask a question
      */
-    public function ask(string $message, string $default=null): Question
+    public function ask(string $message, string $default=null, ?callable $validator=null): ?string
     {
-        return new Question($this, $message, $default);
+        return $this->newQuestion($message, $default, $validator)->prompt();
+    }
+
+    /**
+     * Begin new question asker
+     */
+    public function newQuestion(string $message, string $default=null, ?callable $validator=null): Question
+    {
+        return new Question($this, $message, $default, $validator);
     }
 
     /**

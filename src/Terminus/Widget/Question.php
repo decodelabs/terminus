@@ -15,18 +15,29 @@ class Question
     protected $options = [];
     protected $showOptions = true;
     protected $strict = false;
+    protected $required = true;
     protected $default;
-
+    protected $validator;
     protected $session;
 
     /**
      * Init with message
      */
-    public function __construct(Session $session, string $message, string $default=null)
+    public function __construct(Session $session, string $message, string $default=null, ?callable $validator=null)
     {
         $this->session = $session;
-        $this->message = $message;
+        $this->setMessage($message);
         $this->setDefaultValue($default);
+        $this->setValidator($validator);
+    }
+
+    /**
+     * Set message body
+     */
+    public function setMessage(string $message): Question
+    {
+        $this->message = $message;
+        return $this;
     }
 
     /**
@@ -90,6 +101,23 @@ class Question
         return $this->strict;
     }
 
+    /**
+     * Set required
+     */
+    public function setRequired(bool $flag): Question
+    {
+        $this->required = $flag;
+        return $this;
+    }
+
+    /**
+     * Is required?
+     */
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
 
     /**
      * Set default value
@@ -106,6 +134,23 @@ class Question
     public function getDefaultValue(): ?string
     {
         return $this->default;
+    }
+
+    /**
+     * Set validator callback
+     */
+    public function setValidator(?callable $validator): Question
+    {
+        $this->validator = $validator;
+        return $this;
+    }
+
+    /**
+     * Get validator callback
+     */
+    public function getValidator(): ?callable
+    {
+        return $this->validator;
     }
 
 
@@ -133,10 +178,10 @@ class Question
      */
     protected function renderQuestion(): void
     {
-        $this->session->style('cyan', $this->message.' ');
+        $this->session->style('cyan', $this->message);
 
         if (!empty($this->options) && $this->showOptions) {
-            $this->session->style('white', '[');
+            $this->session->style('white', ' [');
             $fDefault = $this->strict ? $this->default : trim(strtolower((string)$this->default));
             $first = true;
             $defaultFound = false;
@@ -163,11 +208,14 @@ class Question
                 $this->session->style('brightWhite|bold|underline', $this->default);
             }
 
-            $this->session->style('white', ']');
+            $this->session->style('white', '] ');
+        } elseif ($this->default !== null) {
+            $this->session->style('white', ' [');
+            $this->session->style('brightYellow|bold|underline', $this->default);
+            $this->session->style('white', '] ');
+        } else {
+            $this->session->style('cyan', ': ');
         }
-
-        $this->session->newLine();
-        $this->session->write('> ');
     }
 
     /**
@@ -175,31 +223,43 @@ class Question
      */
     protected function validate(string &$answer): bool
     {
-        if (empty($this->options)) {
-            return true;
-        }
-
         if (!strlen($answer) && $this->default !== null) {
             $answer = $this->default;
         }
 
-        $testAnswer = $this->strict ? $answer : trim(strtolower($answer));
-        $testOptions = [];
-
-        foreach ($this->options as $option) {
-            $fOption = $this->strict ? $option : trim(strtolower($option));
-            $testOptions[$fOption] = $option;
+        if (!strlen($answer)) {
+            $answer = null;
         }
 
-        if (!isset($testOptions[$answer])) {
-            if ($answer === $this->default) {
-                return true;
-            } else {
+        if ($answer === null) {
+            if ($this->required) {
                 $this->session->style('.brightRed|bold', 'Sorry, try again..');
                 return false;
             }
         } else {
-            $answer = $testOptions[$answer];
+            $testAnswer = $this->strict ? $answer : trim(strtolower($answer));
+
+            if (!empty($this->options)) {
+                $testOptions = [];
+
+                foreach ($this->options as $option) {
+                    $fOption = $this->strict ? $option : trim(strtolower($option));
+                    $testOptions[$fOption] = $option;
+                }
+
+                if (!isset($testOptions[$testAnswer])) {
+                    if ($answer !== $this->default) {
+                        $this->session->style('.brightRed|bold', 'Sorry, try again..');
+                        return false;
+                    }
+                } else {
+                    $answer = $testOptions[$answer];
+                }
+            }
+        }
+
+        if ($this->validator !== null && (false === ($this->validator)($answer, $this->session))) {
+            return false;
         }
 
         return true;

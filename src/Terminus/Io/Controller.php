@@ -92,7 +92,8 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
 
 
 
-    public function ask(string $message, string $default=null): Question;
+    public function ask(string $message, string $default=null, ?callable $validator=null): ?string;
+    public function newQuestion(string $message, string $default=null, ?callable $validator=null): Question;
     public function askPassword(?string $message=null, bool $repeat=false, bool $required=true): ?string;
     public function newPasswordQuestion(?string $message=null, bool $repeat=false, bool $required=true): Password;
     public function confirm(string $message, bool $default=null): bool;
