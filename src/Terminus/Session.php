@@ -1078,12 +1078,23 @@ class Session implements ArrayAccess, Controller
         'notice' => ['☛ ', 'cyan|bold'],
         'comment' => ['# ', 'yellow|dim'],
         'success' => ['✓ ', 'green|bold'],
-        'warning' => ['⚠ ', '!#ffa500|bold'],
+        'operative' => ['☉ ', '#ffa500|bold'],
+        'deleteSuccess' => ['⌦ ', 'brightRed'],
+        'warning' => ['⚠ ', '#ffa500|bold'],
         'error' => ['✗ ', '!brightRed'],
         'critical' => ['⚠ ', '!white|red|bold'],
-        'alert' => ['☉ ', '!#ffa500|bold'],
+        'alert' => ['☎ ', '!brightRed|bold'],
         'emergency' => ['☎ ', '!white|red|bold|underline'],
     ];
+
+
+    /**
+     * Render comment line
+     */
+    public function comment($message, array $context=[])
+    {
+        $this->log('comment', $message, $context);
+    }
 
     /**
      * Render success log
@@ -1094,12 +1105,21 @@ class Session implements ArrayAccess, Controller
     }
 
     /**
-     * Render comment line
+     * Render operative message line
      */
-    public function comment($message, array $context=[])
+    public function operative($message, array $context=[])
     {
-        $this->log('comment', $message, $context);
+        $this->log('operative', $message, $context);
     }
+
+    /**
+     * Render delete success log
+     */
+    public function deleteSuccess($message, array $context=[])
+    {
+        $this->log('deleteSuccess', $message, $context);
+    }
+
 
     /**
      * Render inline debug log
@@ -1126,11 +1146,35 @@ class Session implements ArrayAccess, Controller
     }
 
     /**
+     * Render inline comment line
+     */
+    public function inlineComment($message, array $context=[])
+    {
+        $this->inlineLog('comment', $message, $context);
+    }
+
+    /**
      * Render inline success log
      */
     public function inlineSuccess($message, array $context=[])
     {
         $this->inlineLog('success', $message, $context);
+    }
+
+    /**
+     * Render inline operative log
+     */
+    public function inlineOperative($message, array $context=[])
+    {
+        $this->inlineLog('operative', $message, $context);
+    }
+
+    /**
+     * Render inline delete success log
+     */
+    public function inlineDeleteSuccess($message, array $context=[])
+    {
+        $this->inlineLog('deleteSuccess', $message, $context);
     }
 
     /**

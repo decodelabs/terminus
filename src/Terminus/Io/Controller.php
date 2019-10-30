@@ -98,13 +98,18 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function newSpinner(string $style=null): Spinner;
     public function newProgressBar(float $min=0.0, float $max=100.0, ?int $precision=null): ProgressBar;
 
-    public function success($message, array $context=[]);
     public function comment($message, array $context=[]);
+    public function success($message, array $context=[]);
+    public function operative($message, array $context=[]);
+    public function deleteSuccess($message, array $context=[]);
 
     public function inlineDebug($message, array $context=[]);
     public function inlineInfo($message, array $context=[]);
     public function inlineNotice($message, array $context=[]);
+    public function inlineComment($message, array $context=[]);
     public function inlineSuccess($message, array $context=[]);
+    public function inlineOperative($message, array $context=[]);
+    public function inlineDeleteSuccess($message, array $context=[]);
     public function inlineWarning($message, array $context=[]);
     public function inlineError($message, array $context=[]);
     public function inlineCritical($message, array $context=[]);
