@@ -1011,9 +1011,17 @@ class Session implements ArrayAccess, Controller
     /**
      * Ask for password
      */
-    public function askPassword(string $message): Password
+    public function askPassword(?string $message=null, bool $repeat=false, bool $required=true): ?string
     {
-        return new Password($this, $message);
+        return $this->newPasswordQuestion($message, $repeat, $required)->prompt();
+    }
+
+    /**
+     * Begin password asker
+     */
+    public function newPasswordQuestion(?string $message=null, bool $repeat=false, bool $required=true): Password
+    {
+        return new Password($this, $message, $repeat, $required);
     }
 
     /**
