@@ -1078,7 +1078,7 @@ class Session implements ArrayAccess, Controller
         'notice' => ['☛ ', 'cyan|bold'],
         'comment' => ['# ', 'yellow|dim'],
         'success' => ['✓ ', 'green|bold'],
-        'operative' => ['☉ ', '#ffa500|bold'],
+        'operative' => ['⚑ ', '#ffa500|bold'],
         'deleteSuccess' => ['⌦ ', 'brightRed'],
         'warning' => ['⚠ ', '#ffa500|bold'],
         'error' => ['✗ ', '!brightRed'],
