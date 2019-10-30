@@ -1019,7 +1019,15 @@ class Session implements ArrayAccess, Controller
     /**
      * Ask for confirmation
      */
-    public function confirm(string $message, bool $default=null): Confirmation
+    public function confirm(string $message, bool $default=null): bool
+    {
+        return $this->newConfirmation($this, $message, $default)->prompt();
+    }
+
+    /**
+     * Begin confirmation
+     */
+    public function newConfirmation(string $message, bool $default=null): Confirmation
     {
         return new Confirmation($this, $message, $default);
     }

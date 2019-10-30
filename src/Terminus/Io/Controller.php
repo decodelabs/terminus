@@ -94,7 +94,8 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
 
     public function ask(string $message, string $default=null): Question;
     public function askPassword(string $message): Password;
-    public function confirm(string $message, bool $default=null): Confirmation;
+    public function confirm(string $message, bool $default=null): bool;
+    public function newConfirmation(string $message, bool $default=null): Confirmation;
     public function newSpinner(string $style=null): Spinner;
     public function newProgressBar(float $min=0.0, float $max=100.0, ?int $precision=null): ProgressBar;
 
