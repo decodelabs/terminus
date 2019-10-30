@@ -167,9 +167,9 @@ class Password
 
             if (strlen($password)) {
                 $this->session->style('.brightRed', '••••••••');
+            } else {
+                $this->session->newLine();
             }
-
-            $this->session->newLine();
         } else {
             $password = $this->session->readLine();
         }
