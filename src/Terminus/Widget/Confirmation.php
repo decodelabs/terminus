@@ -85,11 +85,17 @@ class Confirmation
             if ($this->session->hasStty()) {
                 $snapshot = $this->session->snapshotStty();
                 $this->session->toggleInputBuffer(false);
-                $answer = trim($this->session->read(1), "\n");
+                $this->session->toggleInputEcho(false);
+                $answer = $this->session->read(1);
                 $this->session->restoreStty($snapshot);
 
-                if (strlen($answer)) {
-                    $this->session->newLine();
+                if ($answer === "\n") {
+                    if ($this->default !== null) {
+                        $answer = $this->default ? 'y' : 'n';
+                        $this->session->{'.yellow|dim'}($answer);
+                    }
+                } else {
+                    $this->session->{'.brightYellow'}($answer);
                 }
             } else {
                 $answer = $this->session->readLine();
