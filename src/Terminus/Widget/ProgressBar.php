@@ -180,24 +180,28 @@ class ProgressBar
 
         $space = $width - 2;
 
-        if ($this->showCompleted) {
-            $maxLength = max(
-                strlen((string)round($this->min, $this->precision)),
-                strlen((string)round($this->max, $this->precision))
-            );
+        if ($this->session->isAnsi()) {
+            if ($this->showCompleted) {
+                $maxLength = max(
+                    strlen((string)round($this->min, $this->precision)),
+                    strlen((string)round($this->max, $this->precision))
+                );
 
-            $numSpace = ($maxLength * 2) + 4;
+                $numSpace = ($maxLength * 2) + 4;
+            } else {
+                $numSpace = 0;
+            }
+
+            if ($this->showPercent) {
+                $percentSpace = 5;
+            } else {
+                $percentSpace = 0;
+            }
+
+            $barSize = $space - ($numSpace + $percentSpace);
         } else {
-            $numSpace = 0;
+            $barSize = $space;
         }
-
-        if ($this->showPercent) {
-            $percentSpace = 5;
-        } else {
-            $percentSpace = 0;
-        }
-
-        $barSize = $space - ($numSpace + $percentSpace);
 
         if ($this->min < 0) {
             $xMin = 0 - $this->min;
