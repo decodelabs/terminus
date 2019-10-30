@@ -16,6 +16,7 @@ class Question
     protected $showOptions = true;
     protected $strict = false;
     protected $required = true;
+    protected $confirm = false;
     protected $default;
     protected $validator;
     protected $session;
@@ -118,6 +119,23 @@ class Question
         return $this->required;
     }
 
+    /**
+     * Set to confirm
+     */
+    public function setConfirm(bool $flag): Question
+    {
+        $this->confirm = $flag;
+        return $this;
+    }
+
+    /**
+     * Should confirm answer?
+     */
+    public function shouldConfirm(): bool
+    {
+        return $this->confirm;
+    }
+
 
     /**
      * Set default value
@@ -159,14 +177,21 @@ class Question
      */
     public function prompt(): ?string
     {
-        $done = false;
-
-        while (!$done) {
+        while (true) {
             $this->renderQuestion();
             $answer = $this->session->readLine();
 
             if ($this->validate($answer)) {
-                $done = true;
+                if ($this->confirm) {
+                    $confirmation = $this->session->newConfirmation('Is this correct?', true)
+                        ->setMessageInput($answer);
+
+                    if (!$confirmation->prompt()) {
+                        continue;
+                    }
+                }
+
+                break;
             }
         }
 
@@ -211,7 +236,7 @@ class Question
             $this->session->style('white', '] ');
         } elseif ($this->default !== null) {
             $this->session->style('white', ' [');
-            $this->session->style('brightYellow|bold|underline', $this->default);
+            $this->session->style('white|bold|underline', $this->default);
             $this->session->style('white', '] ');
         } else {
             $this->session->style('cyan', ': ');
