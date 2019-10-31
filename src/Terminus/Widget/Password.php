@@ -156,7 +156,13 @@ class Password
      */
     protected function renderQuestion(string $message): ?string
     {
-        $this->session->style('cyan', $message.': ');
+        $this->session->style('cyan', $message);
+
+        if (preg_match('/[^a-zA-Z0-0-_ ]$/', $this->message)) {
+            $this->session->write(' ');
+        } else {
+            $this->session->style('cyan', ': ');
+        }
 
         if ($this->session->hasStty()) {
             $snapshot = $this->session->snapshotStty();
