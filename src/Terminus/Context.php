@@ -43,6 +43,16 @@ class Context implements FacadeTarget
     }
 
     /**
+     * Replace active session with new session based on args
+     */
+    public function replaceSession(?Request $request=null, ?Broker $broker=null): ?Session
+    {
+        $output = $this->session;
+        $this->setSession($this->newSession($request, $broker));
+        return $output;
+    }
+
+    /**
      * Get active session, create default if needed
      */
     public function getSession(): Session
