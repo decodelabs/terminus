@@ -92,11 +92,32 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
 
 
 
-    public function ask(string $message, string $default=null): Question;
-    public function askPassword(string $message): Password;
-    public function confirm(string $message, bool $default=null): Confirmation;
+    public function ask(string $message, string $default=null, ?callable $validator=null): ?string;
+    public function newQuestion(string $message, string $default=null, ?callable $validator=null): Question;
+    public function askPassword(?string $message=null, bool $repeat=false, bool $required=true): ?string;
+    public function newPasswordQuestion(?string $message=null, bool $repeat=false, bool $required=true): Password;
+    public function confirm(string $message, bool $default=null): bool;
+    public function newConfirmation(string $message, bool $default=null): Confirmation;
     public function newSpinner(string $style=null): Spinner;
     public function newProgressBar(float $min=0.0, float $max=100.0, ?int $precision=null): ProgressBar;
 
+    public function comment($message, array $context=[]);
     public function success($message, array $context=[]);
+    public function operative($message, array $context=[]);
+    public function deleteSuccess($message, array $context=[]);
+
+    public function inlineDebug($message, array $context=[]);
+    public function inlineInfo($message, array $context=[]);
+    public function inlineNotice($message, array $context=[]);
+    public function inlineComment($message, array $context=[]);
+    public function inlineSuccess($message, array $context=[]);
+    public function inlineOperative($message, array $context=[]);
+    public function inlineDeleteSuccess($message, array $context=[]);
+    public function inlineWarning($message, array $context=[]);
+    public function inlineError($message, array $context=[]);
+    public function inlineCritical($message, array $context=[]);
+    public function inlineAlert($message, array $context=[]);
+    public function inlineEmergency($message, array $context=[]);
+
+    public function inlineLog($level, $message, array $context=[]);
 }

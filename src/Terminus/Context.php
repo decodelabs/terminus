@@ -26,12 +26,30 @@ class Context implements FacadeTarget
     protected $session;
 
     /**
+     * Is CLI sapi?
+     */
+    public function isActiveSapi(): bool
+    {
+        return \PHP_SAPI === 'cli';
+    }
+
+    /**
      * Set active session
      */
     public function setSession(Session $session): Context
     {
-        $ths->session = $session;
+        $this->session = $session;
         return $this;
+    }
+
+    /**
+     * Replace active session with new session based on args
+     */
+    public function replaceSession(?Request $request=null, ?Broker $broker=null): ?Session
+    {
+        $output = $this->session;
+        $this->setSession($this->newSession($request, $broker));
+        return $output;
     }
 
     /**

@@ -212,25 +212,34 @@ Simplify common use cases with built in widgets:
 
 #### Question
 ```php
-$answer = Cli::ask('How are you?')
+$answer = Cli::newQuestion('How are you?')
     ->setOptions('Great', 'Fine', 'OK')
     ->setDefaultValue('great')
     ->prompt();
+
+
+// Or direct..
+$answer = Cli::ask('How are you?', 'great');
 
 Cli::{'..green'}('You are: '.$answer);
 ```
 
 #### Password
 ```php
-$password = Cli::askPassword('Now enter a password...')
+$password = Cli::newPasswordQuestion('Now enter a password...')
+    ->setRequired(true)
+    ->setRepeat(true)
     ->prompt();
+
+// Or direct
+$password = Cli::askPassword('Now enter a password...', true, true);
 
 Cli::{'..green'}('Your password is: '.$password);
 ```
 
 #### Confirmation
 ```php
-if (Cli::confirm('Do you like green?', true)->prompt()) {
+if (Cli::confirm('Do you like green?', true)) {
     Cli::{'..brightGreen'}('Awesome!');
 } else {
     Cli::{'..brightRed'}('Boo!');

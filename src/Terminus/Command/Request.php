@@ -6,7 +6,12 @@
 declare(strict_types=1);
 namespace DecodeLabs\Terminus\Command;
 
-class Request
+use DecodeLabs\Glitch;
+use DecodeLabs\Glitch\Inspectable;
+use DecodeLabs\Glitch\Dumper\Entity;
+use DecodeLabs\Glitch\Dumper\Inspector;
+
+class Request implements Inspectable
 {
     protected $script;
     protected $args = [];
@@ -55,7 +60,7 @@ class Request
             if (false !== ($output = realpath($this->script))) {
                 return $output;
             }
-            
+
             return null;
         }
 
@@ -156,6 +161,21 @@ class Request
      */
     public function __toString(): string
     {
-        return implode(' ', $this->args);
+        $output = $this->script;
+
+        if (!empty($output) && !empty($this->args)) {
+            $output .= ' ';
+            $output .= implode(' ', $this->args);
+        }
+
+        return (string)$output;
+    }
+
+    /**
+     * Inspect for Glitch
+     */
+    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    {
+        $entity->setDefinition($this->__toString());
     }
 }

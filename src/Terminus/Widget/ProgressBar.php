@@ -35,7 +35,7 @@ class ProgressBar
         $this->setRange($min, $max);
 
         if ($precision === null) {
-            if ($max > 100 || $min < -100) {
+            if ($max > 100 || $min < -100 || ($max == 0 && $min == 0)) {
                 $precision = 0;
             } elseif ($max > 1 || $min < -1) {
                 $precision = min(2, max(
@@ -180,25 +180,43 @@ class ProgressBar
 
         $space = $width - 2;
 
-        if ($this->showCompleted) {
-            $maxLength = max(
-                strlen((string)round($this->min, $this->precision)),
-                strlen((string)round($this->max, $this->precision))
-            );
+        if ($this->session->isAnsi()) {
+            if ($this->showCompleted) {
+                $maxLength = max(
+                    strlen((string)round($this->min, $this->precision)),
+                    strlen((string)round($this->max, $this->precision))
+                );
 
-            $numSpace = ($maxLength * 2) + 4;
+                $numSpace = ($maxLength * 2) + 4;
+            } else {
+                $numSpace = 0;
+            }
+
+            if ($this->showPercent) {
+                $percentSpace = 5;
+            } else {
+                $percentSpace = 0;
+            }
+
+            $barSize = $space - ($numSpace + $percentSpace);
         } else {
-            $numSpace = 0;
+            $barSize = $space;
         }
 
-        if ($this->showPercent) {
-            $percentSpace = 5;
+        if ($this->min < 0) {
+            $xMin = 0 - $this->min;
+            $xMax = $this->max - $this->min;
         } else {
-            $percentSpace = 0;
+            $xMin = $this->min;
+            $xMax = $this->max;
         }
 
-        $barSize = $space - ($numSpace + $percentSpace);
-        $percent = ($value - $this->min) / ($this->max - $this->min);
+        if ($xMax - $xMin == 0) {
+            $percent = 1;
+        } else {
+            $percent = ($value - $xMin) / ($xMax - $xMin);
+        }
+
         $chars = ceil($percent * $barSize);
 
         if ($percent < 0.99) {

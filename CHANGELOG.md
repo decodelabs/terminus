@@ -1,3 +1,8 @@
+## v0.5.1 (2019-10-31)
+* Fleshed out Widget interfaces and rendering
+* Improved logging styles
+* Improved Session and Context interfaces
+
 ## v0.5.0 (2019-10-28)
 * Ported initial codebase from DF
 * Merged session functionality into single context

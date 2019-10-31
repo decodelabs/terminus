@@ -81,6 +81,15 @@ class Session implements ArrayAccess, Controller
     }
 
     /**
+     * Replace IO broker
+     */
+    public function setBroker(Broker $broker): Session
+    {
+        $this->broker = $broker;
+        return $this;
+    }
+
+    /**
      * Get broker
      */
     public function getBroker(): Broker
@@ -994,23 +1003,47 @@ class Session implements ArrayAccess, Controller
     /**
      * Ask a question
      */
-    public function ask(string $message, string $default=null): Question
+    public function ask(string $message, string $default=null, ?callable $validator=null): ?string
     {
-        return new Question($this, $message, $default);
+        return $this->newQuestion($message, $default, $validator)->prompt();
+    }
+
+    /**
+     * Begin new question asker
+     */
+    public function newQuestion(string $message, string $default=null, ?callable $validator=null): Question
+    {
+        return new Question($this, $message, $default, $validator);
     }
 
     /**
      * Ask for password
      */
-    public function askPassword(string $message): Password
+    public function askPassword(?string $message=null, bool $repeat=false, bool $required=true): ?string
     {
-        return new Password($this, $message);
+        return $this->newPasswordQuestion($message, $repeat, $required)->prompt();
+    }
+
+    /**
+     * Begin password asker
+     */
+    public function newPasswordQuestion(?string $message=null, bool $repeat=false, bool $required=true): Password
+    {
+        return new Password($this, $message, $repeat, $required);
     }
 
     /**
      * Ask for confirmation
      */
-    public function confirm(string $message, bool $default=null): Confirmation
+    public function confirm(string $message, bool $default=null): bool
+    {
+        return $this->newConfirmation($message, $default)->prompt();
+    }
+
+    /**
+     * Begin confirmation
+     */
+    public function newConfirmation(string $message, bool $default=null): Confirmation
     {
         return new Confirmation($this, $message, $default);
     }
@@ -1064,16 +1097,28 @@ class Session implements ArrayAccess, Controller
 
 
     const LOG_STYLES = [
-        'debug' => ['β ', '.#996300'],
-        'info' => ['ℹ ', '.cyan'],
-        'notice' => ['☛ ', '.cyan|bold'],
-        'success' => ['✓ ', '.green|bold'],
-        'warning' => ['⚠ ', '!.yellow'],
-        'error' => ['✗ ', '!.brightRed'],
-        'critical' => ['⚠ ', '!.white|red|bold'],
-        'alert' => ['☉ ', '!.#ffa500|bold'],
-        'emergency' => ['☎ ', '!.white|red|bold|underline'],
+        'debug' => ['β ', '#996300'],
+        'info' => ['ℹ ', 'cyan'],
+        'notice' => ['☛ ', 'cyan|bold'],
+        'comment' => ['# ', 'yellow|dim'],
+        'success' => ['✓ ', 'green|bold'],
+        'operative' => ['⚑ ', '#ffa500|bold'],
+        'deleteSuccess' => ['⌦ ', 'brightRed'],
+        'warning' => ['⚠ ', '#ffa500|bold'],
+        'error' => ['✗ ', '!brightRed'],
+        'critical' => ['⚠ ', '!white|red|bold'],
+        'alert' => ['☎ ', '!brightRed|bold'],
+        'emergency' => ['☎ ', '!white|red|bold|underline'],
     ];
+
+
+    /**
+     * Render comment line
+     */
+    public function comment($message, array $context=[])
+    {
+        $this->log('comment', $message, $context);
+    }
 
     /**
      * Render success log
@@ -1084,9 +1129,141 @@ class Session implements ArrayAccess, Controller
     }
 
     /**
+     * Render operative message line
+     */
+    public function operative($message, array $context=[])
+    {
+        $this->log('operative', $message, $context);
+    }
+
+    /**
+     * Render delete success log
+     */
+    public function deleteSuccess($message, array $context=[])
+    {
+        $this->log('deleteSuccess', $message, $context);
+    }
+
+
+    /**
+     * Render inline debug log
+     */
+    public function inlineDebug($message, array $context=[])
+    {
+        $this->inlineLog('debug', $message, $context);
+    }
+
+    /**
+     * Render inline info log
+     */
+    public function inlineInfo($message, array $context=[])
+    {
+        $this->inlineLog('info', $message, $context);
+    }
+
+    /**
+     * Render inline notice log
+     */
+    public function inlineNotice($message, array $context=[])
+    {
+        $this->inlineLog('notice', $message, $context);
+    }
+
+    /**
+     * Render inline comment line
+     */
+    public function inlineComment($message, array $context=[])
+    {
+        $this->inlineLog('comment', $message, $context);
+    }
+
+    /**
+     * Render inline success log
+     */
+    public function inlineSuccess($message, array $context=[])
+    {
+        $this->inlineLog('success', $message, $context);
+    }
+
+    /**
+     * Render inline operative log
+     */
+    public function inlineOperative($message, array $context=[])
+    {
+        $this->inlineLog('operative', $message, $context);
+    }
+
+    /**
+     * Render inline delete success log
+     */
+    public function inlineDeleteSuccess($message, array $context=[])
+    {
+        $this->inlineLog('deleteSuccess', $message, $context);
+    }
+
+    /**
+     * Render inline warning log
+     */
+    public function inlineWarning($message, array $context=[])
+    {
+        $this->inlineLog('warning', $message, $context);
+    }
+
+    /**
+     * Render inline error log
+     */
+    public function inlineError($message, array $context=[])
+    {
+        $this->inlineLog('error', $message, $context);
+    }
+
+    /**
+     * Render inline critical log
+     */
+    public function inlineCritical($message, array $context=[])
+    {
+        $this->inlineLog('critical', $message, $context);
+    }
+
+    /**
+     * Render inline alert log
+     */
+    public function inlineAlert($message, array $context=[])
+    {
+        $this->inlineLog('alert', $message, $context);
+    }
+
+    /**
+     * Render inline emergency log
+     */
+    public function inlineEmergency($message, array $context=[])
+    {
+        $this->inlineLog('emergency', $message, $context);
+    }
+
+
+    /**
      * Render generic log message
      */
     public function log($level, $message, array $context=[])
+    {
+        $message = $this->interpolate((string)$message, $context);
+
+        if (!isset(self::LOG_STYLES[$level])) {
+            $this->writeLine($message);
+            return;
+        }
+
+        [$prefix, $style] = self::LOG_STYLES[$level];
+
+        $message = $prefix.$message;
+        $this->style('.'.$style, $message);
+    }
+
+    /**
+     * Render inline generic log message
+     */
+    public function inlineLog($level, $message, array $context=[])
     {
         $message = $this->interpolate((string)$message, $context);
 
