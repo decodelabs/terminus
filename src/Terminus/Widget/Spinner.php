@@ -60,19 +60,24 @@ class Spinner
             return $this;
         }
 
-        if ($this->lastTime !== null) {
-            $this->session->backspace();
+        if ($this->session->isAnsi()) {
+            if ($this->lastTime !== null) {
+                $this->session->backspace();
+            }
+
+            $char = self::CHARS[$this->char];
+            $this->char++;
+
+            if (!isset(self::CHARS[$this->char])) {
+                $this->char = 0;
+            }
+
+            $style = $this->style ?? 'yellow';
+            $this->session->{$style}($char);
+        } else {
+            $this->session->write('.');
         }
 
-        $char = self::CHARS[$this->char];
-        $this->char++;
-
-        if (!isset(self::CHARS[$this->char])) {
-            $this->char = 0;
-        }
-
-        $style = $this->style ?? 'yellow';
-        $this->session->{$style}($char);
         $this->lastTime = $time;
 
         return $this;
@@ -82,17 +87,28 @@ class Spinner
     /**
      * Finalise
      */
-    public function complete(?string $message=null): Spinner
+    public function complete(?string $message=null, ?string $style=null): Spinner
     {
-        if ($this->lastTime !== null) {
-            $this->session->backspace();
+        if ($this->session->isAnsi()) {
+            if ($this->lastTime !== null) {
+                $this->session->backspace();
+            }
+
+            if (!$message === null) {
+                $message = ' ';
+            }
+        } else {
+            $this->session->write(' ');
         }
 
         if ($message !== null) {
-            $this->session->style('brightGreen|bold', $message);
+            if ($style === null) {
+                $style = 'success';
+            }
+
+            $this->session->{$style}($message);
         }
 
-        $this->session->newLine();
         return $this;
     }
 }
