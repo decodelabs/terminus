@@ -94,7 +94,7 @@ class Spinner
                 $this->session->backspace();
             }
 
-            if (!$message === null) {
+            if ($message === null) {
                 $message = ' ';
             }
         } else {
