@@ -1,3 +1,6 @@
+## v0.5.2 (2020-09-24)
+* Updated Composer dependency handling
+
 ## v0.5.1 (2019-10-31)
 * Fleshed out Widget interfaces and rendering
 * Improved logging styles

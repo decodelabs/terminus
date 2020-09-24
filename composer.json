@@ -4,25 +4,21 @@
     "type": "library",
     "keywords": ["cli", "terminal"],
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Tom Wright",
-            "email": "tom@inflatablecookie.com"
-        }
-    ],
+    "authors": [{
+        "name": "Tom Wright",
+        "email": "tom@inflatablecookie.com"
+    }],
     "require": {
         "php": "^7.2",
-        "decodelabs/glitch": "<2",
-        "decodelabs/systemic": "~0.6",
-        "decodelabs/atlas": "~0.7",
+        "decodelabs/glitch": "^0.15",
+        "decodelabs/systemic": "^0.6",
+        "decodelabs/atlas": "^0.7",
         "psr/log": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8",
         "phpstan/phpstan": "^0.11.16",
-        "decodelabs/phpstan-decodelabs": "dev-develop",
-
-        "decodelabs/atlas": "dev-develop"
+        "decodelabs/phpstan-decodelabs": "^0.2"
     },
     "autoload": {
         "psr-4": {
@@ -34,7 +30,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.x-dev"
+            "dev-develop": "0.5.x-dev"
         }
     }
 }
