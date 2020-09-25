@@ -7,11 +7,9 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Command;
 
 use DecodeLabs\Glitch;
-use DecodeLabs\Glitch\Inspectable;
-use DecodeLabs\Glitch\Dumper\Entity;
-use DecodeLabs\Glitch\Dumper\Inspector;
+use DecodeLabs\Glitch\Dumpable;
 
-class Request implements Inspectable
+class Request implements Dumpable
 {
     protected $script;
     protected $args = [];
@@ -174,8 +172,8 @@ class Request implements Inspectable
     /**
      * Inspect for Glitch
      */
-    public function glitchInspect(Entity $entity, Inspector $inspector): void
+    public function glitchDump(): iterable
     {
-        $entity->setDefinition($this->__toString());
+        yield 'definition' => $this->__toString();
     }
 }
