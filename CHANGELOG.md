@@ -1,3 +1,6 @@
+## v0.5.4 (2020-09-30)
+* Switched to Exceptional for exception generation
+
 ## v0.5.3 (2020-09-25)
 * Switched to Glitch Dumpable interface
 
