@@ -10,9 +10,12 @@
     }],
     "require": {
         "php": "^7.2",
+
+        "decodelabs/exceptional": "^0.2",
         "decodelabs/glitch": "^0.15.6",
         "decodelabs/systemic": "^0.6",
         "decodelabs/atlas": "^0.7",
+
         "psr/log": "^1.0"
     },
     "require-dev": {
