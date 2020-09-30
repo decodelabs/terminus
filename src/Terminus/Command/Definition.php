@@ -9,7 +9,7 @@ namespace DecodeLabs\Terminus\Command;
 use DecodeLabs\Terminus\Session;
 use DecodeLabs\Terminus\Command\Argument;
 use DecodeLabs\Terminus\Command\Request;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Definition
 {
@@ -69,7 +69,7 @@ class Definition
     public function addArgument(string $name, string $description, callable $setup=null): Definition
     {
         if (isset($this->arguments[$name])) {
-            throw Glitch::ELogic(
+            throw Exceptional::Logic(
                 'Named argument "'.$name.'" has already been defined'
             );
         }
@@ -145,7 +145,7 @@ class Definition
                 }
             } else {
                 if ($lastIsList) {
-                    throw Glitch::ELogic(
+                    throw Exceptional::Logic(
                         'List arguments must come last in the command definition'
                     );
                 }
@@ -158,7 +158,7 @@ class Definition
 
                 if (!$arg->isOptional()) {
                     if ($lastIsOptional) {
-                        throw Glitch::ELogic(
+                        throw Exceptional::Logic(
                             'Optional arguments cannot appear before required arguments'
                         );
                     }
@@ -181,7 +181,7 @@ class Definition
                 $name = array_shift($parts);
 
                 if (!$arg = ($opts[$name] ?? null)) {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Unexpected option: '.$name
                     );
                 }
@@ -210,7 +210,7 @@ class Definition
                 }
             } else {
                 if (!$arg = array_shift($args)) {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Unexpected argument: '.$param
                     );
                 }
@@ -248,7 +248,7 @@ class Definition
                             $output[$name] = null;
                         }
                     } else {
-                        throw Glitch::EUnexpectedValue(
+                        throw Exceptional::UnexpectedValue(
                             'No list values defined for argument: '.$name
                         );
                     }

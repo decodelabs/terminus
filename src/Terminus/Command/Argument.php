@@ -7,8 +7,7 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Command;
 
 use DecodeLabs\Terminus\Session;
-
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Argument
 {
@@ -252,7 +251,7 @@ class Argument
                 $value = Session::stringToBoolean($value);
 
                 if ($value === null) {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'Invalid boolean value found for argument: '.$this->name
                     );
                 }
@@ -266,7 +265,7 @@ class Argument
         } else {
             if ($value === null) {
                 if (!$this->optional) {
-                    throw Glitch::EUnexpectedValue(
+                    throw Exceptional::UnexpectedValue(
                         'No value found for argument: '.$this->name
                     );
                 } else {
@@ -275,7 +274,7 @@ class Argument
             }
 
             if ($this->pattern !== null && !mb_ereg($this->pattern, $value)) {
-                throw Glitch::EUnexpectedValue(
+                throw Exceptional::UnexpectedValue(
                     'Value does not match pattern for argument: '.$this->name
                 );
             }

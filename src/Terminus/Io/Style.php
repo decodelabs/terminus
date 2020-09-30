@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Io;
 
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Glitch;
+use DecodeLabs\Exceptional;
 
 class Style
 {
@@ -94,7 +94,9 @@ class Style
 
 
         if (!preg_match('/^([\^\+\.\<\>\!]*)((([a-zA-Z0-9]+|\#[a-fA-F0-9]+|\:[0-9]+)\|?)*)$/', $modifier, $matches)) {
-            throw Glitch::EInvalidArgument('Invalid style modifier: '.$modifier);
+            throw Exceptional::InvalidArgument(
+                'Invalid style modifier: '.$modifier
+            );
         }
 
         $mods = $matches[1] ?? null;
@@ -119,7 +121,9 @@ class Style
             } elseif (isset(self::OPTIONS[$testPart])) {
                 $options[] = $part;
             } elseif (!empty($part)) {
-                throw Glitch::EInvalidArgument('Invalid style part: '.$part);
+                throw Exceptional::InvalidArgument(
+                    'Invalid style part: '.$part
+                );
             }
         }
 
@@ -188,7 +192,9 @@ class Style
                     $foreground = $this->hexToRgb($colorMatches[3]);
                 }
             } elseif (!isset(self::FG_COLORS[$foreground])) {
-                throw Glitch::EInvalidArgument('Invalid foreground color: '.$foreground);
+                throw Exceptional::InvalidArgument(
+                    'Invalid foreground color: '.$foreground
+                );
             }
         }
 
@@ -235,7 +241,9 @@ class Style
                     $background = $this->hexToRgb($colorMatches[3]);
                 }
             } elseif (!isset(self::FG_COLORS[$background])) {
-                throw Glitch::EInvalidArgument('Invalid background color: '.$background);
+                throw Exceptional::InvalidArgument(
+                    'Invalid background color: '.$background
+                );
             }
         }
 
@@ -302,7 +310,9 @@ class Style
             }
 
             if (!isset(self::OPTIONS[$option])) {
-                throw Glitch::EInvalidArgument('Invalid option: '.$option);
+                throw Exceptional::InvalidArgument(
+                    'Invalid option: '.$option
+                );
             }
 
             $this->options[] = $option;

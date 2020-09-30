@@ -24,6 +24,8 @@ use DecodeLabs\Atlas\ErrorDataReceiver;
 use DecodeLabs\Atlas\Channel\Buffer;
 
 use DecodeLabs\Systemic;
+use DecodeLabs\Exceptional;
+
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 use ArrayAccess;
@@ -760,11 +762,15 @@ class Session implements ArrayAccess, Controller
     public function getCursor(): array
     {
         if (null === ($response = $this->captureAnsi("\e[6n"))) {
-            throw Glitch::ERuntime('Unable to detect cursor position');
+            throw Exceptional::Runtime(
+                'Unable to detect cursor position'
+            );
         }
 
         if (!preg_match('/^\e\[(\d+);(\d+)R$/', $response, $matches)) {
-            throw Glitch::EInvalidArgument('Invalid cursor response from terminal: '.$response);
+            throw Exceptional::InvalidArgument(
+                'Invalid cursor response from terminal: '.$response
+            );
         }
 
         return [(int)$matches[1], (int)$matches[2]];
@@ -776,11 +782,15 @@ class Session implements ArrayAccess, Controller
     public function getErrorCursor(): array
     {
         if (null === ($response = $this->captureAnsi("\e[6n", true))) {
-            throw Glitch::ERuntime('Unable to detect cursor position');
+            throw Exceptional::Runtime(
+                'Unable to detect cursor position'
+            );
         }
 
         if (!preg_match('/^\e\[(\d+);(\d+)R$/', $response, $matches)) {
-            throw Glitch::EInvalidArgument('Invalid cursor response from terminal: '.$response);
+            throw Exceptional::InvalidArgument(
+                'Invalid cursor response from terminal: '.$response
+            );
         }
 
         return [(int)$matches[1], (int)$matches[2]];
@@ -800,7 +810,9 @@ class Session implements ArrayAccess, Controller
     public function getErrorCursorH(): int
     {
         if (null === ($response = $this->captureAnsi("\e[6n", true))) {
-            throw Glitch::ERuntime('Unable to detect cursor position');
+            throw Exceptional::Runtime(
+                'Unable to detect cursor position'
+            );
         }
 
         return $this->getErrorCursor()[1];
@@ -978,7 +990,9 @@ class Session implements ArrayAccess, Controller
     public function __call(string $method, array $args): Controller
     {
         if (preg_match('/^[a-z][a-zA-Z0-9]+$/', $method) && !Style::isKeyword($method)) {
-            throw Glitch::EBadMethodCall('CLI method not found: '.$method);
+            throw Exceptional::BadMethodCall(
+                'CLI method not found: '.$method
+            );
         }
 
         return $this->style($method, ...$args);
