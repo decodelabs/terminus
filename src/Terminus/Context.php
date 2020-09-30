@@ -15,7 +15,6 @@ use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Terminus\Command\Definition;
 
 use DecodeLabs\Atlas\Broker;
-use DecodeLabs\Glitch;
 
 class Context implements FacadeTarget
 {

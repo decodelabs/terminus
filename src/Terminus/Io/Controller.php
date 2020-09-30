@@ -18,7 +18,6 @@ use DecodeLabs\Atlas\DataProvider;
 use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\ErrorDataReceiver;
 
-use DecodeLabs\Glitch;
 use Psr\Log\LoggerInterface;
 
 interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver

@@ -6,7 +6,6 @@
 declare(strict_types=1);
 namespace DecodeLabs\Terminus\Command;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
 
 class Request implements Dumpable

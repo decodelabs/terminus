@@ -7,7 +7,6 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Glitch;
 
 class ProgressBar
 {
