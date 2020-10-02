@@ -6,7 +6,6 @@
 declare(strict_types=1);
 namespace DecodeLabs\Terminus\Command;
 
-use DecodeLabs\Glitch;
 use DecodeLabs\Glitch\Dumpable;
 
 class Request implements Dumpable
@@ -170,7 +169,7 @@ class Request implements Dumpable
     }
 
     /**
-     * Inspect for Glitch
+     * Export for dump inspection
      */
     public function glitchDump(): iterable
     {
