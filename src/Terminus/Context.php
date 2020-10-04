@@ -15,6 +15,7 @@ use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Terminus\Command\Definition;
 
 use DecodeLabs\Atlas\Broker;
+use DecodeLabs\Systemic;
 
 class Context implements FacadeTarget
 {
