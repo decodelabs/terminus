@@ -10,8 +10,9 @@ declare(strict_types=1);
  */
 namespace DecodeLabs\Terminus
 {
-    use DecodeLabs\Terminus as Facade;
+    use DecodeLabs\Terminus;
     use DecodeLabs\Terminus\Context;
+    use DecodeLabs\Veneer;
 
-    Context::registerFacade(Facade::class);
+    Veneer::register(Context::class, Terminus::class);
 }

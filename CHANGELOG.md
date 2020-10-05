@@ -1,3 +1,6 @@
+## v0.5.7 (2020-10-05)
+* Updated to Veneer 0.6
+
 ## v0.5.6 (2020-10-02)
 * Updated glitch-support
 
