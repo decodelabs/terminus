@@ -1,4 +1,13 @@
 # Terminus
+
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/decodelabs/terminus?style=flat-square)](https://packagist.org/packages/decodelabs/terminus)
+[![Latest Version](https://img.shields.io/packagist/v/decodelabs/terminus.svg?style=flat-square)](https://packagist.org/packages/decodelabs/terminus)
+[![Total Downloads](https://img.shields.io/packagist/dt/decodelabs/terminus.svg?style=flat-square)](https://packagist.org/packages/decodelabs/terminus)
+[![Build Status](https://img.shields.io/travis/com/decodelabs/terminus/master.svg?style=flat-square)](https://travis-ci.org/decodelabs/terminus)
+[![PHPStan](https://img.shields.io/badge/PHPStan-enabled-44CC11.svg?longCache=true&style=flat-square)](https://github.com/phpstan/phpstan)
+[![License](https://img.shields.io/packagist/l/decodelabs/terminus?style=flat-square)](https://packagist.org/packages/decodelabs/terminus)
+
+
 Simple CLI interactions for PHP
 
 ## Installation
@@ -10,22 +19,19 @@ composer install decodelabs/terminus
 
 ### Importing
 
-Terminus uses a [Veneer Facade](https://github.com/decodelabs/veneer) so you don't _need_ to add any <code>use</code> declarations to your code, the class will be aliased into whatever namespace you are working in.
-
-However, if you want to avoid filling your namespace with class aliases, you can import the Facade with:
-
-```php
-use DecodeLabs\Terminus\Cli;
-```
+Terminus uses [Veneer](https://github.com/decodelabs/veneer) to provide a unified frotage under <code>DecodeLabs\Terminus</code>.
+You can access all the primary functionality via this static frontage without compromising testing and dependency injection.
 
 ### Session
 
-Terminus will by default create a standard session communicating via PHP's normal <code>STDIN</code>, <code>STDOUT</code> and <code>STDERR</code> streams, with arguments from <code>$\_SERVER['argv']</code>.
+Terminus will by default create a standard session communicating via PHP's <code>STDIN</code>, <code>STDOUT</code> and <code>STDERR</code> streams, with arguments from <code>$\_SERVER['argv']</code>.
 
-You can however customise the session by creating your own and setting it via the main <code>Cli</code> facade.
+You can however customise the session by creating your own and setting it via the main <code>Terminus</code> frontage.
 See [Atlas Broker](https://github.com/decodelabs/atlas) for more information about controlling IO streams.
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 $session = Cli::newSession(
     Cli::newRequest(['list', 'of', 'argv', 'params']),
 
@@ -44,6 +50,8 @@ Cli::setSession($session);
 Write standard text to output:
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::write('Normal text'); // no newline
 Cli::writeLine(' - end of line'); // with newline
 ```
@@ -51,6 +59,8 @@ Cli::writeLine(' - end of line'); // with newline
 Error output works the same way, with <code>Error</code> in the method name:
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::writeError('Error text'); // no newline
 Cli::writeErrorLine(' - end of line'); // with newline
 ```
@@ -61,6 +71,8 @@ Read input from the user:
 Note, PHP by default buffers the input stream so input requires return to be pressed before it can be read.
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 $data = Cli::read(3); // Read 3 bytes
 $line = Cli::readLine();
 ```
@@ -68,6 +80,8 @@ $line = Cli::readLine();
 If the connected terminal supports <code>stty</code> (most Unix emulators), buffering can be turned off for instant input:
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::toggleInputBuffer(false);
 Cli::writeLine('Yes or no?')
 $char = Cli::read(1); // y or n
@@ -81,6 +95,8 @@ More on extended <code>ANSI</code> and <code>stty</code> support below.
 If the connected terminal can support <code>ANSI</code> codes can be styled easily using a handy shortcut on the facade:
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::{'blue'}('This is blue ');
 Cli::{'yellow'}('This is yellow ');
 Cli::{'red|green|underline'}(' This is red on green, underlined');
@@ -95,6 +111,8 @@ Cli::{'++>..:146|#CCC|bold|underline'}
 Support for <code>ANSI</code> codes can be checked with:
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 if(Cli::isAnsi()) {
     // do stuff
 }
@@ -153,6 +171,8 @@ Directly control lines and the cursor:
 All of the below methods allow passing a numeric value to control the number of times it should be applied.
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::newLine(); // Write to a new line
 Cli::newLine(5); // Write 5 new lines
 Cli::deleteLine(); // Delete the previous line
@@ -187,6 +207,8 @@ $height = Cli::getHeight(); // Get line height of terminal
 Some extended functionality is dependent on <code>stty</code> being available (most Unix emulators).
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::toggleInputEcho(false); // Hide input characters
 Cli::toggleInputBuffer(false); // Don't wait on return key for input
 ```
@@ -194,6 +216,8 @@ Cli::toggleInputBuffer(false); // Don't wait on return key for input
 <code>stty</code> can be controlled with the following methods:
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 if(Cli::hasStty()) {
     $snapshot = Cli::snapshotStty(); // Take a snapshot of current settings
     Cli::toggleInputEcho(false);
@@ -212,6 +236,8 @@ Simplify common use cases with built in widgets:
 
 #### Question
 ```php
+use DecodeLabs\Terminus as Cli;
+
 $answer = Cli::newQuestion('How are you?')
     ->setOptions('Great', 'Fine', 'OK')
     ->setDefaultValue('great')
@@ -239,6 +265,8 @@ Cli::{'..green'}('Your password is: '.$password);
 
 #### Confirmation
 ```php
+use DecodeLabs\Terminus as Cli;
+
 if (Cli::confirm('Do you like green?', true)) {
     Cli::{'..brightGreen'}('Awesome!');
 } else {
@@ -248,6 +276,8 @@ if (Cli::confirm('Do you like green?', true)) {
 
 #### Spinner
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::{'.'}('Progress spinner: ');
 $spinner = Cli::newSpinner();
 
@@ -261,6 +291,8 @@ $spinner->complete('Done!');
 
 #### Progress bar
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::{'.'}('Progress bar: ');
 $spinner = Cli::newProgressBar(10, 50);
 
@@ -275,6 +307,8 @@ $spinner->complete();
 
 ### Use Terminus as a PSR Logger
 ```php
+use DecodeLabs\Terminus as Cli;
+
 Cli::debug('This is a debug');
 Cli::info('This is an info message');
 Cli::notice('This is a notice');
@@ -291,6 +325,8 @@ Cli::emergency('Oh no this is an emergency!');
 Quickly parse input arguments from the request into the session:
 
 ```php
+use DecodeLabs\Terminus as Cli;
+
 $session = Cli::prepareCommand(function ($command) {
     $command
         ->setHelp('Test out Terminus functionality')
