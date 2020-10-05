@@ -6,10 +6,6 @@
 declare(strict_types=1);
 namespace DecodeLabs\Terminus;
 
-use DecodeLabs\Veneer\FacadeTarget;
-use DecodeLabs\Veneer\FacadeTargetTrait;
-use DecodeLabs\Veneer\FacadePlugin;
-
 use DecodeLabs\Terminus\Session;
 use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Terminus\Command\Definition;
@@ -18,12 +14,11 @@ use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Broker;
 
-class Context implements FacadeTarget
+/**
+ * @mixin \DecodeLabs\Terminus\Session
+ */
+class Context
 {
-    use FacadeTargetTrait;
-
-    const FACADE = 'Cli';
-
     protected $session;
 
     /**
@@ -165,6 +160,9 @@ class Context implements FacadeTarget
 
     /**
      * Pass method calls through to active session
+     *
+     * @param  mixed[]  $args
+     * @return mixed
      */
     public function __call(string $method, array $args)
     {
