@@ -19,7 +19,7 @@ composer install decodelabs/terminus
 
 ### Importing
 
-Terminus uses [Veneer](https://github.com/decodelabs/veneer) to provide a unified frotage under <code>DecodeLabs\Terminus</code>.
+Terminus uses [Veneer](https://github.com/decodelabs/veneer) to provide a unified frontage under <code>DecodeLabs\Terminus</code>.
 You can access all the primary functionality via this static frontage without compromising testing and dependency injection.
 
 ### Session
