@@ -1,15 +1,16 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Command;
 
-use DecodeLabs\Terminus\Session;
-use DecodeLabs\Terminus\Command\Argument;
-use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus\Session;
 
 class Definition
 {
@@ -66,11 +67,11 @@ class Definition
     /**
      * Add a single argument to the queue
      */
-    public function addArgument(string $name, string $description, callable $setup=null): Definition
+    public function addArgument(string $name, string $description, callable $setup = null): Definition
     {
         if (isset($this->arguments[$name])) {
             throw Exceptional::Logic(
-                'Named argument "'.$name.'" has already been defined'
+                'Named argument "' . $name . '" has already been defined'
             );
         }
 
@@ -182,7 +183,7 @@ class Definition
 
                 if (!$arg = ($opts[$name] ?? null)) {
                     throw Exceptional::UnexpectedValue(
-                        'Unexpected option: '.$name
+                        'Unexpected option: ' . $name
                     );
                 }
 
@@ -211,7 +212,7 @@ class Definition
             } else {
                 if (!$arg = array_shift($args)) {
                     throw Exceptional::UnexpectedValue(
-                        'Unexpected argument: '.$param
+                        'Unexpected argument: ' . $param
                     );
                 }
 
@@ -249,7 +250,7 @@ class Definition
                         }
                     } else {
                         throw Exceptional::UnexpectedValue(
-                            'No list values defined for argument: '.$name
+                            'No list values defined for argument: ' . $name
                         );
                     }
                 }
@@ -304,10 +305,10 @@ class Definition
 
             $session->newLine();
         } else {
-            $name = '--'.$arg->getName();
+            $name = '--' . $arg->getName();
 
             if (null !== ($shortcut = $arg->getShortcut())) {
-                $name .= ' | -'.$shortcut;
+                $name .= ' | -' . $shortcut;
             }
 
             $session->style('magenta|bold', $name);

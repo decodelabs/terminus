@@ -1,17 +1,20 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
 
 class ProgressBar
 {
-    const EMPTY = '░';
-    const FULL = '▓';
+    public const EMPTY = '░';
+    public const FULL = '▓';
 
     protected $min = 0;
     protected $max = 100;
@@ -28,7 +31,7 @@ class ProgressBar
     /**
      * Init with session and style
      */
-    public function __construct(Session $session, float $min=0.0, float $max=100.0, ?int $precision=null)
+    public function __construct(Session $session, float $min = 0.0, float $max = 100.0, ?int $precision = null)
     {
         $this->session = $session;
         $this->setRange($min, $max);
@@ -236,9 +239,7 @@ class ProgressBar
             if ($this->showCompleted) {
                 $stringVal = (string)number_format($value, $this->precision);
                 $maxVal = (string)round($this->max, $this->precision);
-                $stringLength = strlen($stringVal);
                 $valLength = strlen($maxVal);
-                $numLength = $stringLength + 3 + $valLength;
 
                 if ($value < $this->max) {
                     $this->session->style('#ffa500', str_pad($stringVal, $valLength));
@@ -247,14 +248,14 @@ class ProgressBar
                 }
 
                 $this->session->style('white|dim', ' / ');
-                $this->session->style('brightWhite', $maxVal.' ');
+                $this->session->style('brightWhite', $maxVal . ' ');
             }
 
             $this->session->style($color, str_repeat(self::FULL, (int)$chars));
             $this->session->style('dim', str_repeat(self::EMPTY, (int)($barSize - $chars)));
 
             if ($this->showPercent) {
-                $this->session->style('white|bold', str_pad(ceil($percent * 100).'%', 5, ' ', STR_PAD_LEFT));
+                $this->session->style('white|bold', str_pad(ceil($percent * 100) . '%', 5, ' ', STR_PAD_LEFT));
             }
         } else {
             if (!$this->started) {

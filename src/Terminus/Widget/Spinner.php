@@ -1,17 +1,20 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
 
 class Spinner
 {
-    const TICK = 0.08;
-    const CHARS = ['-', '\\', '|', '/'];
+    public const TICK = 0.08;
+    public const CHARS = ['-', '\\', '|', '/'];
 
     protected $style;
     protected $session;
@@ -22,7 +25,7 @@ class Spinner
     /**
      * Init with session and style
      */
-    public function __construct(Session $session, string $style=null)
+    public function __construct(Session $session, string $style = null)
     {
         $this->session = $session;
         $this->setStyle($style);
@@ -86,7 +89,7 @@ class Spinner
     /**
      * Finalise
      */
-    public function complete(?string $message=null, ?string $style=null): Spinner
+    public function complete(?string $message = null, ?string $style = null): Spinner
     {
         if ($this->session->isAnsi()) {
             if ($this->lastTime !== null) {

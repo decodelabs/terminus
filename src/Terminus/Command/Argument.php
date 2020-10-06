@@ -1,13 +1,16 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Command;
 
-use DecodeLabs\Terminus\Session;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus\Session;
 
 class Argument
 {
@@ -252,7 +255,7 @@ class Argument
 
                 if ($value === null) {
                     throw Exceptional::UnexpectedValue(
-                        'Invalid boolean value found for argument: '.$this->name
+                        'Invalid boolean value found for argument: ' . $this->name
                     );
                 }
             }
@@ -266,7 +269,7 @@ class Argument
             if ($value === null) {
                 if (!$this->optional) {
                     throw Exceptional::UnexpectedValue(
-                        'No value found for argument: '.$this->name
+                        'No value found for argument: ' . $this->name
                     );
                 } else {
                     return $this->defaultValue;
@@ -275,7 +278,7 @@ class Argument
 
             if ($this->pattern !== null && !mb_ereg($this->pattern, $value)) {
                 throw Exceptional::UnexpectedValue(
-                    'Value does not match pattern for argument: '.$this->name
+                    'Value does not match pattern for argument: ' . $this->name
                 );
             }
 

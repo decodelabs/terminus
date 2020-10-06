@@ -1,8 +1,10 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
 
 /**
@@ -11,7 +13,6 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus
 {
     use DecodeLabs\Terminus;
-    use DecodeLabs\Terminus\Context;
     use DecodeLabs\Veneer;
 
     Veneer::register(Context::class, Terminus::class);

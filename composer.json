@@ -15,6 +15,7 @@
         "decodelabs/systemic": "^0.6.11",
         "decodelabs/exceptional": "^0.2.8",
         "decodelabs/glitch-support": "^0.2",
+        "symplify/easy-coding-standard": "^8.3",
 
         "psr/log": "^1.0"
     },
@@ -35,5 +36,10 @@
         "branch-alias": {
             "dev-develop": "0.5.x-dev"
         }
+    },
+    "scripts": {
+        "analyze": "phpstan analyze --no-progress",
+        "psr12": "ecs check --no-progress-bar",
+        "psr12-fix": "ecs check --no-progress-bar --fix"
     }
 }
