@@ -1,9 +1,12 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
@@ -19,7 +22,7 @@ class Confirmation
     /**
      * Init with message
      */
-    public function __construct(Session $session, string $message, bool $default=null)
+    public function __construct(Session $session, string $message, bool $default = null)
     {
         $this->session = $session;
         $this->setMessage($message);
@@ -145,10 +148,10 @@ class Confirmation
      */
     protected function renderQuestion(): void
     {
-        $this->session->style('cyan', $this->message.' ');
+        $this->session->style('cyan', $this->message . ' ');
 
         if ($this->input !== null) {
-            $this->session->style('brightYellow', $this->input.' ');
+            $this->session->style('brightYellow', $this->input . ' ');
         }
 
         if ($this->showOptions) {

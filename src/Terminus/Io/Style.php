@@ -1,17 +1,20 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Io;
 
-use DecodeLabs\Terminus\Session;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Terminus\Session;
 
 class Style
 {
-    const FG_COLORS = [
+    public const FG_COLORS = [
         'black' => 30,
         'red' => 31,
         'green' => 32,
@@ -32,7 +35,7 @@ class Style
         'brightWhite' => 97
     ];
 
-    const BG_COLORS = [
+    public const BG_COLORS = [
         'black' => 40,
         'red' => 41,
         'green' => 42,
@@ -53,7 +56,7 @@ class Style
         'brightWhite' => 107
     ];
 
-    const OPTIONS = [
+    public const OPTIONS = [
         'bold' => [1, 22],
         'dim' => [2, 22],
         'italic' => [3, 23],
@@ -89,13 +92,9 @@ class Style
      */
     public static function parse(string $modifier): Style
     {
-        $newLines = 1;
-        $isError = false;
-
-
         if (!preg_match('/^([\^\+\.\<\>\!]*)((([a-zA-Z0-9]+|\#[a-fA-F0-9]+|\:[0-9]+)\|?)*)$/', $modifier, $matches)) {
             throw Exceptional::InvalidArgument(
-                'Invalid style modifier: '.$modifier
+                'Invalid style modifier: ' . $modifier
             );
         }
 
@@ -122,7 +121,7 @@ class Style
                 $options[] = $part;
             } elseif (!empty($part)) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid style part: '.$part
+                    'Invalid style part: ' . $part
                 );
             }
         }
@@ -163,7 +162,7 @@ class Style
     /**
      * Init with fg, gb and options
      */
-    public function __construct(?string $foreground, ?string $background=null, string ...$options)
+    public function __construct(?string $foreground, ?string $background = null, string ...$options)
     {
         $this->setForeground($foreground);
         $this->setBackground($background);
@@ -179,8 +178,6 @@ class Style
 
         if ($foreground !== null) {
             if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $foreground, $colorMatches)) {
-                $testPart = '_select';
-
                 if (isset($colorMatches[1]) && !empty($colorMatches[1])) {
                     $bits = 8;
                     $foreground = $colorMatches[1];
@@ -193,7 +190,7 @@ class Style
                 }
             } elseif (!isset(self::FG_COLORS[$foreground])) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid foreground color: '.$foreground
+                    'Invalid foreground color: ' . $foreground
                 );
             }
         }
@@ -228,8 +225,6 @@ class Style
 
         if ($background !== null) {
             if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $background, $colorMatches)) {
-                $testPart = '_select';
-
                 if (isset($colorMatches[1]) && !empty($colorMatches[1])) {
                     $bits = 8;
                     $background = $colorMatches[1];
@@ -242,7 +237,7 @@ class Style
                 }
             } elseif (!isset(self::FG_COLORS[$background])) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid background color: '.$background
+                    'Invalid background color: ' . $background
                 );
             }
         }
@@ -294,7 +289,7 @@ class Style
                 break;
         }
 
-        return hexdec($rx).','.hexdec($gx).','.hexdec($bx);
+        return hexdec($rx) . ',' . hexdec($gx) . ',' . hexdec($bx);
     }
 
     /**
@@ -311,7 +306,7 @@ class Style
 
             if (!isset(self::OPTIONS[$option])) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid option: '.$option
+                    'Invalid option: ' . $option
                 );
             }
 
@@ -478,11 +473,11 @@ class Style
                     break;
 
                 case 8:
-                    $setCodes[] = static::FG_COLORS['_select'].';5;'.$this->foreground;
+                    $setCodes[] = static::FG_COLORS['_select'] . ';5;' . $this->foreground;
                     break;
 
                 case 24:
-                    $setCodes[] = static::FG_COLORS['_select'].';2;'.str_replace(',', ';', $this->foreground);
+                    $setCodes[] = static::FG_COLORS['_select'] . ';2;' . str_replace(',', ';', $this->foreground);
                     break;
             }
 
@@ -496,11 +491,11 @@ class Style
                     break;
 
                 case 8:
-                    $setCodes[] = static::BG_COLORS['_select'].';5;'.$this->background;
+                    $setCodes[] = static::BG_COLORS['_select'] . ';5;' . $this->background;
                     break;
 
                 case 24:
-                    $setCodes[] = static::BG_COLORS['_select'].';2;'.str_replace(',', ';', $this->background);
+                    $setCodes[] = static::BG_COLORS['_select'] . ';2;' . str_replace(',', ';', $this->background);
                     break;
             }
 

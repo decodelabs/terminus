@@ -1,9 +1,12 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
@@ -19,7 +22,7 @@ class Password
     /**
      * Init with message
      */
-    public function __construct(Session $session, ?string $message=null, bool $repeat=false, bool $required=true)
+    public function __construct(Session $session, ?string $message = null, bool $repeat = false, bool $required = true)
     {
         $this->session = $session;
         $this->setMessage($message);

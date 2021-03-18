@@ -1,24 +1,23 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Io;
-
-use DecodeLabs\Terminus\Session;
-
-use DecodeLabs\Terminus\Widget\Question;
-use DecodeLabs\Terminus\Widget\Password;
-use DecodeLabs\Terminus\Widget\Confirmation;
-use DecodeLabs\Terminus\Widget\Spinner;
-use DecodeLabs\Terminus\Widget\ProgressBar;
 
 use DecodeLabs\Atlas\DataProvider;
 use DecodeLabs\Atlas\DataReceiver;
 use DecodeLabs\Atlas\ErrorDataReceiver;
 
-use Psr\Log\LoggerInterface;
+use DecodeLabs\Terminus\Widget\Confirmation;
+use DecodeLabs\Terminus\Widget\Password;
+use DecodeLabs\Terminus\Widget\ProgressBar;
+use DecodeLabs\Terminus\Widget\Question;
+use DecodeLabs\Terminus\Widget\Spinner;
 
 interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
 {
@@ -31,11 +30,11 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function getWidth(): int;
     public function getHeight(): int;
 
-    public function newLine(int $times=1): bool;
-    public function newErrorLine(int $times=1): bool;
+    public function newLine(int $times = 1): bool;
+    public function newErrorLine(int $times = 1): bool;
 
-    public function deleteLine(int $times=1): bool;
-    public function deleteErrorLine(int $times=1): bool;
+    public function deleteLine(int $times = 1): bool;
+    public function deleteErrorLine(int $times = 1): bool;
 
     public function clearLine(): bool;
     public function clearErrorLine(): bool;
@@ -44,30 +43,30 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function clearLineAfter(): bool;
     public function clearErrorLineAfter(): bool;
 
-    public function backspace(int $times=1): bool;
-    public function backspaceError(int $times=1): bool;
+    public function backspace(int $times = 1): bool;
+    public function backspaceError(int $times = 1): bool;
 
-    public function tab(int $times=1): bool;
-    public function tabError(int $times=1): bool;
+    public function tab(int $times = 1): bool;
+    public function tabError(int $times = 1): bool;
 
-    public function cursorUp(int $times=1): bool;
-    public function cursorLineUp(int $times=1): bool;
-    public function cursorDown(int $times=1): bool;
-    public function cursorLineDown(int $times=1): bool;
-    public function errorCursorUp(int $times=1): bool;
-    public function errorCursorLineUp(int $times=1): bool;
-    public function errorCursorDown(int $times=1): bool;
-    public function errorCursorLineDown(int $times=1): bool;
+    public function cursorUp(int $times = 1): bool;
+    public function cursorLineUp(int $times = 1): bool;
+    public function cursorDown(int $times = 1): bool;
+    public function cursorLineDown(int $times = 1): bool;
+    public function errorCursorUp(int $times = 1): bool;
+    public function errorCursorLineUp(int $times = 1): bool;
+    public function errorCursorDown(int $times = 1): bool;
+    public function errorCursorLineDown(int $times = 1): bool;
 
-    public function cursorLeft(int $times=1): bool;
-    public function cursorRight(int $times=1): bool;
-    public function errorCursorLeft(int $times=1): bool;
-    public function errorCursorRight(int $times=1): bool;
+    public function cursorLeft(int $times = 1): bool;
+    public function cursorRight(int $times = 1): bool;
+    public function errorCursorLeft(int $times = 1): bool;
+    public function errorCursorRight(int $times = 1): bool;
 
     public function setCursor(int $pos): bool;
     public function setErrorCursor(int $pos): bool;
-    public function setCursorLine(int $line, int $pos=1): bool;
-    public function setErrorCursorLine(int $line, int $pos=1): bool;
+    public function setCursorLine(int $line, int $pos = 1): bool;
+    public function setErrorCursorLine(int $line, int $pos = 1): bool;
 
     public function getCursor(): array;
     public function getErrorCursor(): array;
@@ -87,36 +86,36 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function toggleInputBuffer(bool $flag): bool;
 
     public function __call(string $method, array $args): Controller;
-    public function style(string $style, ?string $message=null): Controller;
+    public function style(string $style, ?string $message = null): Controller;
 
 
 
-    public function ask(string $message, string $default=null, ?callable $validator=null): ?string;
-    public function newQuestion(string $message, string $default=null, ?callable $validator=null): Question;
-    public function askPassword(?string $message=null, bool $repeat=false, bool $required=true): ?string;
-    public function newPasswordQuestion(?string $message=null, bool $repeat=false, bool $required=true): Password;
-    public function confirm(string $message, bool $default=null): bool;
-    public function newConfirmation(string $message, bool $default=null): Confirmation;
-    public function newSpinner(string $style=null): Spinner;
-    public function newProgressBar(float $min=0.0, float $max=100.0, ?int $precision=null): ProgressBar;
+    public function ask(string $message, string $default = null, ?callable $validator = null): ?string;
+    public function newQuestion(string $message, string $default = null, ?callable $validator = null): Question;
+    public function askPassword(?string $message = null, bool $repeat = false, bool $required = true): ?string;
+    public function newPasswordQuestion(?string $message = null, bool $repeat = false, bool $required = true): Password;
+    public function confirm(string $message, bool $default = null): bool;
+    public function newConfirmation(string $message, bool $default = null): Confirmation;
+    public function newSpinner(string $style = null): Spinner;
+    public function newProgressBar(float $min = 0.0, float $max = 100.0, ?int $precision = null): ProgressBar;
 
-    public function comment($message, array $context=[]);
-    public function success($message, array $context=[]);
-    public function operative($message, array $context=[]);
-    public function deleteSuccess($message, array $context=[]);
+    public function comment($message, array $context = []);
+    public function success($message, array $context = []);
+    public function operative($message, array $context = []);
+    public function deleteSuccess($message, array $context = []);
 
-    public function inlineDebug($message, array $context=[]);
-    public function inlineInfo($message, array $context=[]);
-    public function inlineNotice($message, array $context=[]);
-    public function inlineComment($message, array $context=[]);
-    public function inlineSuccess($message, array $context=[]);
-    public function inlineOperative($message, array $context=[]);
-    public function inlineDeleteSuccess($message, array $context=[]);
-    public function inlineWarning($message, array $context=[]);
-    public function inlineError($message, array $context=[]);
-    public function inlineCritical($message, array $context=[]);
-    public function inlineAlert($message, array $context=[]);
-    public function inlineEmergency($message, array $context=[]);
+    public function inlineDebug($message, array $context = []);
+    public function inlineInfo($message, array $context = []);
+    public function inlineNotice($message, array $context = []);
+    public function inlineComment($message, array $context = []);
+    public function inlineSuccess($message, array $context = []);
+    public function inlineOperative($message, array $context = []);
+    public function inlineDeleteSuccess($message, array $context = []);
+    public function inlineWarning($message, array $context = []);
+    public function inlineError($message, array $context = []);
+    public function inlineCritical($message, array $context = []);
+    public function inlineAlert($message, array $context = []);
+    public function inlineEmergency($message, array $context = []);
 
-    public function inlineLog($level, $message, array $context=[]);
+    public function inlineLog($level, $message, array $context = []);
 }

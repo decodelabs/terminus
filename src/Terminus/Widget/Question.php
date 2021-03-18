@@ -1,9 +1,12 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
@@ -23,7 +26,7 @@ class Question
     /**
      * Init with message
      */
-    public function __construct(Session $session, string $message, string $default=null, ?callable $validator=null)
+    public function __construct(Session $session, string $message, string $default = null, ?callable $validator = null)
     {
         $this->session = $session;
         $this->setMessage($message);

@@ -1,9 +1,12 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus\Command;
 
 use DecodeLabs\Glitch\Dumpable;
@@ -18,9 +21,9 @@ class Request implements Dumpable
      * Init
      */
     public function __construct(
-        array $server=[],
-        array $args=[],
-        string $script=null
+        array $server = [],
+        array $args = [],
+        string $script = null
     ) {
         $this->server = $server;
         $this->args = $args;

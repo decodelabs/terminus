@@ -1,18 +1,20 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus;
 
-use DecodeLabs\Terminus\Session;
-use DecodeLabs\Terminus\Command\Request;
-use DecodeLabs\Terminus\Command\Definition;
-
-use DecodeLabs\Systemic;
 use DecodeLabs\Atlas;
 use DecodeLabs\Atlas\Broker;
+
+use DecodeLabs\Systemic;
+use DecodeLabs\Terminus\Command\Definition;
+use DecodeLabs\Terminus\Command\Request;
 
 /**
  * @mixin \DecodeLabs\Terminus\Session
@@ -41,7 +43,7 @@ class Context
     /**
      * Replace active session with new session based on args
      */
-    public function replaceSession(?Request $request=null, ?Broker $broker=null): ?Session
+    public function replaceSession(?Request $request = null, ?Broker $broker = null): ?Session
     {
         $output = $this->session;
         $this->setSession($this->newSession($request, $broker));
@@ -63,7 +65,7 @@ class Context
     /**
      * Create a new session from defaults
      */
-    public function newSession(?Request $request=null, ?Broker $broker=null): Session
+    public function newSession(?Request $request = null, ?Broker $broker = null): Session
     {
         if ($request === null) {
             $request = $this->newRequest();
@@ -92,8 +94,8 @@ class Context
      * Create request from environment
      */
     public function newRequest(
-        array $argv=null,
-        array $server=null
+        array $argv = null,
+        array $server = null
     ): Request {
         $server = $server ?? $_SERVER;
         $args = $argv ?? $_SERVER['argv'];
@@ -105,7 +107,7 @@ class Context
     /**
      * Create new command definition
      */
-    public function newCommandDefinition(?string $name=null): Definition
+    public function newCommandDefinition(?string $name = null): Definition
     {
         if ($name === null) {
             if (null === ($name = $this->getSession()->getRequest()->getScript())) {

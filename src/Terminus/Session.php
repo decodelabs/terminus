@@ -1,34 +1,35 @@
 <?php
+
 /**
- * This file is part of the Terminus package
+ * @package Terminus
  * @license http://opensource.org/licenses/MIT
  */
+
 declare(strict_types=1);
+
 namespace DecodeLabs\Terminus;
 
-use DecodeLabs\Terminus\Command\Request;
-use DecodeLabs\Terminus\Command\Definition;
-use DecodeLabs\Terminus\Io\Style;
-use DecodeLabs\Terminus\Io\Controller;
-
-use DecodeLabs\Terminus\Widget\Question;
-use DecodeLabs\Terminus\Widget\Password;
-use DecodeLabs\Terminus\Widget\Confirmation;
-use DecodeLabs\Terminus\Widget\Spinner;
-use DecodeLabs\Terminus\Widget\ProgressBar;
+use ArrayAccess;
 
 use DecodeLabs\Atlas\Broker;
+use DecodeLabs\Atlas\Channel\Buffer;
 use DecodeLabs\Atlas\DataProvider;
 use DecodeLabs\Atlas\DataReceiver;
-use DecodeLabs\Atlas\ErrorDataReceiver;
-use DecodeLabs\Atlas\Channel\Buffer;
 
-use DecodeLabs\Systemic;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Systemic;
 
-use Psr\Log\LoggerInterface;
+use DecodeLabs\Terminus\Command\Definition;
+use DecodeLabs\Terminus\Command\Request;
+use DecodeLabs\Terminus\Io\Controller;
+use DecodeLabs\Terminus\Io\Style;
+use DecodeLabs\Terminus\Widget\Confirmation;
+use DecodeLabs\Terminus\Widget\Password;
+use DecodeLabs\Terminus\Widget\ProgressBar;
+use DecodeLabs\Terminus\Widget\Question;
+use DecodeLabs\Terminus\Widget\Spinner;
+
 use Psr\Log\LoggerTrait;
-use ArrayAccess;
 
 class Session implements ArrayAccess, Controller
 {
@@ -139,7 +140,7 @@ class Session implements ArrayAccess, Controller
             return true;
         }
 
-        system('stty \''.$snapshot.'\'');
+        system('stty \'' . $snapshot . '\'');
         return true;
     }
 
@@ -152,7 +153,7 @@ class Session implements ArrayAccess, Controller
             return false;
         }
 
-        system('stty \''.$this->sttyReset.'\'');
+        system('stty \'' . $this->sttyReset . '\'');
         return true;
     }
 
@@ -321,7 +322,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Write chunk to broker
      */
-    public function write(?string $data, int $length=null): int
+    public function write(?string $data, int $length = null): int
     {
         return $this->broker->write($data, $length);
     }
@@ -329,7 +330,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Write line to broker
      */
-    public function writeLine(?string $data=''): int
+    public function writeLine(?string $data = ''): int
     {
         return $this->broker->writeLine($data);
     }
@@ -355,7 +356,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Write error chunk to broker
      */
-    public function writeError(?string $data, int $length=null): int
+    public function writeError(?string $data, int $length = null): int
     {
         return $this->broker->writeError($data, $length);
     }
@@ -363,7 +364,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Write error line to broker
      */
-    public function writeErrorLine(?string $data=''): int
+    public function writeErrorLine(?string $data = ''): int
     {
         return $this->broker->writeErrorLine($data);
     }
@@ -382,7 +383,7 @@ class Session implements ArrayAccess, Controller
     /**
      * New line
      */
-    public function newLine(int $times=1): bool
+    public function newLine(int $times = 1): bool
     {
         for ($i = 0; $i < $times; $i++) {
             $this->broker->writeLine('');
@@ -394,7 +395,7 @@ class Session implements ArrayAccess, Controller
     /**
      * New error line
      */
-    public function newErrorLine(int $times=1): bool
+    public function newErrorLine(int $times = 1): bool
     {
         for ($i = 0; $i < $times; $i++) {
             $this->broker->writeErrorLine('');
@@ -406,7 +407,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Delete n previous lines
      */
-    public function deleteLine(int $times=1): bool
+    public function deleteLine(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -419,7 +420,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Delete n previous error lines
      */
-    public function deleteErrorLine(int $times=1): bool
+    public function deleteErrorLine(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -510,7 +511,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Clear single char
      */
-    public function backspace(int $times=1): bool
+    public function backspace(int $times = 1): bool
     {
         $this->broker->write(str_repeat(chr(8), $times));
         return true;
@@ -519,7 +520,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Clear single error char
      */
-    public function backspaceError(int $times=1): bool
+    public function backspaceError(int $times = 1): bool
     {
         $this->broker->writeError(str_repeat(chr(8), $times));
         return true;
@@ -528,7 +529,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Write tabs to line
      */
-    public function tab(int $times=1): bool
+    public function tab(int $times = 1): bool
     {
         $this->broker->write(str_repeat("\t", $times));
         return true;
@@ -537,7 +538,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Write tabs to error line
      */
-    public function tabError(int $times=1): bool
+    public function tabError(int $times = 1): bool
     {
         $this->broker->writeError(str_repeat("\t", $times));
         return true;
@@ -548,7 +549,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move cursor up a line
      */
-    public function cursorUp(int $times=1): bool
+    public function cursorUp(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -561,7 +562,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move cursor up a line pos 0
      */
-    public function cursorLineUp(int $times=1): bool
+    public function cursorLineUp(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -574,7 +575,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move cursor down a line
      */
-    public function cursorDown(int $times=1): bool
+    public function cursorDown(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -587,7 +588,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move cursor down a line pos 0
      */
-    public function cursorLineDown(int $times=1): bool
+    public function cursorLineDown(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -600,7 +601,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move cursor left
      */
-    public function cursorLeft(int $times=1): bool
+    public function cursorLeft(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -613,7 +614,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move cursor right
      */
-    public function cursorRight(int $times=1): bool
+    public function cursorRight(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -626,7 +627,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move error cursor up a line
      */
-    public function errorCursorUp(int $times=1): bool
+    public function errorCursorUp(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -639,7 +640,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move error cursor up a line pos 0
      */
-    public function errorCursorLineUp(int $times=1): bool
+    public function errorCursorLineUp(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -652,7 +653,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move error cursor down a line
      */
-    public function errorCursorDown(int $times=1): bool
+    public function errorCursorDown(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -665,7 +666,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move error cursor down a line
      */
-    public function errorCursorLineDown(int $times=1): bool
+    public function errorCursorLineDown(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -678,7 +679,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move error cursor left
      */
-    public function errorCursorLeft(int $times=1): bool
+    public function errorCursorLeft(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -691,7 +692,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Move error cursor right
      */
-    public function errorCursorRight(int $times=1): bool
+    public function errorCursorRight(int $times = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -731,7 +732,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Set cursor absolute position
      */
-    public function setCursorLine(int $line, int $pos=1): bool
+    public function setCursorLine(int $line, int $pos = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -744,7 +745,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Set cursor absolute position
      */
-    public function setErrorCursorLine(int $line, int $pos=1): bool
+    public function setErrorCursorLine(int $line, int $pos = 1): bool
     {
         if (!$this->isAnsi) {
             return false;
@@ -769,7 +770,7 @@ class Session implements ArrayAccess, Controller
 
         if (!preg_match('/^\e\[(\d+);(\d+)R$/', $response, $matches)) {
             throw Exceptional::InvalidArgument(
-                'Invalid cursor response from terminal: '.$response
+                'Invalid cursor response from terminal: ' . $response
             );
         }
 
@@ -789,7 +790,7 @@ class Session implements ArrayAccess, Controller
 
         if (!preg_match('/^\e\[(\d+);(\d+)R$/', $response, $matches)) {
             throw Exceptional::InvalidArgument(
-                'Invalid cursor response from terminal: '.$response
+                'Invalid cursor response from terminal: ' . $response
             );
         }
 
@@ -809,7 +810,7 @@ class Session implements ArrayAccess, Controller
      */
     public function getErrorCursorH(): int
     {
-        if (null === ($response = $this->captureAnsi("\e[6n", true))) {
+        if ($this->captureAnsi("\e[6n", true) === null) {
             throw Exceptional::Runtime(
                 'Unable to detect cursor position'
             );
@@ -918,13 +919,13 @@ class Session implements ArrayAccess, Controller
     /**
      * Capture ansi response call
      */
-    protected function captureAnsi(string $command, bool $error=false): ?string
+    protected function captureAnsi(string $command, bool $error = false): ?string
     {
         if (!$this->isAnsi || !$this->hasStty) {
             return null;
         }
 
-        $ttyprops = $this->snapshotStty();
+        $this->snapshotStty();
         $this->toggleInputEcho(false);
         $this->toggleInputBuffer(false);
 
@@ -966,7 +967,7 @@ class Session implements ArrayAccess, Controller
             return false;
         }
 
-        system('stty '.($flag ? '' : '-').'echo');
+        system('stty ' . ($flag ? '' : '-') . 'echo');
         return true;
     }
 
@@ -979,7 +980,7 @@ class Session implements ArrayAccess, Controller
             return false;
         }
 
-        system('stty '.($flag ? '' : '-').'icanon');
+        system('stty ' . ($flag ? '' : '-') . 'icanon');
         return true;
     }
 
@@ -991,7 +992,7 @@ class Session implements ArrayAccess, Controller
     {
         if (preg_match('/^[a-z][a-zA-Z0-9]+$/', $method) && !Style::isKeyword($method)) {
             throw Exceptional::BadMethodCall(
-                'CLI method not found: '.$method
+                'CLI method not found: ' . $method
             );
         }
 
@@ -1001,7 +1002,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Style an output line
      */
-    public function style(string $style, ?string $message=null): Controller
+    public function style(string $style, ?string $message = null): Controller
     {
         if ($message === null) {
             return $this;
@@ -1017,7 +1018,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Ask a question
      */
-    public function ask(string $message, string $default=null, ?callable $validator=null): ?string
+    public function ask(string $message, string $default = null, ?callable $validator = null): ?string
     {
         return $this->newQuestion($message, $default, $validator)->prompt();
     }
@@ -1025,7 +1026,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Begin new question asker
      */
-    public function newQuestion(string $message, string $default=null, ?callable $validator=null): Question
+    public function newQuestion(string $message, string $default = null, ?callable $validator = null): Question
     {
         return new Question($this, $message, $default, $validator);
     }
@@ -1033,7 +1034,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Ask for password
      */
-    public function askPassword(?string $message=null, bool $repeat=false, bool $required=true): ?string
+    public function askPassword(?string $message = null, bool $repeat = false, bool $required = true): ?string
     {
         return $this->newPasswordQuestion($message, $repeat, $required)->prompt();
     }
@@ -1041,7 +1042,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Begin password asker
      */
-    public function newPasswordQuestion(?string $message=null, bool $repeat=false, bool $required=true): Password
+    public function newPasswordQuestion(?string $message = null, bool $repeat = false, bool $required = true): Password
     {
         return new Password($this, $message, $repeat, $required);
     }
@@ -1049,7 +1050,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Ask for confirmation
      */
-    public function confirm(string $message, bool $default=null): bool
+    public function confirm(string $message, bool $default = null): bool
     {
         return $this->newConfirmation($message, $default)->prompt();
     }
@@ -1057,7 +1058,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Begin confirmation
      */
-    public function newConfirmation(string $message, bool $default=null): Confirmation
+    public function newConfirmation(string $message, bool $default = null): Confirmation
     {
         return new Confirmation($this, $message, $default);
     }
@@ -1067,7 +1068,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Show progress indicator
      */
-    public function newSpinner(string $style=null): Spinner
+    public function newSpinner(string $style = null): Spinner
     {
         return new Spinner($this, $style);
     }
@@ -1075,7 +1076,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Show progress bar
      */
-    public function newProgressBar(float $min=0.0, float $max=100.0, ?int $precision=null): ProgressBar
+    public function newProgressBar(float $min = 0.0, float $max = 100.0, ?int $precision = null): ProgressBar
     {
         return new ProgressBar($this, $min, $max);
     }
@@ -1084,7 +1085,7 @@ class Session implements ArrayAccess, Controller
     /**
      * String to boolean
      */
-    public static function stringToBoolean(string $string, bool $default=null): ?bool
+    public static function stringToBoolean(string $string, bool $default = null): ?bool
     {
         switch ($string = strtolower(trim($string))) {
             case 'false':
@@ -1110,7 +1111,7 @@ class Session implements ArrayAccess, Controller
 
 
 
-    const LOG_STYLES = [
+    public const LOG_STYLES = [
         'debug' => ['β ', '#996300'],
         'info' => ['ℹ ', 'cyan'],
         'notice' => ['☛ ', 'cyan|bold'],
@@ -1129,7 +1130,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render comment line
      */
-    public function comment($message, array $context=[])
+    public function comment($message, array $context = [])
     {
         $this->log('comment', $message, $context);
     }
@@ -1137,7 +1138,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render success log
      */
-    public function success($message, array $context=[])
+    public function success($message, array $context = [])
     {
         $this->log('success', $message, $context);
     }
@@ -1145,7 +1146,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render operative message line
      */
-    public function operative($message, array $context=[])
+    public function operative($message, array $context = [])
     {
         $this->log('operative', $message, $context);
     }
@@ -1153,7 +1154,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render delete success log
      */
-    public function deleteSuccess($message, array $context=[])
+    public function deleteSuccess($message, array $context = [])
     {
         $this->log('deleteSuccess', $message, $context);
     }
@@ -1162,7 +1163,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline debug log
      */
-    public function inlineDebug($message, array $context=[])
+    public function inlineDebug($message, array $context = [])
     {
         $this->inlineLog('debug', $message, $context);
     }
@@ -1170,7 +1171,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline info log
      */
-    public function inlineInfo($message, array $context=[])
+    public function inlineInfo($message, array $context = [])
     {
         $this->inlineLog('info', $message, $context);
     }
@@ -1178,7 +1179,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline notice log
      */
-    public function inlineNotice($message, array $context=[])
+    public function inlineNotice($message, array $context = [])
     {
         $this->inlineLog('notice', $message, $context);
     }
@@ -1186,7 +1187,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline comment line
      */
-    public function inlineComment($message, array $context=[])
+    public function inlineComment($message, array $context = [])
     {
         $this->inlineLog('comment', $message, $context);
     }
@@ -1194,7 +1195,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline success log
      */
-    public function inlineSuccess($message, array $context=[])
+    public function inlineSuccess($message, array $context = [])
     {
         $this->inlineLog('success', $message, $context);
     }
@@ -1202,7 +1203,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline operative log
      */
-    public function inlineOperative($message, array $context=[])
+    public function inlineOperative($message, array $context = [])
     {
         $this->inlineLog('operative', $message, $context);
     }
@@ -1210,7 +1211,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline delete success log
      */
-    public function inlineDeleteSuccess($message, array $context=[])
+    public function inlineDeleteSuccess($message, array $context = [])
     {
         $this->inlineLog('deleteSuccess', $message, $context);
     }
@@ -1218,7 +1219,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline warning log
      */
-    public function inlineWarning($message, array $context=[])
+    public function inlineWarning($message, array $context = [])
     {
         $this->inlineLog('warning', $message, $context);
     }
@@ -1226,7 +1227,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline error log
      */
-    public function inlineError($message, array $context=[])
+    public function inlineError($message, array $context = [])
     {
         $this->inlineLog('error', $message, $context);
     }
@@ -1234,7 +1235,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline critical log
      */
-    public function inlineCritical($message, array $context=[])
+    public function inlineCritical($message, array $context = [])
     {
         $this->inlineLog('critical', $message, $context);
     }
@@ -1242,7 +1243,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline alert log
      */
-    public function inlineAlert($message, array $context=[])
+    public function inlineAlert($message, array $context = [])
     {
         $this->inlineLog('alert', $message, $context);
     }
@@ -1250,7 +1251,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline emergency log
      */
-    public function inlineEmergency($message, array $context=[])
+    public function inlineEmergency($message, array $context = [])
     {
         $this->inlineLog('emergency', $message, $context);
     }
@@ -1259,7 +1260,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render generic log message
      */
-    public function log($level, $message, array $context=[])
+    public function log($level, $message, array $context = [])
     {
         $message = $this->interpolate((string)$message, $context);
 
@@ -1270,14 +1271,14 @@ class Session implements ArrayAccess, Controller
 
         [$prefix, $style] = self::LOG_STYLES[$level];
 
-        $message = $prefix.$message;
-        $this->style('.'.$style, $message);
+        $message = $prefix . $message;
+        $this->style('.' . $style, $message);
     }
 
     /**
      * Render inline generic log message
      */
-    public function inlineLog($level, $message, array $context=[])
+    public function inlineLog($level, $message, array $context = [])
     {
         $message = $this->interpolate((string)$message, $context);
 
@@ -1288,20 +1289,20 @@ class Session implements ArrayAccess, Controller
 
         [$prefix, $style] = self::LOG_STYLES[$level];
 
-        $message = $prefix.$message;
+        $message = $prefix . $message;
         $this->style($style, $message);
     }
 
     /**
      * Interpolate log message with context
      */
-    private function interpolate(string $message, array $context=[]): string
+    private function interpolate(string $message, array $context = []): string
     {
         $replace = [];
 
         foreach ($context as $key => $val) {
             if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                $replace['{'.$key.'}'] = $val;
+                $replace['{' . $key . '}'] = $val;
             }
         }
 
