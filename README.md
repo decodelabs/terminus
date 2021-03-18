@@ -12,7 +12,7 @@ Simple CLI interactions for PHP
 
 ## Installation
 ```bash
-composer install decodelabs/terminus
+composer require decodelabs/terminus
 ```
 
 ## Usage
