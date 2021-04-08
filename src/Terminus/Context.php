@@ -17,7 +17,7 @@ use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
 
 /**
- * @mixin \DecodeLabs\Terminus\Session
+ * @mixin Session
  */
 class Context
 {
@@ -104,7 +104,7 @@ class Context
         array $server = null
     ): Request {
         $server = $server ?? $_SERVER;
-        $args = $argv ?? $_SERVER['argv'];
+        $args = $argv ?? $_SERVER['argv'] ?? [];
         $script = array_shift($args);
 
         return new Request($server, $args, $script);
@@ -169,12 +169,76 @@ class Context
     /**
      * Pass method calls through to active session
      *
-     * @param  mixed[]  $args
+     * @param array<mixed> $args
      * @return mixed
      */
     public function __call(string $method, array $args)
     {
-        $session = $this->getSession();
-        return $session->{$method}(...$args);
+        $args = $this->prepareCallArgs($method, $args);
+        return $this->getSession()->{$method}(...$args);
     }
+
+    /**
+     * Prepare mixin call args
+     *
+     * @param array<mixed> $args
+     * @return array<mixed>
+     */
+    protected function prepareCallArgs(string $method, array $args): array
+    {
+        if (isset(self::CALL_ARGS[$method])) {
+            foreach (self::CALL_ARGS[$method] as $i => $type) {
+                if (!isset($args[$i])) {
+                    switch ($type) {
+                        case 'string':
+                            $args[$i] = '';
+                            break;
+
+                        case 'array':
+                            $args[$i] = [];
+                            break;
+                    }
+                }
+
+                switch ($type) {
+                    case 'string':
+                        $args[$i] = (string)$args[$i];
+                        break;
+
+                    case 'array':
+                        $args[$i] = (array)$args[$i];
+                        break;
+                }
+            }
+        }
+
+        return $args;
+    }
+
+    public const CALL_ARGS = [
+        'info' => ['string', 'array'],
+        'notice' => ['string', 'array'],
+        'comment' => ['string', 'array'],
+        'success' => ['string', 'array'],
+        'operative' => ['string', 'array'],
+        'deleteSuccess' => ['string', 'array'],
+        'warning' => ['string', 'array'],
+        'critical' => ['string', 'array'],
+        'alert' => ['string', 'array'],
+        'emergency' => ['string', 'array'],
+        'log' => ['string', 'array'],
+        'inlineDebug' => ['string', 'array'],
+        'inlineInfo' => ['string', 'array'],
+        'inlineNotice' => ['string', 'array'],
+        'inlineComment' => ['string', 'array'],
+        'inlineSuccess' => ['string', 'array'],
+        'inlineOperative' => ['string', 'array'],
+        'inlineDeleteSuccess' => ['string', 'array'],
+        'inlineWarning' => ['string', 'array'],
+        'inlineError' => ['string', 'array'],
+        'inlineCritical' => ['string', 'array'],
+        'inlineAlert' => ['string', 'array'],
+        'inlineEmergency' => ['string', 'array'],
+        'inlineLog' => ['string', 'array']
+    ];
 }
