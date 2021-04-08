@@ -68,15 +68,54 @@ class Style
         'strike' => [9, 29],
     ];
 
+    /**
+     * @var string|null
+     */
     protected $foreground = 'reset';
+
+    /**
+     * @var int
+     */
     protected $foregroundBits = 4;
+
+    /**
+     * @var string|null
+     */
     protected $background = 'reset';
+
+    /**
+     * @var int
+     */
     protected $backgroundBits = 4;
+
+    /**
+     * @var array<string>
+     */
     protected $options = [];
+
+    /**
+     * @var bool
+     */
     protected $error = false;
+
+    /**
+     * @var int
+     */
     protected $linesBefore = 0;
+
+    /**
+     * @var int
+     */
     protected $linesAfter = 0;
+
+    /**
+     * @var int
+     */
     protected $tabs = 0;
+
+    /**
+     * @var int
+     */
     protected $backspaces = 0;
 
     /**
@@ -319,6 +358,8 @@ class Style
 
     /**
      * Get options
+     *
+     * @return array<string>
      */
     public function getOptions(): array
     {

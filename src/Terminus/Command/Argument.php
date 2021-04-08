@@ -14,14 +14,49 @@ use DecodeLabs\Terminus\Session;
 
 class Argument
 {
+    /**
+     * @var string
+     */
     protected $name;
+
+    /**
+     * @var string
+     */
     protected $description;
+
+    /**
+     * @var string|null
+     */
     protected $shortcut;
+
+    /**
+     * @var bool
+     */
     protected $named = false;
+
+    /**
+     * @var bool
+     */
     protected $boolean = false;
+
+    /**
+     * @var bool
+     */
     protected $optional = false;
+
+    /**
+     * @var bool
+     */
     protected $list = false;
+
+    /**
+     * @var string|null
+     */
     protected $defaultValue;
+
+    /**
+     * @var string|null
+     */
     protected $pattern;
 
 
@@ -246,6 +281,9 @@ class Argument
 
     /**
      * Check and normalize input value
+     *
+     * @param mixed $value
+     * @return mixed
      */
     public function validate($value)
     {

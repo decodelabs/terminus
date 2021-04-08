@@ -21,6 +21,9 @@ use DecodeLabs\Terminus\Command\Request;
  */
 class Context
 {
+    /**
+     * @var Session|null
+     */
     protected $session;
 
     /**
@@ -55,7 +58,7 @@ class Context
      */
     public function getSession(): Session
     {
-        if (!$this->session) {
+        if ($this->session === null) {
             $this->session = $this->newSession();
         }
 
@@ -92,6 +95,9 @@ class Context
 
     /**
      * Create request from environment
+     *
+     * @param array<string, string>|null $argv
+     * @param array<string, string>|null $server
      */
     public function newRequest(
         array $argv = null,

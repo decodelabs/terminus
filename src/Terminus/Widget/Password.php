@@ -13,10 +13,29 @@ use DecodeLabs\Terminus\Session;
 
 class Password
 {
+    /**
+     * @var string
+     */
     protected $message = 'Please enter your password';
+
+    /**
+     * @var string
+     */
     protected $repeatMessage = 'Please repeat your password';
+
+    /**
+     * @var Session
+     */
     protected $session;
+
+    /**
+     * @var bool
+     */
     protected $repeat = false;
+
+    /**
+     * @var bool
+     */
     protected $required = true;
 
     /**
@@ -169,7 +188,7 @@ class Password
         if ($this->session->hasStty()) {
             $snapshot = $this->session->snapshotStty();
             $this->session->toggleInputEcho(false);
-            $password = $this->session->readLine();
+            $password = (string)$this->session->readLine();
             $this->session->restoreStty($snapshot);
 
             if (strlen($password)) {
@@ -178,7 +197,7 @@ class Password
                 $this->session->newLine();
             }
         } else {
-            $password = $this->session->readLine();
+            $password = (string)$this->session->readLine();
         }
 
         if (!strlen($password)) {

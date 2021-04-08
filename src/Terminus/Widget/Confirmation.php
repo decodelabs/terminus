@@ -13,10 +13,29 @@ use DecodeLabs\Terminus\Session;
 
 class Confirmation
 {
+    /**
+     * @var string
+     */
     protected $message;
+
+    /**
+     * @var bool
+     */
     protected $showOptions = true;
+
+    /**
+     * @var bool|null
+     */
     protected $default;
+
+    /**
+     * @var string|null
+     */
     protected $input;
+
+    /**
+     * @var Session
+     */
     protected $session;
 
     /**
@@ -121,7 +140,7 @@ class Confirmation
                     $answer = $this->default ? 'y' : 'n';
                 }
 
-                $answer = rtrim($answer, "\n");
+                $answer = rtrim((string)$answer, "\n");
                 $bool = Session::stringToBoolean($answer);
 
                 if ($bool === null) {
@@ -165,6 +184,8 @@ class Confirmation
 
     /**
      * Check answer
+     *
+     * @param mixed $answer
      */
     protected function validate(&$answer): bool
     {

@@ -13,14 +13,49 @@ use DecodeLabs\Terminus\Session;
 
 class Question
 {
+    /**
+     * @var string
+     */
     protected $message;
+
+    /**
+     * @var array<string>
+     */
     protected $options = [];
+
+    /**
+     * @var bool
+     */
     protected $showOptions = true;
+
+    /**
+     * @var bool
+     */
     protected $strict = false;
+
+    /**
+     * @var bool
+     */
     protected $required = true;
+
+    /**
+     * @var bool
+     */
     protected $confirm = false;
+
+    /**
+     * @var string|null
+     */
     protected $default;
+
+    /**
+     * @var callable|null
+     */
     protected $validator;
+
+    /**
+     * @var Session
+     */
     protected $session;
 
     /**
@@ -63,6 +98,8 @@ class Question
 
     /**
      * Get available options
+     *
+     * @return array<string>
      */
     public function getOptions(): array
     {

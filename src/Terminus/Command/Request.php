@@ -13,12 +13,27 @@ use DecodeLabs\Glitch\Dumpable;
 
 class Request implements Dumpable
 {
+    /**
+     * @var string|null
+     */
     protected $script;
+
+    /**
+     * @var array<string, string>
+     */
     protected $args = [];
+
+    /**
+     * @var array<string, string>
+     */
     protected $server = [];
 
     /**
      * Init
+     *
+     * @param array<string, string> $server
+     * @param array<string, string> $args
+     * @param string|null $script
      */
     public function __construct(
         array $server = [],
@@ -81,6 +96,8 @@ class Request implements Dumpable
 
     /**
      * Alias withCommandParams()
+     *
+     * @param array<string, string> $params
      */
     public function setCommandParams(array $params): Request
     {
@@ -89,6 +106,8 @@ class Request implements Dumpable
 
     /**
      * Get list of command args
+     *
+     * @return array<string, string>
      */
     public function getCommandParams(): array
     {
@@ -117,6 +136,8 @@ class Request implements Dumpable
 
     /**
      * New instance with params set
+     *
+     * @param array<string, string> $params
      */
     public function withCommandParams(array $params): Request
     {
@@ -129,6 +150,8 @@ class Request implements Dumpable
 
     /**
      * Get $_SERVER equiv
+     *
+     * @return array<string, string>
      */
     public function getServerParams(): array
     {

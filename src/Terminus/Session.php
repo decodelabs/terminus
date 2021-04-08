@@ -31,16 +31,46 @@ use DecodeLabs\Terminus\Widget\Spinner;
 
 use Psr\Log\LoggerTrait;
 
+/**
+ * @implements ArrayAccess<string, mixed>
+ */
 class Session implements ArrayAccess, Controller
 {
     use LoggerTrait;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected $arguments = [];
+
+    /**
+     * @var Request
+     */
     protected $request;
+
+    /**
+     * @var Definition
+     */
     protected $definition;
+
+    /**
+     * @var Broker
+     */
     protected $broker;
+
+    /**
+     * @var bool
+     */
     protected $isAnsi = true;
+
+    /**
+     * @var bool
+     */
     protected $hasStty = false;
+
+    /**
+     * @var string|null
+     */
     protected $sttyReset;
 
     /**
@@ -177,6 +207,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Prepare arguments from command definition
+     *
+     * @return array<string, mixed>
      */
     public function prepareArguments(): array
     {
@@ -185,6 +217,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Get argument
+     *
+     * @return mixed
      */
     public function getArgument(string $name)
     {
@@ -203,6 +237,9 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Manually override argument
+     *
+     * @param string $name
+     * @param mixed $value
      */
     public function offsetSet($name, $value): void
     {
@@ -211,6 +248,9 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Get argument shortcut
+     *
+     * @param string $name
+     * @return mixed
      */
     public function offsetGet($name)
     {
@@ -219,6 +259,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Has argument
+     *
+     * @param string $name
      */
     public function offsetExists($name): bool
     {
@@ -227,6 +269,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Remove argument
+     *
+     * @param string $name
      */
     public function offsetUnset($name): void
     {
@@ -1130,7 +1174,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render comment line
      */
-    public function comment($message, array $context = [])
+    public function comment(string $message, array $context = []): void
     {
         $this->log('comment', $message, $context);
     }
@@ -1138,7 +1182,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render success log
      */
-    public function success($message, array $context = [])
+    public function success(string $message, array $context = []): void
     {
         $this->log('success', $message, $context);
     }
@@ -1146,7 +1190,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render operative message line
      */
-    public function operative($message, array $context = [])
+    public function operative(string $message, array $context = []): void
     {
         $this->log('operative', $message, $context);
     }
@@ -1154,7 +1198,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render delete success log
      */
-    public function deleteSuccess($message, array $context = [])
+    public function deleteSuccess(string $message, array $context = []): void
     {
         $this->log('deleteSuccess', $message, $context);
     }
@@ -1163,7 +1207,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline debug log
      */
-    public function inlineDebug($message, array $context = [])
+    public function inlineDebug(string $message, array $context = []): void
     {
         $this->inlineLog('debug', $message, $context);
     }
@@ -1171,7 +1215,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline info log
      */
-    public function inlineInfo($message, array $context = [])
+    public function inlineInfo(string $message, array $context = []): void
     {
         $this->inlineLog('info', $message, $context);
     }
@@ -1179,7 +1223,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline notice log
      */
-    public function inlineNotice($message, array $context = [])
+    public function inlineNotice(string $message, array $context = []): void
     {
         $this->inlineLog('notice', $message, $context);
     }
@@ -1187,7 +1231,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline comment line
      */
-    public function inlineComment($message, array $context = [])
+    public function inlineComment(string $message, array $context = []): void
     {
         $this->inlineLog('comment', $message, $context);
     }
@@ -1195,7 +1239,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline success log
      */
-    public function inlineSuccess($message, array $context = [])
+    public function inlineSuccess(string $message, array $context = []): void
     {
         $this->inlineLog('success', $message, $context);
     }
@@ -1203,7 +1247,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline operative log
      */
-    public function inlineOperative($message, array $context = [])
+    public function inlineOperative(string $message, array $context = []): void
     {
         $this->inlineLog('operative', $message, $context);
     }
@@ -1211,7 +1255,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline delete success log
      */
-    public function inlineDeleteSuccess($message, array $context = [])
+    public function inlineDeleteSuccess(string $message, array $context = []): void
     {
         $this->inlineLog('deleteSuccess', $message, $context);
     }
@@ -1219,7 +1263,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline warning log
      */
-    public function inlineWarning($message, array $context = [])
+    public function inlineWarning(string $message, array $context = []): void
     {
         $this->inlineLog('warning', $message, $context);
     }
@@ -1227,7 +1271,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline error log
      */
-    public function inlineError($message, array $context = [])
+    public function inlineError(string $message, array $context = []): void
     {
         $this->inlineLog('error', $message, $context);
     }
@@ -1235,7 +1279,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline critical log
      */
-    public function inlineCritical($message, array $context = [])
+    public function inlineCritical(string $message, array $context = []): void
     {
         $this->inlineLog('critical', $message, $context);
     }
@@ -1243,7 +1287,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline alert log
      */
-    public function inlineAlert($message, array $context = [])
+    public function inlineAlert(string $message, array $context = []): void
     {
         $this->inlineLog('alert', $message, $context);
     }
@@ -1251,7 +1295,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline emergency log
      */
-    public function inlineEmergency($message, array $context = [])
+    public function inlineEmergency(string $message, array $context = []): void
     {
         $this->inlineLog('emergency', $message, $context);
     }
@@ -1278,7 +1322,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline generic log message
      */
-    public function inlineLog($level, $message, array $context = [])
+    public function inlineLog(string $level, string $message, array $context = []): void
     {
         $message = $this->interpolate((string)$message, $context);
 
@@ -1295,13 +1339,21 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Interpolate log message with context
+     *
+     * @param array<string, mixed> $context
      */
     private function interpolate(string $message, array $context = []): string
     {
         $replace = [];
 
         foreach ($context as $key => $val) {
-            if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
+            if (
+                !is_array($val) &&
+                (
+                    !is_object($val) ||
+                    method_exists($val, '__toString')
+                )
+            ) {
                 $replace['{' . $key . '}'] = $val;
             }
         }
