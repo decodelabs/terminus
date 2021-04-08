@@ -16,16 +16,47 @@ class ProgressBar
     public const EMPTY = '░';
     public const FULL = '▓';
 
+    /**
+     * @var float
+     */
     protected $min = 0;
+
+    /**
+     * @var float
+     */
     protected $max = 100;
 
+
+    /**
+     * @var bool
+     */
     protected $showPercent = true;
+
+    /**
+     * @var bool
+     */
     protected $showCompleted = true;
 
+
+    /**
+     * @var bool
+     */
     protected $started = false;
+
+    /**
+     * @var int
+     */
     protected $written = 0;
+
+    /**
+     * @var int
+     */
     protected $precision = 2;
 
+
+    /**
+     * @var Session
+     */
     protected $session;
 
     /**
@@ -104,6 +135,8 @@ class ProgressBar
 
     /**
      * Get range
+     *
+     * @return array<float>
      */
     public function getRange(): array
     {

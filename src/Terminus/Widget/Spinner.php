@@ -16,10 +16,24 @@ class Spinner
     public const TICK = 0.08;
     public const CHARS = ['-', '\\', '|', '/'];
 
+    /**
+     * @var string|null
+     */
     protected $style;
+
+    /**
+     * @var Session
+     */
     protected $session;
 
+    /**
+     * @var float|null
+     */
     protected $lastTime;
+
+    /**
+     * @var int
+     */
     protected $char = 0;
 
     /**

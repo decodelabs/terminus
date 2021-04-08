@@ -19,7 +19,13 @@ use DecodeLabs\Terminus\Widget\ProgressBar;
 use DecodeLabs\Terminus\Widget\Question;
 use DecodeLabs\Terminus\Widget\Spinner;
 
-interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
+use Psr\Log\LoggerInterface;
+
+interface Controller extends
+    DataProvider,
+    DataReceiver,
+    ErrorDataReceiver,
+    LoggerInterface
 {
     public function isAnsi(): bool;
     public function hasStty(): bool;
@@ -68,8 +74,16 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function setCursorLine(int $line, int $pos = 1): bool;
     public function setErrorCursorLine(int $line, int $pos = 1): bool;
 
+    /**
+     * @return array<int>
+     */
     public function getCursor(): array;
+
+    /**
+     * @return array<int>
+     */
     public function getErrorCursor(): array;
+
     public function getCursorH(): int;
     public function getErrorCursorH(): int;
     public function getCursorV(): int;
@@ -85,7 +99,15 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function toggleInputEcho(bool $flag): bool;
     public function toggleInputBuffer(bool $flag): bool;
 
+    /**
+     * @param array<mixed> $args
+     * @return $this
+     */
     public function __call(string $method, array $args): Controller;
+
+    /**
+     * @return $this
+     */
     public function style(string $style, ?string $message = null): Controller;
 
 
@@ -99,23 +121,89 @@ interface Controller extends DataProvider, DataReceiver, ErrorDataReceiver
     public function newSpinner(string $style = null): Spinner;
     public function newProgressBar(float $min = 0.0, float $max = 100.0, ?int $precision = null): ProgressBar;
 
-    public function comment($message, array $context = []);
-    public function success($message, array $context = []);
-    public function operative($message, array $context = []);
-    public function deleteSuccess($message, array $context = []);
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function comment(string $message, array $context = []): void;
 
-    public function inlineDebug($message, array $context = []);
-    public function inlineInfo($message, array $context = []);
-    public function inlineNotice($message, array $context = []);
-    public function inlineComment($message, array $context = []);
-    public function inlineSuccess($message, array $context = []);
-    public function inlineOperative($message, array $context = []);
-    public function inlineDeleteSuccess($message, array $context = []);
-    public function inlineWarning($message, array $context = []);
-    public function inlineError($message, array $context = []);
-    public function inlineCritical($message, array $context = []);
-    public function inlineAlert($message, array $context = []);
-    public function inlineEmergency($message, array $context = []);
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function success(string $message, array $context = []): void;
 
-    public function inlineLog($level, $message, array $context = []);
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function operative(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function deleteSuccess(string $message, array $context = []): void;
+
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineDebug(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineInfo(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineNotice(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineComment(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineSuccess(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineOperative(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineDeleteSuccess(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineWarning(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineError(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineCritical(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineAlert(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineEmergency(string $message, array $context = []): void;
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function inlineLog(string $level, string $message, array $context = []): void;
 }

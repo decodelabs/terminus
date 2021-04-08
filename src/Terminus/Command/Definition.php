@@ -14,9 +14,20 @@ use DecodeLabs\Terminus\Session;
 
 class Definition
 {
+    /**
+     * @var string
+     */
     protected $name;
+
+    /**
+     * @var string|null
+     */
     protected $help;
 
+
+    /**
+     * @var array<string, Argument>
+     */
     protected $arguments = [];
 
     /**
@@ -103,6 +114,8 @@ class Definition
 
     /**
      * Get list of arguments
+     *
+     * @return array<string, Argument>
      */
     public function getArguments(): array
     {
@@ -130,6 +143,8 @@ class Definition
 
     /**
      * Convert request params to list of args
+     *
+     * @return array<string, mixed>
      */
     public function apply(Request $request): array
     {
@@ -235,7 +250,12 @@ class Definition
         return $output;
     }
 
-    private function validate(Argument $arg, $param, array &$output)
+
+    /**
+     * @param mixed $param
+     * @param array<string, mixed> $output
+     */
+    private function validate(Argument $arg, $param, array &$output): void
     {
         $name = $arg->getName();
 
@@ -292,7 +312,11 @@ class Definition
         }
     }
 
-    private function renderArg(Session $session, Argument $arg)
+
+    /**
+     * Render argument to session
+     */
+    private function renderArg(Session $session, Argument $arg): void
     {
         if (!$arg->isNamed()) {
             $session->style('cyan|bold', $arg->getName());

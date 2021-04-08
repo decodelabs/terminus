@@ -1,3 +1,6 @@
+## v0.6.1 (2021-04-08)
+* Updated for max PHPStan conformance
+
 ## v0.6.0 (2021-03-18)
 * Enabled PHP8 testing
 * Applied full PSR12 standards
