@@ -1,3 +1,6 @@
+## v0.6.2 (2021-04-08)
+* Added call arg massaging to Context
+
 ## v0.6.1 (2021-04-08)
 * Updated for max PHPStan conformance
 
