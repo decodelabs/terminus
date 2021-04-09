@@ -11,10 +11,10 @@ namespace DecodeLabs\Terminus;
 
 use ArrayAccess;
 
-use DecodeLabs\Atlas\Broker;
-use DecodeLabs\Atlas\Channel\Buffer;
-use DecodeLabs\Atlas\DataProvider;
-use DecodeLabs\Atlas\DataReceiver;
+use DecodeLabs\Deliverance\Broker;
+use DecodeLabs\Deliverance\Channel\Buffer;
+use DecodeLabs\Deliverance\DataProvider;
+use DecodeLabs\Deliverance\DataReceiver;
 
 use DecodeLabs\Exceptional;
 use DecodeLabs\Systemic;

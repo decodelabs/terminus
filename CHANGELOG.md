@@ -1,3 +1,6 @@
+## v0.7.0 (2021-04-09)
+* Swapped Atlas for Deliverance
+
 ## v0.6.2 (2021-04-08)
 * Added call arg massaging to Context
 

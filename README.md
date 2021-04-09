@@ -32,16 +32,17 @@ You can access all the primary functionality via this static frontage without co
 Terminus will by default create a standard session communicating via PHP's <code>STDIN</code>, <code>STDOUT</code> and <code>STDERR</code> streams, with arguments from <code>$\_SERVER['argv']</code>.
 
 You can however customise the session by creating your own and setting it via the main <code>Terminus</code> frontage.
-See [Atlas Broker](https://github.com/decodelabs/atlas) for more information about controlling IO streams.
+See [Deliverance Broker](https://github.com/decodelabs/atlas) for more information about controlling IO streams.
 
 ```php
+use DecodeLabs\Deliverance;
 use DecodeLabs\Terminus as Cli;
 
 $session = Cli::newSession(
     Cli::newRequest(['list', 'of', 'argv', 'params']),
 
     // The Io Broker is optional, defaults to best fit
-    Atlas::newIoBroker()
+    Deliverance::newIoBroker()
         ->addInputProvider($inputStream)
         ->addOutputReceiver($outputStream)
         ->addErrorReceiver($errorStream)
