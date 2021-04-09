@@ -1,3 +1,6 @@
+## v0.7.1 (2021-04-09)
+* Updated Systemic dependency
+
 ## v0.7.0 (2021-04-09)
 * Swapped Atlas for Deliverance
 
