@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus;
 
-use DecodeLabs\Atlas;
-use DecodeLabs\Atlas\Broker;
+use DecodeLabs\Deliverance;
+use DecodeLabs\Deliverance\Broker;
 
 use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Command\Definition;
@@ -82,8 +82,8 @@ class Context
 
         if ($broker === null) {
             $broker = defined('STDOUT') ?
-                Atlas::newCliBroker() :
-                Atlas::newHttpBroker();
+                Deliverance::newCliBroker() :
+                Deliverance::newHttpBroker();
         }
 
         return new Session(

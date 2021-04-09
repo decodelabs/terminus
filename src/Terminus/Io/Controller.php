@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus\Io;
 
-use DecodeLabs\Atlas\DataProvider;
-use DecodeLabs\Atlas\DataReceiver;
-use DecodeLabs\Atlas\ErrorDataReceiver;
+use DecodeLabs\Deliverance\DataProvider;
+use DecodeLabs\Deliverance\DataReceiver;
+use DecodeLabs\Deliverance\ErrorDataReceiver;
 
 use DecodeLabs\Terminus\Widget\Confirmation;
 use DecodeLabs\Terminus\Widget\Password;
