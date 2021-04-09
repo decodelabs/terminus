@@ -14,7 +14,7 @@
         "decodelabs/deliverance": "^0.1",
         "decodelabs/exceptional": "^0.3",
         "decodelabs/glitch-support": "^0.3",
-        "decodelabs/systemic": "^0.7",
+        "decodelabs/systemic": "^0.8",
 
         "psr/log": "^1.0"
     },
