@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus\Widget;
 
+use DecodeLabs\Exceptional;
 use DecodeLabs\Terminus\Session;
 
 class Spinner
@@ -48,6 +49,8 @@ class Spinner
 
     /**
      * Set style
+     *
+     * @return $this
      */
     public function setStyle(?string $style): Spinner
     {
@@ -67,6 +70,8 @@ class Spinner
 
     /**
      * Render
+     *
+     * @return $this
      */
     public function advance(): Spinner
     {
@@ -101,7 +106,33 @@ class Spinner
 
 
     /**
+     * Spin for a defined amount of time
+     *
+     * @return $this
+     */
+    public function waitFor(float $seconds): Spinner
+    {
+        if ($seconds <= 0) {
+            throw Exceptional::InvalidArgument('Wait time must be a positive value');
+        }
+
+        $tick = 100000;
+        $sleep = $seconds * 1000000;
+
+        while ($sleep > 0) {
+            $this->advance();
+            usleep($tick);
+            $sleep -= $tick;
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Finalise
+     *
+     * @return $this
      */
     public function complete(?string $message = null, ?string $style = null): Spinner
     {
