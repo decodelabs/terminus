@@ -1,3 +1,6 @@
+## v0.7.2 (2021-04-21)
+* Added waitFor() to Spinner
+
 ## v0.7.1 (2021-04-09)
 * Updated Systemic dependency
 
