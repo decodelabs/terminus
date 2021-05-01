@@ -16,6 +16,8 @@ use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
 
+use Stringable;
+
 /**
  * @mixin Session
  */
@@ -174,71 +176,270 @@ class Context
      */
     public function __call(string $method, array $args)
     {
-        $args = $this->prepareCallArgs($method, $args);
         return $this->getSession()->{$method}(...$args);
     }
 
     /**
-     * Prepare mixin call args
+     * Render info line
      *
-     * @param array<mixed> $args
-     * @return array<mixed>
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
      */
-    protected function prepareCallArgs(string $method, array $args): array
+    public function info($message, array $context = []): void
     {
-        if (isset(self::CALL_ARGS[$method])) {
-            foreach (self::CALL_ARGS[$method] as $i => $type) {
-                if (!isset($args[$i])) {
-                    switch ($type) {
-                        case 'string':
-                            $args[$i] = '';
-                            break;
-
-                        case 'array':
-                            $args[$i] = [];
-                            break;
-                    }
-                }
-
-                switch ($type) {
-                    case 'string':
-                        $args[$i] = (string)$args[$i];
-                        break;
-
-                    case 'array':
-                        $args[$i] = (array)$args[$i];
-                        break;
-                }
-            }
-        }
-
-        return $args;
+        $this->getSession()->info((string)$message, $context);
     }
 
-    public const CALL_ARGS = [
-        'info' => ['string', 'array'],
-        'notice' => ['string', 'array'],
-        'comment' => ['string', 'array'],
-        'success' => ['string', 'array'],
-        'operative' => ['string', 'array'],
-        'deleteSuccess' => ['string', 'array'],
-        'warning' => ['string', 'array'],
-        'critical' => ['string', 'array'],
-        'alert' => ['string', 'array'],
-        'emergency' => ['string', 'array'],
-        'log' => ['string', 'array'],
-        'inlineDebug' => ['string', 'array'],
-        'inlineInfo' => ['string', 'array'],
-        'inlineNotice' => ['string', 'array'],
-        'inlineComment' => ['string', 'array'],
-        'inlineSuccess' => ['string', 'array'],
-        'inlineOperative' => ['string', 'array'],
-        'inlineDeleteSuccess' => ['string', 'array'],
-        'inlineWarning' => ['string', 'array'],
-        'inlineError' => ['string', 'array'],
-        'inlineCritical' => ['string', 'array'],
-        'inlineAlert' => ['string', 'array'],
-        'inlineEmergency' => ['string', 'array'],
-        'inlineLog' => ['string', 'array']
-    ];
+    /**
+     * Render notice line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function notice($message, array $context = []): void
+    {
+        $this->getSession()->notice((string)$message, $context);
+    }
+
+    /**
+     * Render comment line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function comment($message, array $context = []): void
+    {
+        $this->getSession()->comment((string)$message, $context);
+    }
+
+    /**
+     * Render success line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function success($message, array $context = []): void
+    {
+        $this->getSession()->success((string)$message, $context);
+    }
+
+    /**
+     * Render operative line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function operative($message, array $context = []): void
+    {
+        $this->getSession()->operative((string)$message, $context);
+    }
+
+    /**
+     * Render deleteSuccess line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function deleteSuccess($message, array $context = []): void
+    {
+        $this->getSession()->deleteSuccess((string)$message, $context);
+    }
+
+    /**
+     * Render warning line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function warning($message, array $context = []): void
+    {
+        $this->getSession()->warning((string)$message, $context);
+    }
+
+    /**
+     * Render critical line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function critical($message, array $context = []): void
+    {
+        $this->getSession()->critical((string)$message, $context);
+    }
+
+    /**
+     * Render alert line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function alert($message, array $context = []): void
+    {
+        $this->getSession()->alert((string)$message, $context);
+    }
+
+    /**
+     * Render emergency line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function emergency($message, array $context = []): void
+    {
+        $this->getSession()->emergency((string)$message, $context);
+    }
+
+    /**
+     * Render log line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function log(string $level, $message, array $context = []): void
+    {
+        $this->getSession()->log($level, (string)$message, $context);
+    }
+
+    /**
+     * Render inlineDebug line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineDebug($message, array $context = []): void
+    {
+        $this->getSession()->inlineDebug((string)$message, $context);
+    }
+
+    /**
+     * Render inlineInfo line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineInfo($message, array $context = []): void
+    {
+        $this->getSession()->inlineInfo((string)$message, $context);
+    }
+
+    /**
+     * Render inlineNotice line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineNotice($message, array $context = []): void
+    {
+        $this->getSession()->inlineNotice((string)$message, $context);
+    }
+
+    /**
+     * Render inlineComment line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineComment($message, array $context = []): void
+    {
+        $this->getSession()->inlineComment((string)$message, $context);
+    }
+
+    /**
+     * Render inlineSuccess line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineSuccess($message, array $context = []): void
+    {
+        $this->getSession()->inlineSuccess((string)$message, $context);
+    }
+
+    /**
+     * Render inlineOperative line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineOperative($message, array $context = []): void
+    {
+        $this->getSession()->inlineOperative((string)$message, $context);
+    }
+
+    /**
+     * Render inlineDeleteSuccess line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineDeleteSuccess($message, array $context = []): void
+    {
+        $this->getSession()->inlineDeleteSuccess((string)$message, $context);
+    }
+
+    /**
+     * Render inlineWarning line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineWarning($message, array $context = []): void
+    {
+        $this->getSession()->inlineWarning((string)$message, $context);
+    }
+
+    /**
+     * Render inlineError line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineError($message, array $context = []): void
+    {
+        $this->getSession()->inlineError((string)$message, $context);
+    }
+
+    /**
+     * Render inlineCritical line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineCritical($message, array $context = []): void
+    {
+        $this->getSession()->inlineCritical((string)$message, $context);
+    }
+
+    /**
+     * Render inlineAlert line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineAlert($message, array $context = []): void
+    {
+        $this->getSession()->inlineAlert((string)$message, $context);
+    }
+
+    /**
+     * Render inlineEmergency line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineEmergency($message, array $context = []): void
+    {
+        $this->getSession()->inlineEmergency((string)$message, $context);
+    }
+
+    /**
+     * Render inlineLog line
+     *
+     * @param string|Stringable|int|float $message
+     * @param array<string, string> $context
+     */
+    public function inlineLog(string $level, $message, array $context = []): void
+    {
+        $this->getSession()->inlineLog($level, (string)$message, $context);
+    }
 }
