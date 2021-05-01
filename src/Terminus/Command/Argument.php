@@ -110,6 +110,8 @@ class Argument
 
     /**
      * Set description of argument
+     *
+     * @return $this
      */
     public function setDescription(string $description): Argument
     {
@@ -128,6 +130,8 @@ class Argument
 
     /**
      * Set whether argument is named option
+     *
+     * @return $this
      */
     public function setNamed(bool $named): Argument
     {
@@ -147,6 +151,8 @@ class Argument
 
     /**
      * Set a single char shortcut
+     *
+     * @return $this
      */
     public function setShortcut(?string $shortcut): Argument
     {
@@ -170,6 +176,8 @@ class Argument
 
     /**
      * Is this argument a boolean value?
+     *
+     * @return $this
      */
     public function setBoolean(bool $boolean): Argument
     {
@@ -195,6 +203,8 @@ class Argument
 
     /**
      * Set whether argument is optional
+     *
+     * @return $this
      */
     public function setOptional(bool $optional): Argument
     {
@@ -218,6 +228,8 @@ class Argument
 
     /**
      * Set this as a list argument
+     *
+     * @return $this
      */
     public function setList(bool $list): Argument
     {
@@ -240,6 +252,8 @@ class Argument
 
     /**
      * Set a default value
+     *
+     * @return $this
      */
     public function setDefaultValue(?string $value): Argument
     {
@@ -263,6 +277,8 @@ class Argument
 
     /**
      * Set a test reg pattern
+     *
+     * @return $this
      */
     public function setPattern(?string $pattern): Argument
     {
