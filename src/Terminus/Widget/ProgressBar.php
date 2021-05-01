@@ -91,6 +91,8 @@ class ProgressBar
 
     /**
      * Set min
+     *
+     * @return $this
      */
     public function setMin(float $min): ProgressBar
     {
@@ -108,6 +110,8 @@ class ProgressBar
 
     /**
      * Set max
+     *
+     * @return $this
      */
     public function setMax(float $max): ProgressBar
     {
@@ -125,6 +129,8 @@ class ProgressBar
 
     /**
      * Set range
+     *
+     * @return $this
      */
     public function setRange(float $min, float $max): ProgressBar
     {
@@ -145,6 +151,8 @@ class ProgressBar
 
     /**
      * Set precision
+     *
+     * @return $this
      */
     public function setPrecision(int $precision): ProgressBar
     {
@@ -164,6 +172,8 @@ class ProgressBar
 
     /**
      * Toggle showing percent value
+     *
+     * @return $this
      */
     public function setShowPercent(bool $flag): ProgressBar
     {
@@ -181,6 +191,8 @@ class ProgressBar
 
     /**
      * Toggle showing complected value
+     *
+     * @return $this
      */
     public function setShowCompleted(bool $flag): ProgressBar
     {
@@ -200,6 +212,8 @@ class ProgressBar
 
     /**
      * Render
+     *
+     * @return $this
      */
     public function advance(float $value): ProgressBar
     {
@@ -308,6 +322,8 @@ class ProgressBar
 
     /**
      * Finalise
+     *
+     * @return $this
      */
     public function complete(): ProgressBar
     {

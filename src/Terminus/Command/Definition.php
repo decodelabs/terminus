@@ -40,6 +40,8 @@ class Definition
 
     /**
      * Set task name
+     *
+     * @return $this
      */
     public function setName(string $name): Definition
     {
@@ -58,6 +60,8 @@ class Definition
 
     /**
      * Set help info
+     *
+     * @return $this
      */
     public function setHelp(?string $help): Definition
     {
@@ -97,6 +101,8 @@ class Definition
 
     /**
      * Push an argument to the queue
+     *
+     * @return $this
      */
     public function setArgument(Argument $arg): Definition
     {
@@ -124,6 +130,8 @@ class Definition
 
     /**
      * Remove an argument from the queue
+     *
+     * @return $this
      */
     public function removeArgument(string $name): Definition
     {
@@ -133,6 +141,8 @@ class Definition
 
     /**
      * Remove all arguments from queue
+     *
+     * @return $this
      */
     public function clearArguments(): Definition
     {

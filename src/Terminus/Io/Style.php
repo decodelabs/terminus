@@ -210,6 +210,8 @@ class Style
 
     /**
      * Set foreground color
+     *
+     * @return $this
      */
     public function setForeground(?string $foreground): Style
     {
@@ -257,6 +259,8 @@ class Style
 
     /**
      * Set background color
+     *
+     * @return $this
      */
     public function setBackground(?string $background): Style
     {
@@ -333,6 +337,8 @@ class Style
 
     /**
      * Set options
+     *
+     * @return $this
      */
     public function setOptions(string ...$options): Style
     {
@@ -369,6 +375,8 @@ class Style
 
     /**
      * Set as error
+     *
+     * @return $this
      */
     public function setError(bool $flag): Style
     {
@@ -386,6 +394,8 @@ class Style
 
     /**
      * Set pre new line count
+     *
+     * @return $this
      */
     public function setLinesBefore(int $lines): Style
     {
@@ -403,6 +413,8 @@ class Style
 
     /**
      * Set post new line count
+     *
+     * @return $this
      */
     public function setLinesAfter(int $lines): Style
     {
@@ -420,6 +432,8 @@ class Style
 
     /**
      * Set tab count
+     *
+     * @return $this
      */
     public function setTabs(int $tabs): Style
     {
@@ -441,6 +455,8 @@ class Style
 
     /**
      * Set backspaces
+     *
+     * @return $this
      */
     public function setBackspaces(int $spaces): Style
     {

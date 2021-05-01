@@ -51,6 +51,8 @@ class Password
 
     /**
      * Set message body
+     *
+     * @return $this
      */
     public function setMessage(?string $message): Password
     {
@@ -72,6 +74,8 @@ class Password
 
     /**
      * Set repeat message body
+     *
+     * @return $this
      */
     public function setRepeatMessage(?string $message): Password
     {
@@ -93,6 +97,8 @@ class Password
 
     /**
      * Set repeat
+     *
+     * @return $this
      */
     public function setRepeat(bool $flag): Password
     {
@@ -110,6 +116,8 @@ class Password
 
     /**
      * Set required
+     *
+     * @return $this
      */
     public function setRequired(bool $flag): Password
     {

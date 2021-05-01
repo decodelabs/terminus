@@ -71,6 +71,8 @@ class Question
 
     /**
      * Set message body
+     *
+     * @return $this
      */
     public function setMessage(string $message): Question
     {
@@ -89,6 +91,8 @@ class Question
 
     /**
      * Set available options
+     *
+     * @return $this
      */
     public function setOptions(string ...$options): Question
     {
@@ -108,6 +112,8 @@ class Question
 
     /**
      * Should options be shown?
+     *
+     * @return $this
      */
     public function setShowOptions(bool $show): Question
     {
@@ -126,6 +132,8 @@ class Question
 
     /**
      * Set strict
+     *
+     * @return $this
      */
     public function setStrict(bool $strict): Question
     {
@@ -143,6 +151,8 @@ class Question
 
     /**
      * Set required
+     *
+     * @return $this
      */
     public function setRequired(bool $flag): Question
     {
@@ -160,6 +170,8 @@ class Question
 
     /**
      * Set to confirm
+     *
+     * @return $this
      */
     public function setConfirm(bool $flag): Question
     {
@@ -178,6 +190,8 @@ class Question
 
     /**
      * Set default value
+     *
+     * @return $this
      */
     public function setDefaultValue(?string $default): Question
     {
@@ -195,6 +209,8 @@ class Question
 
     /**
      * Set validator callback
+     *
+     * @return $this
      */
     public function setValidator(?callable $validator): Question
     {

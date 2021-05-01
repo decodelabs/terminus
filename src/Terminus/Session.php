@@ -115,6 +115,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Replace IO broker
+     *
+     * @return $this
      */
     public function setBroker(Broker $broker): Session
     {
@@ -281,6 +283,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Request read blocking on broker
+     *
+     * @return $this
      */
     public function setReadBlocking(bool $flag): DataProvider
     {
@@ -339,6 +343,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Read data from broker to receiver
+     *
+     * @return $this
      */
     public function readTo(DataReceiver $writer): DataProvider
     {
@@ -1045,6 +1051,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Style an output line
+     *
+     * @return $this
      */
     public function style(string $style, ?string $message = null): Controller
     {

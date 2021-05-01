@@ -50,6 +50,8 @@ class Confirmation
 
     /**
      * Set message body
+     *
+     * @return $this
      */
     public function setMessage(string $message): Confirmation
     {
@@ -67,6 +69,8 @@ class Confirmation
 
     /**
      * Set message input
+     *
+     * @return $this
      */
     public function setMessageInput(?string $input): Confirmation
     {
@@ -85,6 +89,8 @@ class Confirmation
 
     /**
      * Should options be shown?
+     *
+     * @return $this
      */
     public function setShowOptions(bool $show): Confirmation
     {
@@ -103,6 +109,8 @@ class Confirmation
 
     /**
      * Set default value
+     *
+     * @return $this
      */
     public function setDefaultValue(?bool $default): Confirmation
     {
