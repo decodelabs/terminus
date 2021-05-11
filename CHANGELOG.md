@@ -1,3 +1,6 @@
+## v0.7.5 (2021-05-11)
+* Added Veneer IDE support stub
+
 ## v0.7.4 (2021-05-11)
 * Fixed option validation in Question widget
 
