@@ -16,6 +16,7 @@
         "decodelabs/exceptional": "^0.3",
         "decodelabs/glitch-support": "^0.3",
         "decodelabs/systemic": "^0.8",
+        "decodelabs/veneer": "^0.7",
 
         "psr/log": "^1.0"
     },
@@ -23,7 +24,9 @@
         "phpunit/phpunit": "^8",
         "phpstan/phpstan": "^0.12.45",
         "decodelabs/phpstan-decodelabs": "^0.4",
-        "symplify/easy-coding-standard": "^8.3"
+        "symplify/easy-coding-standard": "^8.3",
+
+        "decodelabs/atlas": "^0.9"
     },
     "autoload": {
         "psr-4": {
