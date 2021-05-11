@@ -1,3 +1,6 @@
+## v0.7.4 (2021-05-11)
+* Fixed option validation in Question widget
+
 ## v0.7.3 (2021-05-01)
 * Improved return type hints
 * Allow numbers in Veneer passthrough to Logger interface

@@ -337,7 +337,7 @@ class Question
                         return false;
                     }
                 } else {
-                    $answer = $testOptions[$answer];
+                    $answer = $testOptions[$testAnswer];
                 }
             }
         }
