@@ -1,11 +1,11 @@
 # Terminus
 
-[![PHP from Packagist](https://img.shields.io/packagist/php-v/decodelabs/terminus?style=flat-square)](https://packagist.org/packages/decodelabs/terminus)
-[![Latest Version](https://img.shields.io/packagist/v/decodelabs/terminus.svg?style=flat-square)](https://packagist.org/packages/decodelabs/terminus)
-[![Total Downloads](https://img.shields.io/packagist/dt/decodelabs/terminus.svg?style=flat-square)](https://packagist.org/packages/decodelabs/terminus)
-[![Build Status](https://img.shields.io/travis/com/decodelabs/terminus/main.svg?style=flat-square)](https://app.travis-ci.com/github/decodelabs/terminus)
-[![PHPStan](https://img.shields.io/badge/PHPStan-enabled-44CC11.svg?longCache=true&style=flat-square)](https://github.com/phpstan/phpstan)
-[![License](https://img.shields.io/packagist/l/decodelabs/terminus?style=flat-square)](https://packagist.org/packages/decodelabs/terminus)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/decodelabs/terminus?style=flat)](https://packagist.org/packages/decodelabs/terminus)
+[![Latest Version](https://img.shields.io/packagist/v/decodelabs/terminus.svg?style=flat)](https://packagist.org/packages/decodelabs/terminus)
+[![Total Downloads](https://img.shields.io/packagist/dt/decodelabs/terminus.svg?style=flat)](https://packagist.org/packages/decodelabs/terminus)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/decodelabs/terminus/PHP%20Composer)](https://github.com/decodelabs/terminus/actions/workflows/php.yml)
+[![PHPStan](https://img.shields.io/badge/PHPStan-enabled-44CC11.svg?longCache=true&style=flat)](https://github.com/phpstan/phpstan)
+[![License](https://img.shields.io/packagist/l/decodelabs/terminus?style=flat)](https://packagist.org/packages/decodelabs/terminus)
 
 
 Simple CLI interactions for PHP

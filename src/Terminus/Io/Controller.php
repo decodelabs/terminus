@@ -100,7 +100,7 @@ interface Controller extends
     public function toggleInputBuffer(bool $flag): bool;
 
     /**
-     * @param array<mixed> $args
+     * @param array{0?: string|null} $args
      * @return $this
      */
     public function __call(string $method, array $args): Controller;

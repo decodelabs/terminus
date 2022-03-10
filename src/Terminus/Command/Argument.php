@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus\Command;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Exceptional;
 use DecodeLabs\Terminus\Session;
 
@@ -330,7 +331,10 @@ class Argument
                 }
             }
 
-            if ($this->pattern !== null && !mb_ereg($this->pattern, $value)) {
+            if (
+                $this->pattern !== null &&
+                !mb_ereg($this->pattern, Coercion::toString($value))
+            ) {
                 throw Exceptional::UnexpectedValue(
                     'Value does not match pattern for argument: ' . $this->name
                 );

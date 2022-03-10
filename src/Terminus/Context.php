@@ -80,7 +80,7 @@ class Context
             $name = $_SERVER['PHP_SELF'];
         }
 
-        $name = pathinfo($name, \PATHINFO_FILENAME) ?? $name;
+        $name = pathinfo($name, \PATHINFO_FILENAME);
 
         if ($broker === null) {
             $broker = defined('STDOUT') ?
@@ -122,7 +122,7 @@ class Context
                 $name = $_SERVER['PHP_SELF'];
             }
 
-            $name = pathinfo($name, \PATHINFO_FILENAME) ?? $name;
+            $name = pathinfo($name, \PATHINFO_FILENAME);
         }
 
         return new Definition($name);
