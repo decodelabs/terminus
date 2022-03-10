@@ -285,6 +285,10 @@ class Definition
                     }
                 }
             } else {
+                if (!is_array($output[$name])) {
+                    $output[$name] = [];
+                }
+
                 $output[$name][] = $arg->validate($param);
             }
         } else {

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus\Widget;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Terminus\Session;
 
 class Confirmation
@@ -197,12 +198,16 @@ class Confirmation
      */
     protected function validate(&$answer): bool
     {
-        if (!strlen($answer) && $this->default !== null) {
+        if (
+            empty($answer) &&
+            $answer !== '0' &&
+            $this->default !== null
+        ) {
             $answer = $this->default;
         }
 
         if (!is_bool($answer)) {
-            $answer = Session::stringToBoolean($answer);
+            $answer = Session::stringToBoolean(Coercion::forceString($answer));
         }
 
         if ($answer === null) {
