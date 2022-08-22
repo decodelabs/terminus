@@ -16,7 +16,7 @@
         "decodelabs/exceptional": "^0.4",
         "decodelabs/glitch-support": "^0.4",
         "decodelabs/systemic": "^0.8",
-        "decodelabs/veneer": "^0.8|^0.9",
+        "decodelabs/veneer": "^0.8|^0.9-dev",
 
         "psr/log": "^3"
     },
