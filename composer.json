@@ -12,11 +12,11 @@
         "php": "^8.0",
 
         "decodelabs/coercion": "^0.2",
-        "decodelabs/deliverance": "^0.1|^0.2-dev",
+        "decodelabs/deliverance": "^0.2",
         "decodelabs/exceptional": "^0.4",
         "decodelabs/glitch-support": "^0.4",
-        "decodelabs/systemic": "^0.8",
-        "decodelabs/veneer": "^0.8|^0.9-dev",
+        "decodelabs/systemic": "^0.9",
+        "decodelabs/veneer": "^0.9",
 
         "psr/log": "^3"
     },
@@ -25,8 +25,7 @@
         "phpstan/phpstan": "^1",
         "symplify/easy-coding-standard": "^11",
 
-        "decodelabs/phpstan-decodelabs": "^0.6",
-        "decodelabs/atlas": "^0.9"
+        "decodelabs/phpstan-decodelabs": "^0.6"
     },
     "autoload": {
         "psr-4": {
