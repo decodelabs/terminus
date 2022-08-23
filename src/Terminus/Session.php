@@ -1312,7 +1312,7 @@ class Session implements ArrayAccess, Controller
     /**
      * Render generic log message
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         $message = $this->interpolate((string)$message, $context);
 

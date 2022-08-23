@@ -15,13 +15,6 @@ Simple CLI interactions for PHP
 composer require decodelabs/terminus
 ```
 
-### PHP version
-
-_Please note, the final v1 releases of all Decode Labs libraries will target **PHP8** or above._
-
-Current support for earlier versions of PHP will be phased out in the coming months.
-
-
 ## Usage
 
 Terminus uses [Veneer](https://github.com/decodelabs/veneer) to provide a unified frontage under <code>DecodeLabs\Terminus</code>.
