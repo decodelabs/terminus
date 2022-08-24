@@ -942,21 +942,21 @@ class Session implements
     /*
     public function getDefaultBackgroundColor(): ?string
     {
-       if (null === ($response = $this->captureAnsi("\e]11;?\a"))) {
-           return null;
-       }
+        if (null === ($response = $this->captureAnsi("\e]11;?\a"))) {
+            return null;
+        }
 
-       if (!preg_match('#^rgb\:([a-f0-9]{2,4})/([a-f0-9]{2,4})/([a-f0-9]{2,4})$#', $response, $matches)) {
-           return null;
-       }
+        if (!preg_match('#^rgb\:([a-f0-9]{2,4})/([a-f0-9]{2,4})/([a-f0-9]{2,4})$#', $response, $matches)) {
+            return null;
+        }
 
-       $r = dechex(255 * (hexdec($matches[1]) / 65535));
-       $g = dechex(255 * (hexdec($matches[2]) / 65535));
-       $b = dechex(255 * (hexdec($matches[3]) / 65535));
+        $r = dechex(255 * (hexdec($matches[1]) / 65535));
+        $g = dechex(255 * (hexdec($matches[2]) / 65535));
+        $b = dechex(255 * (hexdec($matches[3]) / 65535));
 
-       return '#'.$r.$g.$b;
+        return '#'.$r.$g.$b;
     }
-    */
+     */
 
 
     /**
