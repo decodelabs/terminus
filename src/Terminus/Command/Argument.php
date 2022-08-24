@@ -15,57 +15,26 @@ use DecodeLabs\Terminus\Session;
 
 class Argument
 {
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
+    protected string $description;
+    protected ?string $shortcut = null;
 
-    /**
-     * @var string
-     */
-    protected $description;
+    protected bool $named = false;
+    protected bool $boolean = false;
+    protected bool $optional = false;
+    protected bool $list = false;
 
-    /**
-     * @var string|null
-     */
-    protected $shortcut;
-
-    /**
-     * @var bool
-     */
-    protected $named = false;
-
-    /**
-     * @var bool
-     */
-    protected $boolean = false;
-
-    /**
-     * @var bool
-     */
-    protected $optional = false;
-
-    /**
-     * @var bool
-     */
-    protected $list = false;
-
-    /**
-     * @var string|null
-     */
-    protected $defaultValue;
-
-    /**
-     * @var string|null
-     */
-    protected $pattern;
+    protected ?string $defaultValue = null;
+    protected ?string $pattern = null;
 
 
     /**
      * Init with name
      */
-    public function __construct(string $name, string $description)
-    {
+    public function __construct(
+        string $name,
+        string $description
+    ) {
         if (substr($name, 0, 1) == '?') {
             $this->setOptional(true);
             $name = ltrim($name, '?');
@@ -114,7 +83,7 @@ class Argument
      *
      * @return $this
      */
-    public function setDescription(string $description): Argument
+    public function setDescription(string $description): static
     {
         $this->description = $description;
         return $this;
@@ -134,7 +103,7 @@ class Argument
      *
      * @return $this
      */
-    public function setNamed(bool $named): Argument
+    public function setNamed(bool $named): static
     {
         $this->named = $named;
         return $this;
@@ -155,7 +124,7 @@ class Argument
      *
      * @return $this
      */
-    public function setShortcut(?string $shortcut): Argument
+    public function setShortcut(?string $shortcut): static
     {
         if ($shortcut !== null) {
             $shortcut = substr($shortcut, 0, 1);
@@ -180,7 +149,7 @@ class Argument
      *
      * @return $this
      */
-    public function setBoolean(bool $boolean): Argument
+    public function setBoolean(bool $boolean): static
     {
         if ($boolean) {
             $this->defaultValue = null;
@@ -207,7 +176,7 @@ class Argument
      *
      * @return $this
      */
-    public function setOptional(bool $optional): Argument
+    public function setOptional(bool $optional): static
     {
         $this->optional = $optional;
 
@@ -232,7 +201,7 @@ class Argument
      *
      * @return $this
      */
-    public function setList(bool $list): Argument
+    public function setList(bool $list): static
     {
         if ($list) {
             $this->setBoolean(false);
@@ -256,7 +225,7 @@ class Argument
      *
      * @return $this
      */
-    public function setDefaultValue(?string $value): Argument
+    public function setDefaultValue(?string $value): static
     {
         if (empty($value)) {
             $value = null;
@@ -281,7 +250,7 @@ class Argument
      *
      * @return $this
      */
-    public function setPattern(?string $pattern): Argument
+    public function setPattern(?string $pattern): static
     {
         $this->pattern = $pattern;
         return $this;
@@ -298,11 +267,8 @@ class Argument
 
     /**
      * Check and normalize input value
-     *
-     * @param mixed $value
-     * @return mixed
      */
-    public function validate($value)
+    public function validate(mixed $value): mixed
     {
         if ($this->boolean) {
             if (is_string($value)) {
@@ -317,9 +283,14 @@ class Argument
 
             if ($value === true) {
                 return true;
-            } elseif ($value === false || $value === null) {
+            } elseif (
+                $value === false ||
+                $value === null
+            ) {
                 return false;
             }
+
+            return false;
         } else {
             if ($value === null) {
                 if (!$this->optional) {

@@ -13,36 +13,21 @@ use DecodeLabs\Terminus\Session;
 
 class Password
 {
-    /**
-     * @var string
-     */
-    protected $message = 'Please enter your password';
-
-    /**
-     * @var string
-     */
-    protected $repeatMessage = 'Please repeat your password';
-
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var bool
-     */
-    protected $repeat = false;
-
-    /**
-     * @var bool
-     */
-    protected $required = true;
+    protected string $message = 'Please enter your password';
+    protected string $repeatMessage = 'Please repeat your password';
+    protected Session $session;
+    protected bool $repeat = false;
+    protected bool $required = true;
 
     /**
      * Init with message
      */
-    public function __construct(Session $session, ?string $message = null, bool $repeat = false, bool $required = true)
-    {
+    public function __construct(
+        Session $session,
+        ?string $message = null,
+        bool $repeat = false,
+        bool $required = true
+    ) {
         $this->session = $session;
         $this->setMessage($message);
         $this->setRepeat($repeat);
@@ -54,7 +39,7 @@ class Password
      *
      * @return $this
      */
-    public function setMessage(?string $message): Password
+    public function setMessage(?string $message): static
     {
         if ($message === null) {
             $message = 'Please enter your password';
@@ -77,7 +62,7 @@ class Password
      *
      * @return $this
      */
-    public function setRepeatMessage(?string $message): Password
+    public function setRepeatMessage(?string $message): static
     {
         if ($message === null) {
             $message = 'Please repeat your password';
@@ -100,7 +85,7 @@ class Password
      *
      * @return $this
      */
-    public function setRepeat(bool $flag): Password
+    public function setRepeat(bool $flag): static
     {
         $this->repeat = $flag;
         return $this;
@@ -119,7 +104,7 @@ class Password
      *
      * @return $this
      */
-    public function setRequired(bool $flag): Password
+    public function setRequired(bool $flag): static
     {
         $this->required = $flag;
         return $this;

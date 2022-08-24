@@ -68,62 +68,30 @@ class Style
         'strike' => [9, 29],
     ];
 
-    /**
-     * @var string|null
-     */
-    protected $foreground = 'reset';
-
-    /**
-     * @var int
-     */
-    protected $foregroundBits = 4;
-
-    /**
-     * @var string|null
-     */
-    protected $background = 'reset';
-
-    /**
-     * @var int
-     */
-    protected $backgroundBits = 4;
+    protected ?string $foreground = 'reset';
+    protected int $foregroundBits = 4;
+    protected ?string $background = 'reset';
+    protected int $backgroundBits = 4;
 
     /**
      * @var array<string>
      */
-    protected $options = [];
+    protected array $options = [];
 
-    /**
-     * @var bool
-     */
-    protected $error = false;
-
-    /**
-     * @var int
-     */
-    protected $linesBefore = 0;
-
-    /**
-     * @var int
-     */
-    protected $linesAfter = 0;
-
-    /**
-     * @var int
-     */
-    protected $tabs = 0;
-
-    /**
-     * @var int
-     */
-    protected $backspaces = 0;
+    protected bool $error = false;
+    protected int $linesBefore = 0;
+    protected int $linesAfter = 0;
+    protected int $tabs = 0;
+    protected int $backspaces = 0;
 
     /**
      * Is string a color or option keyword?
      */
     public static function isKeyword(string $string): bool
     {
-        return isset(self::FG_COLORS[$string]) || isset(self::OPTIONS[$string]);
+        return
+            isset(self::FG_COLORS[$string]) ||
+            isset(self::OPTIONS[$string]);
     }
 
     /**
@@ -201,8 +169,11 @@ class Style
     /**
      * Init with fg, gb and options
      */
-    public function __construct(?string $foreground, ?string $background = null, string ...$options)
-    {
+    public function __construct(
+        ?string $foreground,
+        ?string $background = null,
+        string ...$options
+    ) {
         $this->setForeground($foreground);
         $this->setBackground($background);
         $this->setOptions(...$options);
@@ -213,7 +184,7 @@ class Style
      *
      * @return $this
      */
-    public function setForeground(?string $foreground): Style
+    public function setForeground(?string $foreground): static
     {
         $bits = 4;
 
@@ -262,7 +233,7 @@ class Style
      *
      * @return $this
      */
-    public function setBackground(?string $background): Style
+    public function setBackground(?string $background): static
     {
         $bits = 4;
 
@@ -340,7 +311,7 @@ class Style
      *
      * @return $this
      */
-    public function setOptions(string ...$options): Style
+    public function setOptions(string ...$options): static
     {
         $this->options = [];
 
@@ -378,7 +349,7 @@ class Style
      *
      * @return $this
      */
-    public function setError(bool $flag): Style
+    public function setError(bool $flag): static
     {
         $this->error = $flag;
         return $this;
@@ -397,7 +368,7 @@ class Style
      *
      * @return $this
      */
-    public function setLinesBefore(int $lines): Style
+    public function setLinesBefore(int $lines): static
     {
         $this->linesBefore = $lines;
         return $this;
@@ -416,7 +387,7 @@ class Style
      *
      * @return $this
      */
-    public function setLinesAfter(int $lines): Style
+    public function setLinesAfter(int $lines): static
     {
         $this->linesAfter = $lines;
         return $this;
@@ -435,7 +406,7 @@ class Style
      *
      * @return $this
      */
-    public function setTabs(int $tabs): Style
+    public function setTabs(int $tabs): static
     {
         if ($tabs < 0) {
             $tabs = 0;
@@ -458,7 +429,7 @@ class Style
      *
      * @return $this
      */
-    public function setBackspaces(int $spaces): Style
+    public function setBackspaces(int $spaces): static
     {
         if ($spaces < 0) {
             $spaces = 0;
@@ -472,8 +443,10 @@ class Style
     /**
      * Appy to message
      */
-    public function apply(?string $message, Session $session): void
-    {
+    public function apply(
+        ?string $message,
+        Session $session
+    ): void {
         if ($this->linesBefore < 0) {
             $this->error ?
                 $session->deleteErrorLine(-1 * $this->linesBefore) :

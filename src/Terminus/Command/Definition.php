@@ -14,21 +14,13 @@ use DecodeLabs\Terminus\Session;
 
 class Definition
 {
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string|null
-     */
-    protected $help;
-
+    protected string $name;
+    protected ?string $help = null;
 
     /**
      * @var array<string, Argument>
      */
-    protected $arguments = [];
+    protected array $arguments = [];
 
     /**
      * Init with name
@@ -43,7 +35,7 @@ class Definition
      *
      * @return $this
      */
-    public function setName(string $name): Definition
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
@@ -63,7 +55,7 @@ class Definition
      *
      * @return $this
      */
-    public function setHelp(?string $help): Definition
+    public function setHelp(?string $help): static
     {
         $this->help = $help;
         return $this;
@@ -82,8 +74,11 @@ class Definition
     /**
      * Add a single argument to the queue
      */
-    public function addArgument(string $name, string $description, callable $setup = null): Definition
-    {
+    public function addArgument(
+        string $name,
+        string $description,
+        callable $setup = null
+    ): static {
         if (isset($this->arguments[$name])) {
             throw Exceptional::Logic(
                 'Named argument "' . $name . '" has already been defined'
@@ -104,7 +99,7 @@ class Definition
      *
      * @return $this
      */
-    public function setArgument(Argument $arg): Definition
+    public function setArgument(Argument $arg): static
     {
         $this->arguments[$arg->getName()] = $arg;
         return $this;
@@ -133,7 +128,7 @@ class Definition
      *
      * @return $this
      */
-    public function removeArgument(string $name): Definition
+    public function removeArgument(string $name): static
     {
         unset($this->arguments[$name]);
         return $this;
@@ -144,7 +139,7 @@ class Definition
      *
      * @return $this
      */
-    public function clearArguments(): Definition
+    public function clearArguments(): static
     {
         $this->arguments = [];
         return $this;
@@ -262,11 +257,13 @@ class Definition
 
 
     /**
-     * @param mixed $param
      * @param array<string, mixed> $output
      */
-    private function validate(Argument $arg, $param, array &$output): void
-    {
+    private function validate(
+        Argument $arg,
+        mixed $param,
+        array &$output
+    ): void {
         $name = $arg->getName();
 
         if ($arg->isList()) {
@@ -330,8 +327,10 @@ class Definition
     /**
      * Render argument to session
      */
-    private function renderArg(Session $session, Argument $arg): void
-    {
+    private function renderArg(
+        Session $session,
+        Argument $arg
+    ): void {
         if (!$arg->isNamed()) {
             $session->style('cyan|bold', $arg->getName());
 

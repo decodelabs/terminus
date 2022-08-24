@@ -14,36 +14,20 @@ use DecodeLabs\Terminus\Session;
 
 class Confirmation
 {
-    /**
-     * @var string
-     */
-    protected $message;
-
-    /**
-     * @var bool
-     */
-    protected $showOptions = true;
-
-    /**
-     * @var bool|null
-     */
-    protected $default;
-
-    /**
-     * @var string|null
-     */
-    protected $input;
-
-    /**
-     * @var Session
-     */
-    protected $session;
+    protected string $message;
+    protected bool $showOptions = true;
+    protected ?bool $default = null;
+    protected ?string $input = null;
+    protected Session $session;
 
     /**
      * Init with message
      */
-    public function __construct(Session $session, string $message, bool $default = null)
-    {
+    public function __construct(
+        Session $session,
+        string $message,
+        bool $default = null
+    ) {
         $this->session = $session;
         $this->setMessage($message);
         $this->setDefaultValue($default);
@@ -54,7 +38,7 @@ class Confirmation
      *
      * @return $this
      */
-    public function setMessage(string $message): Confirmation
+    public function setMessage(string $message): static
     {
         $this->message = $message;
         return $this;
@@ -73,7 +57,7 @@ class Confirmation
      *
      * @return $this
      */
-    public function setMessageInput(?string $input): Confirmation
+    public function setMessageInput(?string $input): static
     {
         $this->input = $input;
         return $this;
@@ -93,7 +77,7 @@ class Confirmation
      *
      * @return $this
      */
-    public function setShowOptions(bool $show): Confirmation
+    public function setShowOptions(bool $show): static
     {
         $this->showOptions = $show;
         return $this;
@@ -113,7 +97,7 @@ class Confirmation
      *
      * @return $this
      */
-    public function setDefaultValue(?bool $default): Confirmation
+    public function setDefaultValue(?bool $default): static
     {
         $this->default = $default;
         return $this;
@@ -193,10 +177,8 @@ class Confirmation
 
     /**
      * Check answer
-     *
-     * @param mixed $answer
      */
-    protected function validate(&$answer): bool
+    protected function validate(mixed &$answer): bool
     {
         if (
             empty($answer) &&

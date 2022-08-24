@@ -30,54 +30,38 @@ use DecodeLabs\Terminus\Widget\Question;
 use DecodeLabs\Terminus\Widget\Spinner;
 
 use Psr\Log\LoggerTrait;
+use Stringable;
 
 /**
  * @implements ArrayAccess<string, mixed>
  */
-class Session implements ArrayAccess, Controller
+class Session implements
+    ArrayAccess,
+    Controller
 {
     use LoggerTrait;
 
     /**
      * @var array<string, mixed>
      */
-    protected $arguments = [];
+    protected array $arguments = [];
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
+    protected Definition $definition;
+    protected Broker $broker;
 
-    /**
-     * @var Definition
-     */
-    protected $definition;
-
-    /**
-     * @var Broker
-     */
-    protected $broker;
-
-    /**
-     * @var bool
-     */
-    protected $isAnsi = true;
-
-    /**
-     * @var bool
-     */
-    protected $hasStty = false;
-
-    /**
-     * @var string|null
-     */
-    protected $sttyReset;
+    protected bool $isAnsi = true;
+    protected bool $hasStty = false;
+    protected ?string $sttyReset = null;
 
     /**
      * Init with IO broker and command info
      */
-    public function __construct(Broker $broker, Request $request, Definition $definition)
-    {
+    public function __construct(
+        Broker $broker,
+        Request $request,
+        Definition $definition
+    ) {
         $this->request = $request;
         $this->definition = $definition;
         $this->broker = $broker;
@@ -118,7 +102,7 @@ class Session implements ArrayAccess, Controller
      *
      * @return $this
      */
-    public function setBroker(Broker $broker): Session
+    public function setBroker(Broker $broker): static
     {
         $this->broker = $broker;
         return $this;
@@ -219,10 +203,8 @@ class Session implements ArrayAccess, Controller
 
     /**
      * Get argument
-     *
-     * @return mixed
      */
-    public function getArgument(string $name)
+    public function getArgument(string $name): mixed
     {
         return $this->arguments[$name] ?? null;
     }
@@ -241,10 +223,11 @@ class Session implements ArrayAccess, Controller
      * Manually override argument
      *
      * @param string $name
-     * @param mixed $value
      */
-    public function offsetSet($name, $value): void
-    {
+    public function offsetSet(
+        mixed $name,
+        mixed $value
+    ): void {
         $this->arguments[$name] = $value;
     }
 
@@ -252,9 +235,8 @@ class Session implements ArrayAccess, Controller
      * Get argument shortcut
      *
      * @param string $name
-     * @return mixed
      */
-    public function offsetGet($name)
+    public function offsetGet(mixed $name): mixed
     {
         return $this->arguments[$name] ?? null;
     }
@@ -264,7 +246,7 @@ class Session implements ArrayAccess, Controller
      *
      * @param string $name
      */
-    public function offsetExists($name): bool
+    public function offsetExists(mixed $name): bool
     {
         return array_key_exists($name, $this->arguments);
     }
@@ -274,7 +256,7 @@ class Session implements ArrayAccess, Controller
      *
      * @param string $name
      */
-    public function offsetUnset($name): void
+    public function offsetUnset(mixed $name): void
     {
         unset($this->arguments[$name]);
     }
@@ -372,8 +354,10 @@ class Session implements ArrayAccess, Controller
     /**
      * Write chunk to broker
      */
-    public function write(?string $data, int $length = null): int
-    {
+    public function write(
+        ?string $data,
+        int $length = null
+    ): int {
         return $this->broker->write($data, $length);
     }
 
@@ -388,8 +372,10 @@ class Session implements ArrayAccess, Controller
     /**
      * Write buffer to broker
      */
-    public function writeBuffer(Buffer $buffer, int $length): int
-    {
+    public function writeBuffer(
+        Buffer $buffer,
+        int $length
+    ): int {
         return $this->broker->writeBuffer($buffer, $length);
     }
 
@@ -406,8 +392,10 @@ class Session implements ArrayAccess, Controller
     /**
      * Write error chunk to broker
      */
-    public function writeError(?string $data, int $length = null): int
-    {
+    public function writeError(
+        ?string $data,
+        int $length = null
+    ): int {
         return $this->broker->writeError($data, $length);
     }
 
@@ -422,8 +410,10 @@ class Session implements ArrayAccess, Controller
     /**
      * Write error buffer to broker
      */
-    public function writeErrorBuffer(Buffer $buffer, int $length): int
-    {
+    public function writeErrorBuffer(
+        Buffer $buffer,
+        int $length
+    ): int {
         return $this->broker->writeErrorBuffer($buffer, $length);
     }
 
@@ -782,8 +772,10 @@ class Session implements ArrayAccess, Controller
     /**
      * Set cursor absolute position
      */
-    public function setCursorLine(int $line, int $pos = 1): bool
-    {
+    public function setCursorLine(
+        int $line,
+        int $pos = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -795,8 +787,10 @@ class Session implements ArrayAccess, Controller
     /**
      * Set cursor absolute position
      */
-    public function setErrorCursorLine(int $line, int $pos = 1): bool
-    {
+    public function setErrorCursorLine(
+        int $line,
+        int $pos = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -969,9 +963,14 @@ class Session implements ArrayAccess, Controller
     /**
      * Capture ansi response call
      */
-    protected function captureAnsi(string $command, bool $error = false): ?string
-    {
-        if (!$this->isAnsi || !$this->hasStty) {
+    protected function captureAnsi(
+        string $command,
+        bool $error = false
+    ): ?string {
+        if (
+            !$this->isAnsi ||
+            !$this->hasStty
+        ) {
             return null;
         }
 
@@ -1038,8 +1037,10 @@ class Session implements ArrayAccess, Controller
     /**
      * Shortcut style generation
      */
-    public function __call(string $method, array $args): Controller
-    {
+    public function __call(
+        string $method,
+        array $args
+    ): static {
         if (preg_match('/^[a-z][a-zA-Z0-9]+$/', $method) && !Style::isKeyword($method)) {
             throw Exceptional::BadMethodCall(
                 'CLI method not found: ' . $method
@@ -1054,8 +1055,10 @@ class Session implements ArrayAccess, Controller
      *
      * @return $this
      */
-    public function style(string $style, ?string $message = null): Controller
-    {
+    public function style(
+        string $style,
+        ?string $message = null
+    ): static {
         if ($message === null) {
             return $this;
         }
@@ -1070,48 +1073,64 @@ class Session implements ArrayAccess, Controller
     /**
      * Ask a question
      */
-    public function ask(string $message, string $default = null, ?callable $validator = null): ?string
-    {
+    public function ask(
+        string $message,
+        string $default = null,
+        ?callable $validator = null
+    ): ?string {
         return $this->newQuestion($message, $default, $validator)->prompt();
     }
 
     /**
      * Begin new question asker
      */
-    public function newQuestion(string $message, string $default = null, ?callable $validator = null): Question
-    {
+    public function newQuestion(
+        string $message,
+        string $default = null,
+        ?callable $validator = null
+    ): Question {
         return new Question($this, $message, $default, $validator);
     }
 
     /**
      * Ask for password
      */
-    public function askPassword(?string $message = null, bool $repeat = false, bool $required = true): ?string
-    {
+    public function askPassword(
+        ?string $message = null,
+        bool $repeat = false,
+        bool $required = true
+    ): ?string {
         return $this->newPasswordQuestion($message, $repeat, $required)->prompt();
     }
 
     /**
      * Begin password asker
      */
-    public function newPasswordQuestion(?string $message = null, bool $repeat = false, bool $required = true): Password
-    {
+    public function newPasswordQuestion(
+        ?string $message = null,
+        bool $repeat = false,
+        bool $required = true
+    ): Password {
         return new Password($this, $message, $repeat, $required);
     }
 
     /**
      * Ask for confirmation
      */
-    public function confirm(string $message, bool $default = null): bool
-    {
+    public function confirm(
+        string $message,
+        bool $default = null
+    ): bool {
         return $this->newConfirmation($message, $default)->prompt();
     }
 
     /**
      * Begin confirmation
      */
-    public function newConfirmation(string $message, bool $default = null): Confirmation
-    {
+    public function newConfirmation(
+        string $message,
+        bool $default = null
+    ): Confirmation {
         return new Confirmation($this, $message, $default);
     }
 
@@ -1128,8 +1147,11 @@ class Session implements ArrayAccess, Controller
     /**
      * Show progress bar
      */
-    public function newProgressBar(float $min = 0.0, float $max = 100.0, ?int $precision = null): ProgressBar
-    {
+    public function newProgressBar(
+        float $min = 0.0,
+        float $max = 100.0,
+        ?int $precision = null
+    ): ProgressBar {
         return new ProgressBar($this, $min, $max);
     }
 
@@ -1137,8 +1159,10 @@ class Session implements ArrayAccess, Controller
     /**
      * String to boolean
      */
-    public static function stringToBoolean(string $string, bool $default = null): ?bool
-    {
+    public static function stringToBoolean(
+        string $string,
+        bool $default = null
+    ): ?bool {
         switch ($string = strtolower(trim($string))) {
             case 'false':
             case '0':
@@ -1182,32 +1206,40 @@ class Session implements ArrayAccess, Controller
     /**
      * Render comment line
      */
-    public function comment(string $message, array $context = []): void
-    {
+    public function comment(
+        string $message,
+        array $context = []
+    ): void {
         $this->log('comment', $message, $context);
     }
 
     /**
      * Render success log
      */
-    public function success(string $message, array $context = []): void
-    {
+    public function success(
+        string $message,
+        array $context = []
+    ): void {
         $this->log('success', $message, $context);
     }
 
     /**
      * Render operative message line
      */
-    public function operative(string $message, array $context = []): void
-    {
+    public function operative(
+        string $message,
+        array $context = []
+    ): void {
         $this->log('operative', $message, $context);
     }
 
     /**
      * Render delete success log
      */
-    public function deleteSuccess(string $message, array $context = []): void
-    {
+    public function deleteSuccess(
+        string $message,
+        array $context = []
+    ): void {
         $this->log('deleteSuccess', $message, $context);
     }
 
@@ -1215,96 +1247,120 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline debug log
      */
-    public function inlineDebug(string $message, array $context = []): void
-    {
+    public function inlineDebug(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('debug', $message, $context);
     }
 
     /**
      * Render inline info log
      */
-    public function inlineInfo(string $message, array $context = []): void
-    {
+    public function inlineInfo(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('info', $message, $context);
     }
 
     /**
      * Render inline notice log
      */
-    public function inlineNotice(string $message, array $context = []): void
-    {
+    public function inlineNotice(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('notice', $message, $context);
     }
 
     /**
      * Render inline comment line
      */
-    public function inlineComment(string $message, array $context = []): void
-    {
+    public function inlineComment(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('comment', $message, $context);
     }
 
     /**
      * Render inline success log
      */
-    public function inlineSuccess(string $message, array $context = []): void
-    {
+    public function inlineSuccess(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('success', $message, $context);
     }
 
     /**
      * Render inline operative log
      */
-    public function inlineOperative(string $message, array $context = []): void
-    {
+    public function inlineOperative(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('operative', $message, $context);
     }
 
     /**
      * Render inline delete success log
      */
-    public function inlineDeleteSuccess(string $message, array $context = []): void
-    {
+    public function inlineDeleteSuccess(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('deleteSuccess', $message, $context);
     }
 
     /**
      * Render inline warning log
      */
-    public function inlineWarning(string $message, array $context = []): void
-    {
+    public function inlineWarning(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('warning', $message, $context);
     }
 
     /**
      * Render inline error log
      */
-    public function inlineError(string $message, array $context = []): void
-    {
+    public function inlineError(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('error', $message, $context);
     }
 
     /**
      * Render inline critical log
      */
-    public function inlineCritical(string $message, array $context = []): void
-    {
+    public function inlineCritical(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('critical', $message, $context);
     }
 
     /**
      * Render inline alert log
      */
-    public function inlineAlert(string $message, array $context = []): void
-    {
+    public function inlineAlert(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('alert', $message, $context);
     }
 
     /**
      * Render inline emergency log
      */
-    public function inlineEmergency(string $message, array $context = []): void
-    {
+    public function inlineEmergency(
+        string $message,
+        array $context = []
+    ): void {
         $this->inlineLog('emergency', $message, $context);
     }
 
@@ -1312,8 +1368,11 @@ class Session implements ArrayAccess, Controller
     /**
      * Render generic log message
      */
-    public function log($level, $message, array $context = []): void
-    {
+    public function log(
+        mixed $level,
+        string|Stringable $message,
+        array $context = []
+    ): void {
         $message = $this->interpolate((string)$message, $context);
 
         if (!isset(self::LOG_STYLES[$level])) {
@@ -1330,8 +1389,11 @@ class Session implements ArrayAccess, Controller
     /**
      * Render inline generic log message
      */
-    public function inlineLog(string $level, string $message, array $context = []): void
-    {
+    public function inlineLog(
+        string $level,
+        string|Stringable $message,
+        array $context = []
+    ): void {
         $message = $this->interpolate((string)$message, $context);
 
         if (!isset(self::LOG_STYLES[$level])) {
@@ -1350,8 +1412,10 @@ class Session implements ArrayAccess, Controller
      *
      * @param array<string, mixed> $context
      */
-    private function interpolate(string $message, array $context = []): string
-    {
+    private function interpolate(
+        string $message,
+        array $context = []
+    ): string {
         $replace = [];
 
         foreach ($context as $key => $val) {
