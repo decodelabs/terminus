@@ -13,7 +13,6 @@ use ArrayAccess;
 
 use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Deliverance\Channel\Buffer;
-use DecodeLabs\Deliverance\DataProvider;
 use DecodeLabs\Deliverance\DataReceiver;
 
 use DecodeLabs\Exceptional;
@@ -268,7 +267,7 @@ class Session implements
      *
      * @return $this
      */
-    public function setReadBlocking(bool $flag): DataProvider
+    public function setReadBlocking(bool $flag): static
     {
         $this->broker->setReadBlocking($flag);
         return $this;
@@ -328,7 +327,7 @@ class Session implements
      *
      * @return $this
      */
-    public function readTo(DataReceiver $writer): DataProvider
+    public function readTo(DataReceiver $writer): static
     {
         $this->broker->readTo($writer);
         return $this;
