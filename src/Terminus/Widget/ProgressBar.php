@@ -16,54 +16,27 @@ class ProgressBar
     public const EMPTY = '░';
     public const FULL = '▓';
 
-    /**
-     * @var float
-     */
-    protected $min = 0;
+    protected float $min = 0;
+    protected float $max = 100;
 
-    /**
-     * @var float
-     */
-    protected $max = 100;
+    protected bool $showPercent = true;
+    protected bool $showCompleted = true;
 
+    protected bool $started = false;
+    protected int $written = 0;
+    protected int $precision = 2;
 
-    /**
-     * @var bool
-     */
-    protected $showPercent = true;
-
-    /**
-     * @var bool
-     */
-    protected $showCompleted = true;
-
-
-    /**
-     * @var bool
-     */
-    protected $started = false;
-
-    /**
-     * @var int
-     */
-    protected $written = 0;
-
-    /**
-     * @var int
-     */
-    protected $precision = 2;
-
-
-    /**
-     * @var Session
-     */
-    protected $session;
+    protected Session $session;
 
     /**
      * Init with session and style
      */
-    public function __construct(Session $session, float $min = 0.0, float $max = 100.0, ?int $precision = null)
-    {
+    public function __construct(
+        Session $session,
+        float $min = 0.0,
+        float $max = 100.0,
+        ?int $precision = null
+    ) {
         $this->session = $session;
         $this->setRange($min, $max);
 
@@ -94,7 +67,7 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setMin(float $min): ProgressBar
+    public function setMin(float $min): static
     {
         $this->min = $min;
         return $this;
@@ -113,7 +86,7 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setMax(float $max): ProgressBar
+    public function setMax(float $max): static
     {
         $this->max = $max;
         return $this;
@@ -132,8 +105,10 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setRange(float $min, float $max): ProgressBar
-    {
+    public function setRange(
+        float $min,
+        float $max
+    ): static {
         $this->setMin($min);
         $this->setMax($max);
         return $this;
@@ -154,7 +129,7 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setPrecision(int $precision): ProgressBar
+    public function setPrecision(int $precision): static
     {
         $this->precision = $precision;
         return $this;
@@ -175,7 +150,7 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setShowPercent(bool $flag): ProgressBar
+    public function setShowPercent(bool $flag): static
     {
         $this->showPercent = $flag;
         return $this;
@@ -194,7 +169,7 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setShowCompleted(bool $flag): ProgressBar
+    public function setShowCompleted(bool $flag): static
     {
         $this->showCompleted = $flag;
         return $this;
@@ -215,7 +190,7 @@ class ProgressBar
      *
      * @return $this
      */
-    public function advance(float $value): ProgressBar
+    public function advance(float $value): static
     {
         $width = min($this->session->getWidth(), 82);
 
@@ -325,7 +300,7 @@ class ProgressBar
      *
      * @return $this
      */
-    public function complete(): ProgressBar
+    public function complete(): static
     {
         $this->advance($this->max);
         $this->session->newLine();

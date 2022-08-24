@@ -17,31 +17,18 @@ class Spinner
     public const TICK = 0.08;
     public const CHARS = ['-', '\\', '|', '/'];
 
-    /**
-     * @var string|null
-     */
-    protected $style;
-
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var float|null
-     */
-    protected $lastTime;
-
-    /**
-     * @var int
-     */
-    protected $char = 0;
+    protected ?string $style = null;
+    protected Session $session;
+    protected ?float $lastTime = null;
+    protected int $char = 0;
 
     /**
      * Init with session and style
      */
-    public function __construct(Session $session, string $style = null)
-    {
+    public function __construct(
+        Session $session,
+        string $style = null
+    ) {
         $this->session = $session;
         $this->setStyle($style);
     }
@@ -52,7 +39,7 @@ class Spinner
      *
      * @return $this
      */
-    public function setStyle(?string $style): Spinner
+    public function setStyle(?string $style): static
     {
         $this->style = $style;
         return $this;
@@ -73,7 +60,7 @@ class Spinner
      *
      * @return $this
      */
-    public function advance(): Spinner
+    public function advance(): static
     {
         $time = microtime(true);
 
@@ -110,7 +97,7 @@ class Spinner
      *
      * @return $this
      */
-    public function waitFor(float $seconds): Spinner
+    public function waitFor(float $seconds): static
     {
         if ($seconds <= 0) {
             throw Exceptional::InvalidArgument('Wait time must be a positive value');
@@ -134,8 +121,10 @@ class Spinner
      *
      * @return $this
      */
-    public function complete(?string $message = null, ?string $style = null): Spinner
-    {
+    public function complete(
+        ?string $message = null,
+        ?string $style = null
+    ): static {
         if ($this->session->isAnsi()) {
             if ($this->lastTime !== null) {
                 $this->session->backspace();

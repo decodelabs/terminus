@@ -71,8 +71,16 @@ interface Controller extends
 
     public function setCursor(int $pos): bool;
     public function setErrorCursor(int $pos): bool;
-    public function setCursorLine(int $line, int $pos = 1): bool;
-    public function setErrorCursorLine(int $line, int $pos = 1): bool;
+
+    public function setCursorLine(
+        int $line,
+        int $pos = 1
+    ): bool;
+
+    public function setErrorCursorLine(
+        int $line,
+        int $pos = 1
+    ): bool;
 
     /**
      * @return array<int>
@@ -103,107 +111,201 @@ interface Controller extends
      * @param array{0?: string|null} $args
      * @return $this
      */
-    public function __call(string $method, array $args): Controller;
+    public function __call(
+        string $method,
+        array $args
+    ): static;
 
     /**
      * @return $this
      */
-    public function style(string $style, ?string $message = null): Controller;
+    public function style(
+        string $style,
+        ?string $message = null
+    ): static;
 
 
 
-    public function ask(string $message, string $default = null, ?callable $validator = null): ?string;
-    public function newQuestion(string $message, string $default = null, ?callable $validator = null): Question;
-    public function askPassword(?string $message = null, bool $repeat = false, bool $required = true): ?string;
-    public function newPasswordQuestion(?string $message = null, bool $repeat = false, bool $required = true): Password;
-    public function confirm(string $message, bool $default = null): bool;
-    public function newConfirmation(string $message, bool $default = null): Confirmation;
-    public function newSpinner(string $style = null): Spinner;
-    public function newProgressBar(float $min = 0.0, float $max = 100.0, ?int $precision = null): ProgressBar;
+    public function ask(
+        string $message,
+        string $default = null,
+        ?callable $validator = null
+    ): ?string;
+
+    public function newQuestion(
+        string $message,
+        string $default = null,
+        ?callable $validator = null
+    ): Question;
+
+    public function askPassword(
+        ?string $message = null,
+        bool $repeat = false,
+        bool $required = true
+    ): ?string;
+
+    public function newPasswordQuestion(
+        ?string $message = null,
+        bool $repeat = false,
+        bool $required = true
+    ): Password;
+
+    public function confirm(
+        string $message,
+        bool $default = null
+    ): bool;
+
+    public function newConfirmation(
+        string $message,
+        bool $default = null
+    ): Confirmation;
+
+    public function newSpinner(
+        string $style = null
+    ): Spinner;
+
+    public function newProgressBar(
+        float $min = 0.0,
+        float $max = 100.0,
+        ?int $precision = null
+    ): ProgressBar;
+
 
     /**
      * @param array<string, mixed> $context
      */
-    public function comment(string $message, array $context = []): void;
+    public function comment(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function success(string $message, array $context = []): void;
+    public function success(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function operative(string $message, array $context = []): void;
+    public function operative(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function deleteSuccess(string $message, array $context = []): void;
+    public function deleteSuccess(
+        string $message,
+        array $context = []
+    ): void;
 
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineDebug(string $message, array $context = []): void;
+    public function inlineDebug(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineInfo(string $message, array $context = []): void;
+    public function inlineInfo(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineNotice(string $message, array $context = []): void;
+    public function inlineNotice(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineComment(string $message, array $context = []): void;
+    public function inlineComment(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineSuccess(string $message, array $context = []): void;
+    public function inlineSuccess(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineOperative(string $message, array $context = []): void;
+    public function inlineOperative(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineDeleteSuccess(string $message, array $context = []): void;
+    public function inlineDeleteSuccess(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineWarning(string $message, array $context = []): void;
+    public function inlineWarning(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineError(string $message, array $context = []): void;
+    public function inlineError(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineCritical(string $message, array $context = []): void;
+    public function inlineCritical(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineAlert(string $message, array $context = []): void;
+    public function inlineAlert(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineEmergency(string $message, array $context = []): void;
+    public function inlineEmergency(
+        string $message,
+        array $context = []
+    ): void;
 
     /**
      * @param array<string, mixed> $context
      */
-    public function inlineLog(string $level, string $message, array $context = []): void;
+    public function inlineLog(
+        string $level,
+        string $message,
+        array $context = []
+    ): void;
 }

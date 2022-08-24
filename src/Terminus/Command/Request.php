@@ -13,32 +13,28 @@ use DecodeLabs\Glitch\Dumpable;
 
 class Request implements Dumpable
 {
-    /**
-     * @var string|null
-     */
-    protected $script;
+    protected ?string $script = null;
 
     /**
      * @var array<string, string>
      */
-    protected $args = [];
+    protected array $args = [];
 
     /**
      * @var array<string, string>
      */
-    protected $server = [];
+    protected array $server = [];
 
     /**
      * Init
      *
      * @param array<string, string> $server
      * @param array<string, string> $args
-     * @param string|null $script
      */
     public function __construct(
         array $server = [],
         array $args = [],
-        string $script = null
+        ?string $script = null
     ) {
         $this->server = $server;
         $this->args = $args;
@@ -49,7 +45,7 @@ class Request implements Dumpable
     /**
      * Alias withScript()
      */
-    public function setScript(string $script): Request
+    public function setScript(string $script): static
     {
         return $this->withScript($script);
     }
@@ -85,7 +81,7 @@ class Request implements Dumpable
     /**
      * New instance with script set
      */
-    public function withScript(string $script): Request
+    public function withScript(string $script): static
     {
         $output = clone $this;
         $output->script = $script;
@@ -99,7 +95,7 @@ class Request implements Dumpable
      *
      * @param array<string, string> $params
      */
-    public function setCommandParams(array $params): Request
+    public function setCommandParams(array $params): static
     {
         return $this->withCommandParams($params);
     }
@@ -139,7 +135,7 @@ class Request implements Dumpable
      *
      * @param array<string, string> $params
      */
-    public function withCommandParams(array $params): Request
+    public function withCommandParams(array $params): static
     {
         $output = clone $this;
         $output->args = $params;

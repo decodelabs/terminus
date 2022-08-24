@@ -13,56 +13,35 @@ use DecodeLabs\Terminus\Session;
 
 class Question
 {
-    /**
-     * @var string
-     */
-    protected $message;
+    protected string $message;
 
     /**
      * @var array<string>
      */
-    protected $options = [];
+    protected array $options = [];
 
-    /**
-     * @var bool
-     */
-    protected $showOptions = true;
+    protected bool $showOptions = true;
+    protected bool $strict = false;
+    protected bool $required = true;
+    protected bool $confirm = false;
 
-    /**
-     * @var bool
-     */
-    protected $strict = false;
-
-    /**
-     * @var bool
-     */
-    protected $required = true;
-
-    /**
-     * @var bool
-     */
-    protected $confirm = false;
-
-    /**
-     * @var string|null
-     */
-    protected $default;
+    protected ?string $default = null;
 
     /**
      * @var callable|null
      */
     protected $validator;
-
-    /**
-     * @var Session
-     */
-    protected $session;
+    protected Session $session;
 
     /**
      * Init with message
      */
-    public function __construct(Session $session, string $message, string $default = null, ?callable $validator = null)
-    {
+    public function __construct(
+        Session $session,
+        string $message,
+        string $default = null,
+        ?callable $validator = null
+    ) {
         $this->session = $session;
         $this->setMessage($message);
         $this->setDefaultValue($default);
@@ -74,7 +53,7 @@ class Question
      *
      * @return $this
      */
-    public function setMessage(string $message): Question
+    public function setMessage(string $message): static
     {
         $this->message = $message;
         return $this;
@@ -94,7 +73,7 @@ class Question
      *
      * @return $this
      */
-    public function setOptions(string ...$options): Question
+    public function setOptions(string ...$options): static
     {
         $this->options = $options;
         return $this;
@@ -115,7 +94,7 @@ class Question
      *
      * @return $this
      */
-    public function setShowOptions(bool $show): Question
+    public function setShowOptions(bool $show): static
     {
         $this->showOptions = $show;
         return $this;
@@ -135,7 +114,7 @@ class Question
      *
      * @return $this
      */
-    public function setStrict(bool $strict): Question
+    public function setStrict(bool $strict): static
     {
         $this->strict = $strict;
         return $this;
@@ -154,7 +133,7 @@ class Question
      *
      * @return $this
      */
-    public function setRequired(bool $flag): Question
+    public function setRequired(bool $flag): static
     {
         $this->required = $flag;
         return $this;
@@ -173,7 +152,7 @@ class Question
      *
      * @return $this
      */
-    public function setConfirm(bool $flag): Question
+    public function setConfirm(bool $flag): static
     {
         $this->confirm = $flag;
         return $this;
@@ -193,7 +172,7 @@ class Question
      *
      * @return $this
      */
-    public function setDefaultValue(?string $default): Question
+    public function setDefaultValue(?string $default): static
     {
         $this->default = $default;
         return $this;
@@ -212,7 +191,7 @@ class Question
      *
      * @return $this
      */
-    public function setValidator(?callable $validator): Question
+    public function setValidator(?callable $validator): static
     {
         $this->validator = $validator;
         return $this;
