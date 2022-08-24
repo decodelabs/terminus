@@ -1,3 +1,6 @@
+## v0.8.2 (2022-08-24)
+* Fixed Session DataProvider static return type
+
 ## v0.8.1 (2022-08-24)
 * Added concrete types to all members
 
