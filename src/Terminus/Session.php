@@ -1187,18 +1187,18 @@ class Session implements
 
 
     public const LOG_STYLES = [
-        'debug' => ['β ', '#996300'],
-        'info' => ['ℹ ', 'cyan'],
-        'notice' => ['☛ ', 'cyan|bold'],
-        'comment' => ['# ', 'yellow|dim'],
-        'success' => ['✓ ', 'green|bold'],
-        'operative' => ['⚑ ', '#ffa500|bold'],
-        'deleteSuccess' => ['⌦ ', 'brightRed'],
-        'warning' => ['⚠ ', '#ffa500|bold'],
-        'error' => ['✗ ', '!brightRed'],
-        'critical' => ['⚠ ', '!white|red|bold'],
-        'alert' => ['☎ ', '!brightRed|bold'],
-        'emergency' => ['☎ ', '!white|red|bold|underline'],
+        'debug' => ['β ', '#996300'], // @ignore-non-ascii
+        'info' => ['ℹ ', 'cyan'], // @ignore-non-ascii
+        'notice' => ['☛ ', 'cyan|bold'], // @ignore-non-ascii
+        'comment' => ['# ', 'yellow|dim'], // @ignore-non-ascii
+        'success' => ['✓ ', 'green|bold'], // @ignore-non-ascii
+        'operative' => ['⚑ ', '#ffa500|bold'], // @ignore-non-ascii
+        'deleteSuccess' => ['⌦ ', 'brightRed'], // @ignore-non-ascii
+        'warning' => ['⚠ ', '#ffa500|bold'], // @ignore-non-ascii
+        'error' => ['✗ ', '!brightRed'], // @ignore-non-ascii
+        'critical' => ['⚠ ', '!white|red|bold'], // @ignore-non-ascii
+        'alert' => ['☎ ', '!brightRed|bold'], // @ignore-non-ascii
+        'emergency' => ['☎ ', '!white|red|bold|underline'], // @ignore-non-ascii
     ];
 
 

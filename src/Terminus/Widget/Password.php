@@ -185,7 +185,7 @@ class Password
             $this->session->restoreStty($snapshot);
 
             if (strlen($password)) {
-                $this->session->style('.brightYellow', '••••••••');
+                $this->session->style('.brightYellow', '••••••••'); // @ignore-non-ascii
             } else {
                 $this->session->newLine();
             }
