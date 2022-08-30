@@ -10,9 +10,13 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\Tightrope\Manifest\Requirable;
+use DecodeLabs\Tightrope\Manifest\RequirableTrait;
 
-class Question
+class Question implements Requirable
 {
+    use RequirableTrait;
+
     protected string $message;
 
     /**
@@ -22,7 +26,6 @@ class Question
 
     protected bool $showOptions = true;
     protected bool $strict = false;
-    protected bool $required = true;
     protected bool $confirm = false;
 
     protected ?string $default = null;
@@ -46,6 +49,7 @@ class Question
         $this->setMessage($message);
         $this->setDefaultValue($default);
         $this->setValidator($validator);
+        $this->setRequired(true);
     }
 
     /**
@@ -126,25 +130,6 @@ class Question
     public function isStrict(): bool
     {
         return $this->strict;
-    }
-
-    /**
-     * Set required
-     *
-     * @return $this
-     */
-    public function setRequired(bool $flag): static
-    {
-        $this->required = $flag;
-        return $this;
-    }
-
-    /**
-     * Is required?
-     */
-    public function isRequired(): bool
-    {
-        return $this->required;
     }
 
     /**
