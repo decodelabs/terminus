@@ -13,8 +13,8 @@ use DecodeLabs\Terminus\Session;
 
 class ProgressBar
 {
-    public const EMPTY = '░';
-    public const FULL = '▓';
+    public const EMPTY = '░'; // @ignore-non-ascii
+    public const FULL = '▓'; // @ignore-non-ascii
 
     protected float $min = 0;
     protected float $max = 100;

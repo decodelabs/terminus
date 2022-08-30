@@ -1,3 +1,7 @@
+## v0.8.3 (2022-08-30)
+* Use Tightrope in Question Widgets
+* Updated CI environment
+
 ## v0.8.2 (2022-08-24)
 * Fixed Session DataProvider static return type
 

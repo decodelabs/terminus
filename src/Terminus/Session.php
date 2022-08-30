@@ -942,21 +942,21 @@ class Session implements
     /*
     public function getDefaultBackgroundColor(): ?string
     {
-       if (null === ($response = $this->captureAnsi("\e]11;?\a"))) {
-           return null;
-       }
+        if (null === ($response = $this->captureAnsi("\e]11;?\a"))) {
+            return null;
+        }
 
-       if (!preg_match('#^rgb\:([a-f0-9]{2,4})/([a-f0-9]{2,4})/([a-f0-9]{2,4})$#', $response, $matches)) {
-           return null;
-       }
+        if (!preg_match('#^rgb\:([a-f0-9]{2,4})/([a-f0-9]{2,4})/([a-f0-9]{2,4})$#', $response, $matches)) {
+            return null;
+        }
 
-       $r = dechex(255 * (hexdec($matches[1]) / 65535));
-       $g = dechex(255 * (hexdec($matches[2]) / 65535));
-       $b = dechex(255 * (hexdec($matches[3]) / 65535));
+        $r = dechex(255 * (hexdec($matches[1]) / 65535));
+        $g = dechex(255 * (hexdec($matches[2]) / 65535));
+        $b = dechex(255 * (hexdec($matches[3]) / 65535));
 
-       return '#'.$r.$g.$b;
+        return '#'.$r.$g.$b;
     }
-    */
+     */
 
 
     /**
@@ -1187,18 +1187,18 @@ class Session implements
 
 
     public const LOG_STYLES = [
-        'debug' => ['β ', '#996300'],
-        'info' => ['ℹ ', 'cyan'],
-        'notice' => ['☛ ', 'cyan|bold'],
-        'comment' => ['# ', 'yellow|dim'],
-        'success' => ['✓ ', 'green|bold'],
-        'operative' => ['⚑ ', '#ffa500|bold'],
-        'deleteSuccess' => ['⌦ ', 'brightRed'],
-        'warning' => ['⚠ ', '#ffa500|bold'],
-        'error' => ['✗ ', '!brightRed'],
-        'critical' => ['⚠ ', '!white|red|bold'],
-        'alert' => ['☎ ', '!brightRed|bold'],
-        'emergency' => ['☎ ', '!white|red|bold|underline'],
+        'debug' => ['β ', '#996300'], // @ignore-non-ascii
+        'info' => ['ℹ ', 'cyan'], // @ignore-non-ascii
+        'notice' => ['☛ ', 'cyan|bold'], // @ignore-non-ascii
+        'comment' => ['# ', 'yellow|dim'], // @ignore-non-ascii
+        'success' => ['✓ ', 'green|bold'], // @ignore-non-ascii
+        'operative' => ['⚑ ', '#ffa500|bold'], // @ignore-non-ascii
+        'deleteSuccess' => ['⌦ ', 'brightRed'], // @ignore-non-ascii
+        'warning' => ['⚠ ', '#ffa500|bold'], // @ignore-non-ascii
+        'error' => ['✗ ', '!brightRed'], // @ignore-non-ascii
+        'critical' => ['⚠ ', '!white|red|bold'], // @ignore-non-ascii
+        'alert' => ['☎ ', '!brightRed|bold'], // @ignore-non-ascii
+        'emergency' => ['☎ ', '!white|red|bold|underline'], // @ignore-non-ascii
     ];
 
 

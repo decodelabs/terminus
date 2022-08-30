@@ -7,6 +7,6 @@ namespace DecodeLabs;
 use DecodeLabs\Veneer\Proxy;
 use DecodeLabs\Veneer\ProxyTrait;
 use DecodeLabs\Terminus\Context as Inst;
-class Terminus implements Proxy { use ProxyTrait; 
+class Terminus implements Proxy { use ProxyTrait;
 const VENEER = 'Terminus';
 const VENEER_TARGET = Inst::class;};

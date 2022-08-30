@@ -10,14 +10,17 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
+use DecodeLabs\Tightrope\Manifest\Requirable;
+use DecodeLabs\Tightrope\Manifest\RequirableTrait;
 
-class Password
+class Password implements Requirable
 {
+    use RequirableTrait;
+
     protected string $message = 'Please enter your password';
     protected string $repeatMessage = 'Please repeat your password';
     protected Session $session;
     protected bool $repeat = false;
-    protected bool $required = true;
 
     /**
      * Init with message
@@ -99,25 +102,6 @@ class Password
         return $this->repeat;
     }
 
-    /**
-     * Set required
-     *
-     * @return $this
-     */
-    public function setRequired(bool $flag): static
-    {
-        $this->required = $flag;
-        return $this;
-    }
-
-    /**
-     * Is required?
-     */
-    public function isRequired(): bool
-    {
-        return $this->required;
-    }
-
 
     /**
      * Ask the question
@@ -185,7 +169,7 @@ class Password
             $this->session->restoreStty($snapshot);
 
             if (strlen($password)) {
-                $this->session->style('.brightYellow', '••••••••');
+                $this->session->style('.brightYellow', '••••••••'); // @ignore-non-ascii
             } else {
                 $this->session->newLine();
             }
