@@ -77,7 +77,7 @@ Cli::{'.'}('- this ends on a new line');
 Cli::{'>>'}('This is tabbed, twice!');
 Cli::{'<'}(' - this backspaces the last character');
 Cli::writeLine();
-Cli::{'++>..:146|#CCC|bold|underline'}
+Cli::{'++>..:146|#CCC|bold|underline'}('A whole mix of parameters');
 ```
 
 Support for <code>ANSI</code> codes can be checked with:
