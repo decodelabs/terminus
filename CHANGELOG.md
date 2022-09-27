@@ -1,3 +1,6 @@
+## v0.8.4 (2022-09-27)
+* Updated Veneer dependency
+
 ## v0.8.3 (2022-08-30)
 * Use Tightrope in Question Widgets
 * Updated CI environment
