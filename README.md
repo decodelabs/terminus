@@ -17,33 +17,6 @@ composer require decodelabs/terminus
 
 ## Usage
 
-Terminus uses [Veneer](https://github.com/decodelabs/veneer) to provide a unified frontage under <code>DecodeLabs\Terminus</code>.
-You can access all the primary functionality via this static frontage without compromising testing and dependency injection.
-
-### Session
-
-Terminus will by default create a standard session communicating via PHP's <code>STDIN</code>, <code>STDOUT</code> and <code>STDERR</code> streams, with arguments from <code>$\_SERVER['argv']</code>.
-
-You can however customise the session by creating your own and setting it via the main <code>Terminus</code> frontage.
-See [Deliverance Broker](https://github.com/decodelabs/atlas) for more information about controlling IO streams.
-
-```php
-use DecodeLabs\Deliverance;
-use DecodeLabs\Terminus as Cli;
-
-$session = Cli::newSession(
-    Cli::newRequest(['list', 'of', 'argv', 'params']),
-
-    // The Io Broker is optional, defaults to best fit
-    Deliverance::newIoBroker()
-        ->addInputProvider($inputStream)
-        ->addOutputReceiver($outputStream)
-        ->addErrorReceiver($errorStream)
-);
-
-Cli::setSession($session);
-```
-
 ### Writing output
 
 Write standard text to output:
@@ -104,7 +77,7 @@ Cli::{'.'}('- this ends on a new line');
 Cli::{'>>'}('This is tabbed, twice!');
 Cli::{'<'}(' - this backspaces the last character');
 Cli::writeLine();
-Cli::{'++>..:146|#CCC|bold|underline'}
+Cli::{'++>..:146|#CCC|bold|underline'}('A whole mix of parameters');
 ```
 
 Support for <code>ANSI</code> codes can be checked with:
@@ -336,6 +309,35 @@ $session = Cli::prepareCommand(function ($command) {
 $action = $session['action'];
 $test = $session['test'];
 ```
+
+### Session
+
+Terminus will by default create a standard session communicating via PHP's <code>STDIN</code>, <code>STDOUT</code> and <code>STDERR</code> streams, with arguments from <code>$\_SERVER['argv']</code>.
+
+You can however customise the session by creating your own and setting it via the main <code>Terminus</code> frontage.
+See [Deliverance Broker](https://github.com/decodelabs/atlas) for more information about controlling IO streams.
+
+```php
+use DecodeLabs\Deliverance;
+use DecodeLabs\Terminus as Cli;
+
+$session = Cli::newSession(
+    Cli::newRequest(['list', 'of', 'argv', 'params']),
+
+    // The Io Broker is optional, defaults to best fit
+    Deliverance::newIoBroker()
+        ->addInputProvider($inputStream)
+        ->addOutputReceiver($outputStream)
+        ->addErrorReceiver($errorStream)
+);
+
+Cli::setSession($session);
+```
+
+### Veneer
+
+Terminus uses [Veneer](https://github.com/decodelabs/veneer) to provide a unified frontage under <code>DecodeLabs\Terminus</code>.
+You can access all the primary functionality via this static frontage without compromising testing and dependency injection.
 
 
 ## Licensing
