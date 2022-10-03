@@ -191,7 +191,7 @@ class Definition
             }
         }
 
-        $params = $request->getCommandParams();
+        $params = $request->getArguments();
 
         while (!empty($params)) {
             $param = array_shift($params);
