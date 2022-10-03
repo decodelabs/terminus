@@ -18,7 +18,7 @@ class Request implements Dumpable
     /**
      * @var array<string, string>
      */
-    protected array $args = [];
+    protected array $arguments = [];
 
     /**
      * @var array<string, string>
@@ -29,26 +29,18 @@ class Request implements Dumpable
      * Init
      *
      * @param array<string, string> $server
-     * @param array<string, string> $args
+     * @param array<string, string> $arguments
      */
     public function __construct(
         array $server = [],
-        array $args = [],
+        array $arguments = [],
         ?string $script = null
     ) {
         $this->server = $server;
-        $this->args = $args;
+        $this->arguments = $arguments;
         $this->script = $script;
     }
 
-
-    /**
-     * Alias withScript()
-     */
-    public function setScript(string $script): static
-    {
-        return $this->withScript($script);
-    }
 
     /**
      * Get launch script
@@ -91,54 +83,44 @@ class Request implements Dumpable
 
 
     /**
-     * Alias withCommandParams()
-     *
-     * @param array<string, string> $params
-     */
-    public function setCommandParams(array $params): static
-    {
-        return $this->withCommandParams($params);
-    }
-
-    /**
-     * Get list of command args
+     * Get list of command arguments
      *
      * @return array<string, string>
      */
-    public function getCommandParams(): array
+    public function getArguments(): array
     {
-        return $this->args;
+        return $this->arguments;
     }
 
     /**
      * Lookup single command arg
      */
-    public function getCommandParam(string $key): ?string
+    public function getArgument(string $key): ?string
     {
-        if (!isset($this->args[$key])) {
+        if (!isset($this->arguments[$key])) {
             return null;
         }
 
-        return (string)$this->args[$key];
+        return (string)$this->arguments[$key];
     }
 
     /**
      * Is command arg set?
      */
-    public function hasCommandParam(string $key): bool
+    public function hasArgument(string $key): bool
     {
-        return isset($this->args[$key]);
+        return isset($this->arguments[$key]);
     }
 
     /**
      * New instance with params set
      *
-     * @param array<string, string> $params
+     * @param array<string, string> $arguments
      */
-    public function withCommandParams(array $params): static
+    public function withArguments(array $arguments): static
     {
         $output = clone $this;
-        $output->args = $params;
+        $output->arguments = $arguments;
 
         return $output;
     }
@@ -149,7 +131,7 @@ class Request implements Dumpable
      *
      * @return array<string, string>
      */
-    public function getServerParams(): array
+    public function getServerParameters(): array
     {
         return $this->server;
     }
@@ -157,7 +139,7 @@ class Request implements Dumpable
     /**
      * Get single server param
      */
-    public function getServerParam(string $key): ?string
+    public function getServerParameter(string $key): ?string
     {
         if (!isset($this->server[$key])) {
             return null;
@@ -169,7 +151,7 @@ class Request implements Dumpable
     /**
      * Is $key in $server?
      */
-    public function hasServerParam(string $key): bool
+    public function hasServerParameter(string $key): bool
     {
         return isset($this->server[$key]);
     }
@@ -182,9 +164,9 @@ class Request implements Dumpable
     {
         $output = $this->script;
 
-        if (!empty($output) && !empty($this->args)) {
+        if (!empty($output) && !empty($this->arguments)) {
             $output .= ' ';
-            $output .= implode(' ', $this->args);
+            $output .= implode(' ', $this->arguments);
         }
 
         return (string)$output;

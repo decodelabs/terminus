@@ -81,11 +81,34 @@ class Session implements
     }
 
     /**
+     * Set request - must be done early in process
+     *
+     * @return $this
+     */
+    public function setRequest(Request $request): static
+    {
+        $this->request = $request;
+        return $this;
+    }
+
+    /**
      * Get request
      */
     public function getRequest(): Request
     {
         return $this->request;
+    }
+
+
+    /**
+     * Set command definition
+     *
+     * @return $this
+     */
+    public function setCommandDefinition(Definition $definition): static
+    {
+        $this->definition = $definition;
+        return $this;
     }
 
     /**
