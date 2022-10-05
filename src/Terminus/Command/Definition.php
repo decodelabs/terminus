@@ -232,8 +232,8 @@ class Definition
             } else {
                 if (!$arg = array_shift($args)) {
                     $arg = new Argument(
-                        'unnamed'.++$unnamed,
-                        'Unnamed argument '.$unnamed
+                        'unnamed' . ++$unnamed,
+                        'Unnamed argument ' . $unnamed
                     );
                 }
 
