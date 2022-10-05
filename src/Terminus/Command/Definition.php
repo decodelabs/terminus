@@ -157,6 +157,8 @@ class Definition
         $args = $opts = $output = [];
         $lastIsList = $lastIsOptional = false;
 
+        $unnamed = 0;
+
         foreach ($this->arguments as $arg) {
             if ($arg->isNamed()) {
                 $opts[$arg->getName()] = $arg;
@@ -202,9 +204,7 @@ class Definition
                 $name = array_shift($parts);
 
                 if (!$arg = ($opts[$name] ?? null)) {
-                    throw Exceptional::UnexpectedValue(
-                        'Unexpected option: ' . $name
-                    );
+                    $arg = new Argument($param, 'Auto-argument');
                 }
 
                 if ($isShortcut) {
@@ -231,8 +231,9 @@ class Definition
                 }
             } else {
                 if (!$arg = array_shift($args)) {
-                    throw Exceptional::UnexpectedValue(
-                        'Unexpected argument: ' . $param
+                    $arg = new Argument(
+                        'unnamed'.++$unnamed,
+                        'Unnamed argument '.$unnamed
                     );
                 }
 
