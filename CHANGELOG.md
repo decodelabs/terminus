@@ -1,4 +1,9 @@
+## v0.9.1 (2022-10-05)
+* Parse undefined arguments in Commands
+
 ## v0.9.0 (2022-10-03)
+* Improved Request interface
+
 ## v0.8.5 (2022-09-27)
 * Improved Request interface
 
