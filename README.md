@@ -8,7 +8,9 @@
 [![License](https://img.shields.io/packagist/l/decodelabs/terminus?style=flat)](https://packagist.org/packages/decodelabs/terminus)
 
 
-**Simple CLI interactions for PHP**
+### Simple CLI interactions for PHP
+
+Terminus provides everything you need to build highly interactive, beautiful CLI processes.
 
 _Get news and updates on the [DecodeLabs blog](https://blog.decodelabs.com)._
 
