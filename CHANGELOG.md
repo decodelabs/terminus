@@ -1,3 +1,5 @@
+* Fixed PHP8.1 testing
+
 ## v0.9.1 (2022-10-05)
 * Parse undefined arguments in Commands
 
