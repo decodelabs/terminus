@@ -15,7 +15,7 @@
         "decodelabs/deliverance": "^0.2",
         "decodelabs/exceptional": "^0.4",
         "decodelabs/glitch-support": "^0.4",
-        "decodelabs/systemic": "^0.9",
+        "decodelabs/systemic": "^0.9|^0.10",
         "decodelabs/tightrope": "^0.1.1",
         "decodelabs/veneer": "^0.10.10",
 
@@ -58,7 +58,7 @@
         "eclint-fix": "eclint fix src/ stubs/ ecs.php",
         "non-ascii": "! LC_ALL=C.UTF-8 find src/ -type f -name \"*.php\" -print0 | xargs -0 -- grep -PHn \"[^ -~]\" | grep -v '// @ignore-non-ascii$'",
         "veneer-stub": "vendor/bin/veneer-stub",
-        "check": [
+        "prep": [
             "@composer update",
             "@veneer-stub",
             "@clear-phpstan",

@@ -105,8 +105,8 @@ class Style
             );
         }
 
-        $mods = $matches[1] ?? null;
-        $style = $matches[2] ?? null;
+        $mods = (string)($matches[1] ?? null);
+        $style = (string)($matches[2] ?? null);
         $parts = explode('|', $style);
         $fg = $bg = null;
         $options = [];
