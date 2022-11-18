@@ -15,7 +15,7 @@
         "decodelabs/deliverance": "^0.2",
         "decodelabs/exceptional": "^0.4",
         "decodelabs/glitch-support": "^0.4",
-        "decodelabs/systemic": "^0.9",
+        "decodelabs/systemic": "^0.9|^0.10",
         "decodelabs/tightrope": "^0.1.1",
         "decodelabs/veneer": "^0.10.10",
 
