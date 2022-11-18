@@ -1,3 +1,5 @@
+## v0.9.2 (2022-10-05)
+* Updated Systemic dependency
 * Fixed PHP8.1 testing
 
 ## v0.9.1 (2022-10-05)
