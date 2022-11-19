@@ -1,3 +1,5 @@
+* Migrated to use effigy in CI workflow
+
 ## v0.9.2 (2022-10-05)
 * Updated Systemic dependency
 * Fixed PHP8.1 testing
