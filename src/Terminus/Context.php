@@ -99,7 +99,7 @@ class Context
     /**
      * Create request from environment
      *
-     * @param array<string, string>|null $argv
+     * @param array<string>|null $argv
      * @param array<string, string>|null $server
      */
     public function newRequest(
