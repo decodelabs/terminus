@@ -1,3 +1,5 @@
+## v0.9.3 (2022-11-21)
+* Resolve callable as default value in widgets
 * Migrated to use effigy in CI workflow
 
 ## v0.9.2 (2022-10-05)
