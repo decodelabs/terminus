@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus\Widget;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Terminus\Session;
 use DecodeLabs\Tightrope\Manifest\Requirable;
 use DecodeLabs\Tightrope\Manifest\RequirableTrait;
@@ -38,11 +39,13 @@ class Question implements Requirable
 
     /**
      * Init with message
+     *
+     * @param string|(callable():?string)|null $default
      */
     public function __construct(
         Session $session,
         string $message,
-        string $default = null,
+        string|callable|null $default = null,
         ?callable $validator = null
     ) {
         $this->session = $session;
@@ -155,10 +158,16 @@ class Question implements Requirable
     /**
      * Set default value
      *
+     * @param string|(callable():?string)|null $default
      * @return $this
      */
-    public function setDefaultValue(?string $default): static
-    {
+    public function setDefaultValue(
+        string|callable|null $default
+    ): static {
+        if (is_callable($default)) {
+            $default = Coercion::toStringOrNull($default());
+        }
+
         $this->default = $default;
         return $this;
     }

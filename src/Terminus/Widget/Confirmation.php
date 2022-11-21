@@ -22,11 +22,13 @@ class Confirmation
 
     /**
      * Init with message
+     *
+     * @param bool|(callable():?bool)|null $default
      */
     public function __construct(
         Session $session,
         string $message,
-        bool $default = null
+        bool|callable|null $default = null
     ) {
         $this->session = $session;
         $this->setMessage($message);
@@ -95,10 +97,16 @@ class Confirmation
     /**
      * Set default value
      *
+     * @param bool|(callable():?bool)|null $default
      * @return $this
      */
-    public function setDefaultValue(?bool $default): static
-    {
+    public function setDefaultValue(
+        bool|callable|null $default
+    ): static {
+        if (is_callable($default)) {
+            $default = Coercion::toBoolOrNull($default());
+        }
+
         $this->default = $default;
         return $this;
     }

@@ -1094,10 +1094,12 @@ class Session implements
 
     /**
      * Ask a question
+     *
+     * @param string|(callable():?string)|null $default
      */
     public function ask(
         string $message,
-        string $default = null,
+        string|callable|null $default = null,
         ?callable $validator = null
     ): ?string {
         return $this->newQuestion($message, $default, $validator)->prompt();
@@ -1105,10 +1107,12 @@ class Session implements
 
     /**
      * Begin new question asker
+     *
+     * @param string|(callable():?string)|null $default
      */
     public function newQuestion(
         string $message,
-        string $default = null,
+        string|callable|null $default = null,
         ?callable $validator = null
     ): Question {
         return new Question($this, $message, $default, $validator);
@@ -1138,20 +1142,24 @@ class Session implements
 
     /**
      * Ask for confirmation
+     *
+     * @param bool|(callable():?bool)|null $default
      */
     public function confirm(
         string $message,
-        bool $default = null
+        bool|callable|null $default = null
     ): bool {
         return $this->newConfirmation($message, $default)->prompt();
     }
 
     /**
      * Begin confirmation
+     *
+     * @param bool|(callable():?bool)|null $default
      */
     public function newConfirmation(
         string $message,
-        bool $default = null
+        bool|callable|null $default = null
     ): Confirmation {
         return new Confirmation($this, $message, $default);
     }
@@ -1174,7 +1182,7 @@ class Session implements
         float $max = 100.0,
         ?int $precision = null
     ): ProgressBar {
-        return new ProgressBar($this, $min, $max);
+        return new ProgressBar($this, $min, $max, $precision);
     }
 
 
