@@ -617,7 +617,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->write("\e[${times}A");
+        $this->broker->write("\e[{$times}A");
         return true;
     }
 
@@ -630,7 +630,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->write("\e[${times}F");
+        $this->broker->write("\e[{$times}F");
         return true;
     }
 
@@ -643,7 +643,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->write("\e[${times}B");
+        $this->broker->write("\e[{$times}B");
         return true;
     }
 
@@ -656,7 +656,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->write("\e[${times}E");
+        $this->broker->write("\e[{$times}E");
         return true;
     }
 
@@ -669,7 +669,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->write("\e[${times}D");
+        $this->broker->write("\e[{$times}D");
         return true;
     }
 
@@ -682,7 +682,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->write("\e[${times}C");
+        $this->broker->write("\e[{$times}C");
         return true;
     }
 
@@ -695,7 +695,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->writeError("\e[${times}A");
+        $this->broker->writeError("\e[{$times}A");
         return true;
     }
 
@@ -708,7 +708,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->writeError("\e[${times}F");
+        $this->broker->writeError("\e[{$times}F");
         return true;
     }
 
@@ -721,7 +721,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->writeError("\e[${times}B");
+        $this->broker->writeError("\e[{$times}B");
         return true;
     }
 
@@ -734,7 +734,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->writeError("\e[${times}E");
+        $this->broker->writeError("\e[{$times}E");
         return true;
     }
 
@@ -747,7 +747,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->writeError("\e[${times}D");
+        $this->broker->writeError("\e[{$times}D");
         return true;
     }
 
@@ -760,7 +760,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->writeError("\e[${times}C");
+        $this->broker->writeError("\e[{$times}C");
         return true;
     }
 
@@ -774,7 +774,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->write("\e[${pos}G");
+        $this->broker->write("\e[{$pos}G");
         return true;
     }
 
@@ -787,7 +787,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->writeError("\e[${pos}G");
+        $this->broker->writeError("\e[{$pos}G");
         return true;
     }
 
@@ -802,7 +802,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->write("\e[${line};${pos}H");
+        $this->broker->write("\e[{$line};{$pos}H");
         return true;
     }
 
@@ -817,7 +817,7 @@ class Session implements
             return false;
         }
 
-        $this->broker->writeError("\e[${line};${pos}H");
+        $this->broker->writeError("\e[{$line};{$pos}H");
         return true;
     }
 

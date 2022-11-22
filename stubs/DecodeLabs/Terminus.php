@@ -5,8 +5,8 @@
  */
 namespace DecodeLabs;
 
-use DecodeLabs\Veneer\Proxy;
-use DecodeLabs\Veneer\ProxyTrait;
+use DecodeLabs\Veneer\Proxy as Proxy;
+use DecodeLabs\Veneer\ProxyTrait as ProxyTrait;
 use DecodeLabs\Terminus\Context as Inst;
 use DecodeLabs\Terminus\Session as Ref0;
 use DecodeLabs\Terminus\Command\Request as Ref1;
