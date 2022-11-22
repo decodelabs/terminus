@@ -1,3 +1,6 @@
+## v0.9.4 (2022-11-22)
+* Replaced bracket string interpolation
+
 ## v0.9.3 (2022-11-21)
 * Resolve callable as default value in widgets
 * Migrated to use effigy in CI workflow
