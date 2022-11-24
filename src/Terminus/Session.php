@@ -164,7 +164,7 @@ class Session implements
             return null;
         }
 
-        return trim(`stty -g`);
+        return trim((string)`stty -g`);
     }
 
     /**
