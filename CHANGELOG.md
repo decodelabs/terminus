@@ -1,3 +1,6 @@
+## v0.9.5 (2022-11-24)
+* Ensure stty snapshot is string
+
 ## v0.9.4 (2022-11-22)
 * Replaced bracket string interpolation
 
