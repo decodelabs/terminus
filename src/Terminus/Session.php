@@ -256,6 +256,31 @@ class Session implements
         return $output;
     }
 
+    /**
+     * Get passthrough arguments
+     */
+    public function getPassthroughArguments(
+        string ...$remove
+    ): array {
+        $output = [];
+
+        foreach ($this->arguments as $name => $value) {
+            if (in_array($name, $remove)) {
+                continue;
+            }
+
+            if (substr($name, 0, 7) === 'unnamed') {
+                $output[] = $value;
+            } elseif (is_string($value)) {
+                $output[] = '--'.$name.'="'.$value.'"';
+            } else {
+                $output[] = '--'.$name;
+            }
+        }
+
+        return $output;
+    }
+
 
 
     /**
