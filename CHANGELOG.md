@@ -1,3 +1,7 @@
+## v0.9.6 (2022-11-25)
+* Added getUnnamedArguments()
+* Added getPassthroughArguments()
+
 ## v0.9.5 (2022-11-24)
 * Ensure stty snapshot is string
 

@@ -11,13 +11,12 @@ namespace DecodeLabs\Terminus;
 
 use ArrayAccess;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Deliverance\Channel\Buffer;
 use DecodeLabs\Deliverance\DataReceiver;
-
 use DecodeLabs\Exceptional;
 use DecodeLabs\Systemic;
-
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Terminus\Io\Controller;
@@ -237,6 +236,51 @@ class Session implements
     public function hasArgument(string $name): bool
     {
         return array_key_exists($name, $this->arguments);
+    }
+
+    /**
+     * Get unnamed arguments
+     *
+     * @return array<string>
+     */
+    public function getUnnamedArguments(): array
+    {
+        $output = [];
+
+        foreach ($this->arguments as $name => $value) {
+            if (substr($name, 0, 7) === 'unnamed') {
+                $output[] = Coercion::forceString($value);
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Get passthrough arguments
+     *
+     * @return array<string>
+     */
+    public function getPassthroughArguments(
+        string ...$remove
+    ): array {
+        $output = [];
+
+        foreach ($this->arguments as $name => $value) {
+            if (in_array($name, $remove)) {
+                continue;
+            }
+
+            if (substr($name, 0, 7) === 'unnamed') {
+                $output[] = $value;
+            } elseif (is_string($value)) {
+                $output[] = '--'.$name.'="'.$value.'"';
+            } else {
+                $output[] = '--'.$name;
+            }
+        }
+
+        return $output;
     }
 
 
