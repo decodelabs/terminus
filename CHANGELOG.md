@@ -1,3 +1,4 @@
+## v0.9.6 (2022-11-25)
 * Added getUnnamedArguments()
 * Added getPassthroughArguments()
 
