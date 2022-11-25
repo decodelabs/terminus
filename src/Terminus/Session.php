@@ -258,6 +258,8 @@ class Session implements
 
     /**
      * Get passthrough arguments
+     *
+     * @return array<string>
      */
     public function getPassthroughArguments(
         string ...$remove
