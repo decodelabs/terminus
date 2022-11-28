@@ -1,3 +1,4 @@
+## v0.9.7 (2022-11-28)
 * Added platform adapter structure
 * Removed Systemic dependency
 
