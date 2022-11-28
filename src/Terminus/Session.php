@@ -16,7 +16,6 @@ use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Deliverance\Channel\Buffer;
 use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Terminus\Io\Controller;
@@ -52,6 +51,8 @@ class Session implements
     protected bool $hasStty = false;
     protected ?string $sttyReset = null;
 
+    protected Adapter $adapter;
+
     /**
      * Init with IO broker and command info
      */
@@ -63,10 +64,11 @@ class Session implements
         $this->request = $request;
         $this->definition = $definition;
         $this->broker = $broker;
-        $this->isAnsi = Systemic::$os->canColorShell();
+        $this->adapter = AdapterAbstract::load();
+        $this->isAnsi = $this->adapter->canColorShell();
 
         if ($this->isAnsi) {
-            $this->hasStty = Systemic::$os->which('stty') !== 'stty';
+            $this->hasStty = $this->adapter->hasStty();
             $this->sttyReset = $this->snapshotStty();
         }
     }
@@ -77,6 +79,14 @@ class Session implements
     public function __destruct()
     {
         $this->resetStty();
+    }
+
+    /**
+     * Get adapter
+     */
+    public function getAdapter(): Adapter
+    {
+        return $this->adapter;
     }
 
     /**
@@ -177,7 +187,7 @@ class Session implements
             return true;
         }
 
-        system('stty \'' . $snapshot . '\'');
+        $this->adapter->setStty($snapshot);
         return true;
     }
 
@@ -190,7 +200,7 @@ class Session implements
             return false;
         }
 
-        system('stty \'' . $this->sttyReset . '\'');
+        $this->adapter->setStty((string)$this->sttyReset);
         return true;
     }
 
@@ -200,7 +210,7 @@ class Session implements
      */
     public function getWidth(): int
     {
-        return Systemic::$os->getShellWidth();
+        return $this->adapter->getShellWidth();
     }
 
     /**
@@ -208,7 +218,7 @@ class Session implements
      */
     public function getHeight(): int
     {
-        return Systemic::$os->getShellHeight();
+        return $this->adapter->getShellHeight();
     }
 
 
@@ -272,11 +282,11 @@ class Session implements
             }
 
             if (substr($name, 0, 7) === 'unnamed') {
-                $output[] = $value;
+                $output[] = Coercion::toString($value);
             } elseif (is_string($value)) {
-                $output[] = '--'.$name.'="'.$value.'"';
+                $output[] = '--' . $name . '="' . $value . '"';
             } else {
-                $output[] = '--'.$name;
+                $output[] = '--' . $name;
             }
         }
 
@@ -1082,7 +1092,7 @@ class Session implements
             return false;
         }
 
-        system('stty ' . ($flag ? '' : '-') . 'echo');
+        $this->adapter->setStty(($flag ? '' : '-') . 'echo');
         return true;
     }
 
@@ -1095,7 +1105,7 @@ class Session implements
             return false;
         }
 
-        system('stty ' . ($flag ? '' : '-') . 'icanon');
+        $this->adapter->setStty(($flag ? '' : '-') . 'icanon');
         return true;
     }
 

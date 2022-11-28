@@ -11,19 +11,20 @@ namespace DecodeLabs\Terminus;
 
 use DecodeLabs\Deliverance;
 use DecodeLabs\Deliverance\Broker;
-
-use DecodeLabs\Systemic;
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
+use DecodeLabs\Veneer\LazyLoad;
 
 use Stringable;
 
 /**
  * @mixin Session
  */
+#[LazyLoad]
 class Context
 {
     protected ?Session $session = null;
+
 
     /**
      * Is CLI sapi?
@@ -31,6 +32,14 @@ class Context
     public function isActiveSapi(): bool
     {
         return \PHP_SAPI === 'cli';
+    }
+
+    /**
+     * Get adapter
+     */
+    public function getAdapter(): Adapter
+    {
+        return $this->getSession()->getAdapter();
     }
 
     /**
@@ -149,7 +158,7 @@ class Context
      */
     public function getShellWidth(): int
     {
-        return Systemic::$os->getShellWidth();
+        return $this->getAdapter()->getShellWidth();
     }
 
     /**
@@ -157,7 +166,7 @@ class Context
      */
     public function getShellHeight(): int
     {
-        return Systemic::$os->getShellHeight();
+        return $this->getAdapter()->getShellHeight();
     }
 
     /**
@@ -165,7 +174,7 @@ class Context
      */
     public function canColor(): bool
     {
-        return Systemic::$os->canColorShell();
+        return $this->getAdapter()->canColorShell();
     }
 
 
