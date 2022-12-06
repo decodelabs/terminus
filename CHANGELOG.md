@@ -1,3 +1,6 @@
+## v0.9.8 (2022-12-06)
+* Fixed list argument modifier
+
 ## v0.9.7 (2022-11-28)
 * Added platform adapter structure
 * Removed Systemic dependency

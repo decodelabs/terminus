@@ -283,7 +283,7 @@ class Definition
                     }
                 }
             } else {
-                if (!is_array($output[$name])) {
+                if (!is_array($output[$name] ?? null)) {
                     $output[$name] = [];
                 }
 
