@@ -1,3 +1,4 @@
+## v0.10.1 (2023-10-05)
 * Fixed Request replacement
 * Added argument get helpers
 
