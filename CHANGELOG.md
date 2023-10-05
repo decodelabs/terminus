@@ -1,3 +1,5 @@
+* Restructured command / argument interface
+
 ## v0.9.8 (2022-12-06)
 * Fixed list argument modifier
 

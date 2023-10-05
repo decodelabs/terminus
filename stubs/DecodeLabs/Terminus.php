@@ -8,6 +8,8 @@ namespace DecodeLabs;
 use DecodeLabs\Veneer\Proxy as Proxy;
 use DecodeLabs\Veneer\ProxyTrait as ProxyTrait;
 use DecodeLabs\Terminus\Context as Inst;
+use DecodeLabs\Terminus\Command as CommandPlugin;
+use DecodeLabs\Veneer\Plugin\Wrapper as PluginWrapper;
 use DecodeLabs\Terminus\Adapter as Ref0;
 use DecodeLabs\Terminus\Session as Ref1;
 use DecodeLabs\Terminus\Command\Request as Ref2;
@@ -23,6 +25,8 @@ class Terminus implements Proxy
     const VENEER_TARGET = Inst::class;
 
     public static Inst $instance;
+    /** @var CommandPlugin|PluginWrapper<CommandPlugin> $command */
+    public static CommandPlugin|PluginWrapper $command;
 
     public static function isActiveSapi(): bool {
         return static::$instance->isActiveSapi();
@@ -48,8 +52,8 @@ class Terminus implements Proxy
     public static function newCommandDefinition(?string $name = NULL): Ref4 {
         return static::$instance->newCommandDefinition(...func_get_args());
     }
-    public static function prepareCommand(callable $builder): Ref1 {
-        return static::$instance->prepareCommand(...func_get_args());
+    public static function getCommand(): CommandPlugin {
+        return static::$instance->getCommand();
     }
     public static function getShellWidth(): int {
         return static::$instance->getShellWidth();

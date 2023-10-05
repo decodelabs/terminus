@@ -268,7 +268,7 @@ class Argument
     /**
      * Check and normalize input value
      */
-    public function validate(mixed $value): mixed
+    public function validate(mixed $value): bool|string|null
     {
         if ($this->boolean) {
             if (is_string($value)) {
@@ -302,9 +302,11 @@ class Argument
                 }
             }
 
+            $value = Coercion::toString($value);
+
             if (
                 $this->pattern !== null &&
-                !mb_ereg($this->pattern, Coercion::toString($value))
+                !mb_ereg($this->pattern, $value)
             ) {
                 throw Exceptional::UnexpectedValue(
                     'Value does not match pattern for argument: ' . $this->name

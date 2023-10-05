@@ -306,15 +306,13 @@ Quickly parse input arguments from the request into the session:
 ```php
 use DecodeLabs\Terminus as Cli;
 
-$session = Cli::prepareCommand(function ($command) {
-    $command
-        ->setHelp('Test out Terminus functionality')
-        ->addArgument('action', 'Unnamed action argument')
-        ->addArgument('?-test|t=Test arg', 'Named test argument with default value');
-});
+Cli::$command
+    ->setHelp('Test out Terminus functionality')
+    ->addArgument('action', 'Unnamed action argument')
+    ->addArgument('?-test|t=Test arg', 'Named test argument with default value');
 
-$action = $session['action'];
-$test = $session['test'];
+$action = Cli::$command['action'];
+$test = Cli::$command['test'];
 ```
 
 ### Session
