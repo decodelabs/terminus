@@ -46,6 +46,9 @@ class Terminus implements Proxy
     public static function newSession(?Ref2 $request = NULL, ?Ref3 $broker = NULL): Ref1 {
         return static::$instance->newSession(...func_get_args());
     }
+    public static function setRequest(Ref2 $request): Inst {
+        return static::$instance->setRequest(...func_get_args());
+    }
     public static function newRequest(?array $argv = NULL, ?array $server = NULL): Ref2 {
         return static::$instance->newRequest(...func_get_args());
     }

@@ -111,6 +111,22 @@ class Context
     }
 
     /**
+     * Set request - must be done early in process
+     *
+     * @return $this
+     */
+    public function setRequest(Request $request): static
+    {
+        $this->session?->setRequest($request);
+
+        if (isset($this->command)) {
+            $this->command->setRequest($request);
+        }
+
+        return $this;
+    }
+
+    /**
      * Create request from environment
      *
      * @param array<string>|null $argv
