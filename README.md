@@ -3,7 +3,7 @@
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/decodelabs/terminus?style=flat)](https://packagist.org/packages/decodelabs/terminus)
 [![Latest Version](https://img.shields.io/packagist/v/decodelabs/terminus.svg?style=flat)](https://packagist.org/packages/decodelabs/terminus)
 [![Total Downloads](https://img.shields.io/packagist/dt/decodelabs/terminus.svg?style=flat)](https://packagist.org/packages/decodelabs/terminus)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/decodelabs/terminus/Integrate)](https://github.com/decodelabs/terminus/actions/workflows/integrate.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/decodelabs/terminus/integrate.yml?branch=develop)](https://github.com/decodelabs/terminus/actions/workflows/integrate.yml)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-44CC11.svg?longCache=true&style=flat)](https://github.com/phpstan/phpstan)
 [![License](https://img.shields.io/packagist/l/decodelabs/terminus?style=flat)](https://packagist.org/packages/decodelabs/terminus)
 
@@ -306,15 +306,13 @@ Quickly parse input arguments from the request into the session:
 ```php
 use DecodeLabs\Terminus as Cli;
 
-$session = Cli::prepareCommand(function ($command) {
-    $command
-        ->setHelp('Test out Terminus functionality')
-        ->addArgument('action', 'Unnamed action argument')
-        ->addArgument('?-test|t=Test arg', 'Named test argument with default value');
-});
+Cli::$command
+    ->setHelp('Test out Terminus functionality')
+    ->addArgument('action', 'Unnamed action argument')
+    ->addArgument('?-test|t=Test arg', 'Named test argument with default value');
 
-$action = $session['action'];
-$test = $session['test'];
+$action = Cli::$command['action'];
+$test = Cli::$command['test'];
 ```
 
 ### Session

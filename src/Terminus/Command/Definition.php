@@ -149,7 +149,7 @@ class Definition
     /**
      * Convert request params to list of args
      *
-     * @return array<string, mixed>
+     * @return array<string, bool|string|array<bool|string>|null>
      */
     public function apply(Request $request): array
     {
@@ -258,7 +258,7 @@ class Definition
 
 
     /**
-     * @param array<string, mixed> $output
+     * @param array<string, bool|string|array<bool|string>|null> $output
      */
     private function validate(
         Argument $arg,

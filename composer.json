@@ -2,12 +2,12 @@
     "name": "decodelabs/terminus",
     "description": "Simple CLI interactions",
     "type": "library",
-    "keywords": ["cli", "terminal"],
+    "keywords": [ "cli", "terminal" ],
     "license": "MIT",
-    "authors": [{
-        "name": "Tom Wright",
-        "email": "tom@inflatablecookie.com"
-    }],
+    "authors": [ {
+            "name": "Tom Wright",
+            "email": "tom@inflatablecookie.com"
+        } ],
     "require": {
         "php": "^8.0",
 
@@ -34,7 +34,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.9.x-dev"
+            "dev-develop": "0.10.x-dev"
         }
     }
 }

@@ -9,14 +9,10 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus;
 
-use ArrayAccess;
-
-use DecodeLabs\Coercion;
 use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Deliverance\Channel\Buffer;
 use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Terminus\Io\Controller;
 use DecodeLabs\Terminus\Io\Style;
@@ -29,12 +25,7 @@ use DecodeLabs\Terminus\Widget\Spinner;
 use Psr\Log\LoggerTrait;
 use Stringable;
 
-/**
- * @implements ArrayAccess<string, mixed>
- */
-class Session implements
-    ArrayAccess,
-    Controller
+class Session implements Controller
 {
     use LoggerTrait;
 
@@ -44,7 +35,6 @@ class Session implements
     protected array $arguments = [];
 
     protected Request $request;
-    protected Definition $definition;
     protected Broker $broker;
 
     protected bool $isAnsi = true;
@@ -58,11 +48,9 @@ class Session implements
      */
     public function __construct(
         Broker $broker,
-        Request $request,
-        Definition $definition
+        Request $request
     ) {
         $this->request = $request;
-        $this->definition = $definition;
         $this->broker = $broker;
         $this->adapter = AdapterAbstract::load();
         $this->isAnsi = $this->adapter->canColorShell();
@@ -108,25 +96,6 @@ class Session implements
         return $this->request;
     }
 
-
-    /**
-     * Set command definition
-     *
-     * @return $this
-     */
-    public function setCommandDefinition(Definition $definition): static
-    {
-        $this->definition = $definition;
-        return $this;
-    }
-
-    /**
-     * Get command definition
-     */
-    public function getCommandDefinition(): Definition
-    {
-        return $this->definition;
-    }
 
     /**
      * Replace IO broker
@@ -222,120 +191,6 @@ class Session implements
     }
 
 
-    /**
-     * Prepare arguments from command definition
-     *
-     * @return array<string, mixed>
-     */
-    public function prepareArguments(): array
-    {
-        return $this->arguments = $this->definition->apply($this->request);
-    }
-
-    /**
-     * Get argument
-     */
-    public function getArgument(string $name): mixed
-    {
-        return $this->arguments[$name] ?? null;
-    }
-
-    /**
-     * Has argument
-     */
-    public function hasArgument(string $name): bool
-    {
-        return array_key_exists($name, $this->arguments);
-    }
-
-    /**
-     * Get unnamed arguments
-     *
-     * @return array<string>
-     */
-    public function getUnnamedArguments(): array
-    {
-        $output = [];
-
-        foreach ($this->arguments as $name => $value) {
-            if (substr($name, 0, 7) === 'unnamed') {
-                $output[] = Coercion::forceString($value);
-            }
-        }
-
-        return $output;
-    }
-
-    /**
-     * Get passthrough arguments
-     *
-     * @return array<string>
-     */
-    public function getPassthroughArguments(
-        string ...$remove
-    ): array {
-        $output = [];
-
-        foreach ($this->arguments as $name => $value) {
-            if (in_array($name, $remove)) {
-                continue;
-            }
-
-            if (substr($name, 0, 7) === 'unnamed') {
-                $output[] = Coercion::toString($value);
-            } elseif (is_string($value)) {
-                $output[] = '--' . $name . '="' . $value . '"';
-            } else {
-                $output[] = '--' . $name;
-            }
-        }
-
-        return $output;
-    }
-
-
-
-    /**
-     * Manually override argument
-     *
-     * @param string $name
-     */
-    public function offsetSet(
-        mixed $name,
-        mixed $value
-    ): void {
-        $this->arguments[$name] = $value;
-    }
-
-    /**
-     * Get argument shortcut
-     *
-     * @param string $name
-     */
-    public function offsetGet(mixed $name): mixed
-    {
-        return $this->arguments[$name] ?? null;
-    }
-
-    /**
-     * Has argument
-     *
-     * @param string $name
-     */
-    public function offsetExists(mixed $name): bool
-    {
-        return array_key_exists($name, $this->arguments);
-    }
-
-    /**
-     * Remove argument
-     *
-     * @param string $name
-     */
-    public function offsetUnset(mixed $name): void
-    {
-        unset($this->arguments[$name]);
-    }
 
 
 

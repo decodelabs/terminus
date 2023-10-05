@@ -13,8 +13,9 @@ use DecodeLabs\Deliverance;
 use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
+use DecodeLabs\Veneer;
 use DecodeLabs\Veneer\LazyLoad;
-
+use DecodeLabs\Veneer\Plugin;
 use Stringable;
 
 /**
@@ -23,6 +24,11 @@ use Stringable;
 #[LazyLoad]
 class Context
 {
+    #[Plugin(Command::class)]
+    #[LazyLoad]
+    public Command $command;
+
+
     protected ?Session $session = null;
 
 
@@ -100,8 +106,7 @@ class Context
 
         return new Session(
             $broker,
-            $request,
-            $this->newCommandDefinition($name)
+            $request
         );
     }
 
@@ -141,14 +146,12 @@ class Context
 
 
     /**
-     * Prepare command in session and generate args
+     * Get active command
      */
-    public function prepareCommand(callable $builder): Session
+    public function getCommand(): Command
     {
-        $session = $this->getSession();
-        $builder($session->getCommandDefinition());
-        $session->prepareArguments();
-        return $session;
+        Veneer::ensurePlugin($this, 'command');
+        return $this->command;
     }
 
 
