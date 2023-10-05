@@ -52,6 +52,17 @@ class Command extends Definition implements
      */
     public function __construct(Request $request)
     {
+        $this->setRequest($request);
+    }
+
+
+    /**
+     * Set request - must be done early in process
+     *
+     * @return $this
+     */
+    public function setRequest(Request $request): static
+    {
         $this->request = $request;
 
         if (null === ($name = $request->getScript())) {
@@ -59,8 +70,10 @@ class Command extends Definition implements
         }
 
         $name = pathinfo((string)$name, \PATHINFO_FILENAME);
+        $this->setName($name);
+        $this->values = null;
 
-        parent::__construct($name);
+        return $this;
     }
 
     /**
@@ -147,6 +160,42 @@ class Command extends Definition implements
         }
 
         return $this->values[$name] ?? null;
+    }
+
+    /**
+     * Get argument as string
+     */
+    public function getString(string $name): string
+    {
+        return Coercion::forceString($this->get($name));
+    }
+
+    /**
+     * Get argument as bool
+     */
+    public function getBool(string $name): bool
+    {
+        return Coercion::toBool($this->get($name));
+    }
+
+    /**
+     * Get argument as list
+     *
+     * @return array<string|bool>
+     */
+    public function getList(string $name): array
+    {
+        $value = $this->get($name);
+
+        if ($value === null) {
+            return [];
+        }
+
+        if (is_array($value)) {
+            return $value;
+        }
+
+        return [$value];
     }
 
     /**

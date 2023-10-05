@@ -1,3 +1,6 @@
+* Fixed Request replacement
+* Added argument get helpers
+
 ## v0.10.0 (2023-10-05)
 * Restructured command / argument interface
 
