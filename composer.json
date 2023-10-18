@@ -26,10 +26,10 @@
     },
     "autoload": {
         "psr-4": {
-            "DecodeLabs\\Terminus\\": "src/Terminus"
+            "DecodeLabs\\Terminus\\": "src/"
         },
         "files": [
-            "src/global.php"
+            "src/Context.php"
         ]
     },
     "extra": {

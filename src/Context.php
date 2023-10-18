@@ -11,6 +11,7 @@ namespace DecodeLabs\Terminus;
 
 use DecodeLabs\Deliverance;
 use DecodeLabs\Deliverance\Broker;
+use DecodeLabs\Terminus;
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Veneer;
@@ -500,3 +501,7 @@ class Context
         $this->getSession()->inlineLog($level, (string)$message, $context);
     }
 }
+
+
+// Register Veneer
+Veneer::register(Context::class, Terminus::class);
