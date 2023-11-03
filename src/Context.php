@@ -52,8 +52,9 @@ class Context
     /**
      * Set active session
      */
-    public function setSession(Session $session): Context
-    {
+    public function setSession(
+        Session $session
+    ): Context {
         $this->session = $session;
         return $this;
     }
@@ -116,8 +117,9 @@ class Context
      *
      * @return $this
      */
-    public function setRequest(Request $request): static
-    {
+    public function setRequest(
+        Request $request
+    ): static {
         $this->session?->setRequest($request);
 
         if (isset($this->command)) {
@@ -147,8 +149,9 @@ class Context
     /**
      * Create new command definition
      */
-    public function newCommandDefinition(?string $name = null): Definition
-    {
+    public function newCommandDefinition(
+        ?string $name = null
+    ): Definition {
         if ($name === null) {
             if (null === ($name = $this->getSession()->getRequest()->getScript())) {
                 $name = $_SERVER['PHP_SELF'];

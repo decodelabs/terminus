@@ -40,8 +40,9 @@ class Command extends Definition implements
     /**
      * @param Context $instance
      */
-    public static function loadAsVeneerPlugin(object $instance): static
-    {
+    public static function loadAsVeneerPlugin(
+        object $instance
+    ): static {
         /** @var static $output */
         $output = new self($instance->getSession()->getRequest());
         return $output;
@@ -50,8 +51,9 @@ class Command extends Definition implements
     /**
      * Init with Request
      */
-    public function __construct(Request $request)
-    {
+    public function __construct(
+        Request $request
+    ) {
         $this->setRequest($request);
     }
 
@@ -61,8 +63,9 @@ class Command extends Definition implements
      *
      * @return $this
      */
-    public function setRequest(Request $request): static
-    {
+    public function setRequest(
+        Request $request
+    ): static {
         $this->request = $request;
 
         if (null === ($name = $request->getScript())) {
@@ -104,8 +107,9 @@ class Command extends Definition implements
      *
      * @return $this
      */
-    public function setArgument(Argument $arg): static
-    {
+    public function setArgument(
+        Argument $arg
+    ): static {
         $this->values = null;
         return parent::setArgument($arg);
     }
@@ -115,8 +119,9 @@ class Command extends Definition implements
      *
      * @return $this
      */
-    public function removeArgument(string $name): static
-    {
+    public function removeArgument(
+        string $name
+    ): static {
         $this->values = null;
         return parent::removeArgument($name);
     }
@@ -153,8 +158,9 @@ class Command extends Definition implements
      *
      * @return bool|string|array<bool|string>|null
      */
-    public function get(string $name): bool|string|array|null
-    {
+    public function get(
+        string $name
+    ): bool|string|array|null {
         if ($this->values === null) {
             $this->prepare();
         }
@@ -165,16 +171,18 @@ class Command extends Definition implements
     /**
      * Get argument as string
      */
-    public function getString(string $name): string
-    {
+    public function getString(
+        string $name
+    ): string {
         return Coercion::forceString($this->get($name));
     }
 
     /**
      * Get argument as bool
      */
-    public function getBool(string $name): bool
-    {
+    public function getBool(
+        string $name
+    ): bool {
         return Coercion::toBool($this->get($name));
     }
 
@@ -183,8 +191,9 @@ class Command extends Definition implements
      *
      * @return array<string|bool>
      */
-    public function getList(string $name): array
-    {
+    public function getList(
+        string $name
+    ): array {
         $value = $this->get($name);
 
         if ($value === null) {
@@ -201,8 +210,9 @@ class Command extends Definition implements
     /**
      * Has argument
      */
-    public function has(string $name): bool
-    {
+    public function has(
+        string $name
+    ): bool {
         if ($this->values === null) {
             $this->prepare();
         }
@@ -286,8 +296,9 @@ class Command extends Definition implements
      * @param string $name
      * @return bool|string|array<bool|string>|null
      */
-    public function offsetGet(mixed $name): bool|string|array|null
-    {
+    public function offsetGet(
+        mixed $name
+    ): bool|string|array|null {
         if ($this->values === null) {
             $this->prepare();
         }
@@ -300,8 +311,9 @@ class Command extends Definition implements
      *
      * @param string $name
      */
-    public function offsetExists(mixed $name): bool
-    {
+    public function offsetExists(
+        mixed $name
+    ): bool {
         if ($this->values === null) {
             $this->prepare();
         }
@@ -314,8 +326,9 @@ class Command extends Definition implements
      *
      * @param string $name
      */
-    public function offsetUnset(mixed $name): void
-    {
+    public function offsetUnset(
+        mixed $name
+    ): void {
         if ($this->values === null) {
             $this->prepare();
         }

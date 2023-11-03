@@ -42,8 +42,9 @@ class Password implements Requirable
      *
      * @return $this
      */
-    public function setMessage(?string $message): static
-    {
+    public function setMessage(
+        ?string $message
+    ): static {
         if ($message === null) {
             $message = 'Please enter your password';
         }
@@ -65,8 +66,9 @@ class Password implements Requirable
      *
      * @return $this
      */
-    public function setRepeatMessage(?string $message): static
-    {
+    public function setRepeatMessage(
+        ?string $message
+    ): static {
         if ($message === null) {
             $message = 'Please repeat your password';
         }
@@ -88,8 +90,9 @@ class Password implements Requirable
      *
      * @return $this
      */
-    public function setRepeat(bool $flag): static
-    {
+    public function setRepeat(
+        bool $flag
+    ): static {
         $this->repeat = $flag;
         return $this;
     }
@@ -152,8 +155,9 @@ class Password implements Requirable
     /**
      * Render question
      */
-    protected function renderQuestion(string $message): ?string
-    {
+    protected function renderQuestion(
+        string $message
+    ): ?string {
         $this->session->style('cyan', $message);
 
         if (preg_match('/[^a-zA-Z0-0-_ ]$/', $this->message)) {

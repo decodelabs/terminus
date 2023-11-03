@@ -31,8 +31,9 @@ class Unix extends AdapterAbstract
     /**
      * Set stty config
      */
-    public function setStty(string $config): void
-    {
+    public function setStty(
+        string $config
+    ): void {
         system('stty \'' . $config . '\'');
     }
 

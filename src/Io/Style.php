@@ -87,8 +87,9 @@ class Style
     /**
      * Is string a color or option keyword?
      */
-    public static function isKeyword(string $string): bool
-    {
+    public static function isKeyword(
+        string $string
+    ): bool {
         return
             isset(self::FG_COLORS[$string]) ||
             isset(self::OPTIONS[$string]);
@@ -97,8 +98,9 @@ class Style
     /**
      * Parse modifier string
      */
-    public static function parse(string $modifier): Style
-    {
+    public static function parse(
+        string $modifier
+    ): Style {
         if (!preg_match('/^([\^\+\.\<\>\!]*)((([a-zA-Z0-9]+|\#[a-fA-F0-9]+|\:[0-9]+)\|?)*)$/', $modifier, $matches)) {
             throw Exceptional::InvalidArgument(
                 'Invalid style modifier: ' . $modifier
@@ -184,8 +186,9 @@ class Style
      *
      * @return $this
      */
-    public function setForeground(?string $foreground): static
-    {
+    public function setForeground(
+        ?string $foreground
+    ): static {
         $bits = 4;
 
         if ($foreground !== null) {
@@ -233,8 +236,9 @@ class Style
      *
      * @return $this
      */
-    public function setBackground(?string $background): static
-    {
+    public function setBackground(
+        ?string $background
+    ): static {
         $bits = 4;
 
         if ($background !== null) {
@@ -280,8 +284,9 @@ class Style
     /**
      * Convert hex color to rgb
      */
-    protected function hexToRgb(string $hex): string
-    {
+    protected function hexToRgb(
+        string $hex
+    ): string {
         $hex = str_replace('#', '', $hex);
         $length = strlen($hex);
 
@@ -311,8 +316,9 @@ class Style
      *
      * @return $this
      */
-    public function setOptions(string ...$options): static
-    {
+    public function setOptions(
+        string ...$options
+    ): static {
         $this->options = [];
 
         foreach ($options as $option) {
@@ -349,8 +355,9 @@ class Style
      *
      * @return $this
      */
-    public function setError(bool $flag): static
-    {
+    public function setError(
+        bool $flag
+    ): static {
         $this->error = $flag;
         return $this;
     }
@@ -368,8 +375,9 @@ class Style
      *
      * @return $this
      */
-    public function setLinesBefore(int $lines): static
-    {
+    public function setLinesBefore(
+        int $lines
+    ): static {
         $this->linesBefore = $lines;
         return $this;
     }
@@ -387,8 +395,9 @@ class Style
      *
      * @return $this
      */
-    public function setLinesAfter(int $lines): static
-    {
+    public function setLinesAfter(
+        int $lines
+    ): static {
         $this->linesAfter = $lines;
         return $this;
     }
@@ -406,8 +415,9 @@ class Style
      *
      * @return $this
      */
-    public function setTabs(int $tabs): static
-    {
+    public function setTabs(
+        int $tabs
+    ): static {
         if ($tabs < 0) {
             $tabs = 0;
         }
@@ -429,8 +439,9 @@ class Style
      *
      * @return $this
      */
-    public function setBackspaces(int $spaces): static
-    {
+    public function setBackspaces(
+        int $spaces
+    ): static {
         if ($spaces < 0) {
             $spaces = 0;
         }
@@ -487,8 +498,9 @@ class Style
     /**
      * Format message with style info
      */
-    protected function format(?string $message): ?string
-    {
+    protected function format(
+        ?string $message
+    ): ?string {
         if ($message === null) {
             return null;
         }

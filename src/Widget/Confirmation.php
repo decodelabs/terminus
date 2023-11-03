@@ -40,8 +40,9 @@ class Confirmation
      *
      * @return $this
      */
-    public function setMessage(string $message): static
-    {
+    public function setMessage(
+        string $message
+    ): static {
         $this->message = $message;
         return $this;
     }
@@ -59,8 +60,9 @@ class Confirmation
      *
      * @return $this
      */
-    public function setMessageInput(?string $input): static
-    {
+    public function setMessageInput(
+        ?string $input
+    ): static {
         $this->input = $input;
         return $this;
     }
@@ -79,8 +81,9 @@ class Confirmation
      *
      * @return $this
      */
-    public function setShowOptions(bool $show): static
-    {
+    public function setShowOptions(
+        bool $show
+    ): static {
         $this->showOptions = $show;
         return $this;
     }
@@ -186,8 +189,9 @@ class Confirmation
     /**
      * Check answer
      */
-    protected function validate(mixed &$answer): bool
-    {
+    protected function validate(
+        mixed &$answer
+    ): bool {
         if (
             empty($answer) &&
             $answer !== '0' &&

@@ -83,8 +83,9 @@ class Argument
      *
      * @return $this
      */
-    public function setDescription(string $description): static
-    {
+    public function setDescription(
+        string $description
+    ): static {
         $this->description = $description;
         return $this;
     }
@@ -103,8 +104,9 @@ class Argument
      *
      * @return $this
      */
-    public function setNamed(bool $named): static
-    {
+    public function setNamed(
+        bool $named
+    ): static {
         $this->named = $named;
         return $this;
     }
@@ -124,8 +126,9 @@ class Argument
      *
      * @return $this
      */
-    public function setShortcut(?string $shortcut): static
-    {
+    public function setShortcut(
+        ?string $shortcut
+    ): static {
         if ($shortcut !== null) {
             $shortcut = substr($shortcut, 0, 1);
         }
@@ -149,8 +152,9 @@ class Argument
      *
      * @return $this
      */
-    public function setBoolean(bool $boolean): static
-    {
+    public function setBoolean(
+        bool $boolean
+    ): static {
         if ($boolean) {
             $this->defaultValue = null;
             $this->optional = true;
@@ -176,8 +180,9 @@ class Argument
      *
      * @return $this
      */
-    public function setOptional(bool $optional): static
-    {
+    public function setOptional(
+        bool $optional
+    ): static {
         $this->optional = $optional;
 
         if (!$optional) {
@@ -201,8 +206,9 @@ class Argument
      *
      * @return $this
      */
-    public function setList(bool $list): static
-    {
+    public function setList(
+        bool $list
+    ): static {
         if ($list) {
             $this->setBoolean(false);
         }
@@ -225,8 +231,9 @@ class Argument
      *
      * @return $this
      */
-    public function setDefaultValue(?string $value): static
-    {
+    public function setDefaultValue(
+        ?string $value
+    ): static {
         if (empty($value)) {
             $value = null;
         }
@@ -250,8 +257,9 @@ class Argument
      *
      * @return $this
      */
-    public function setPattern(?string $pattern): static
-    {
+    public function setPattern(
+        ?string $pattern
+    ): static {
         $this->pattern = $pattern;
         return $this;
     }
@@ -268,8 +276,9 @@ class Argument
     /**
      * Check and normalize input value
      */
-    public function validate(mixed $value): bool|string|null
-    {
+    public function validate(
+        mixed $value
+    ): bool|string|null {
         if ($this->boolean) {
             if (is_string($value)) {
                 $value = Session::stringToBoolean($value);

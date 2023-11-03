@@ -73,8 +73,9 @@ class Request implements Dumpable
     /**
      * New instance with script set
      */
-    public function withScript(string $script): static
-    {
+    public function withScript(
+        string $script
+    ): static {
         $output = clone $this;
         $output->script = $script;
 
@@ -95,8 +96,9 @@ class Request implements Dumpable
     /**
      * Lookup single command arg
      */
-    public function getArgument(string $key): ?string
-    {
+    public function getArgument(
+        string $key
+    ): ?string {
         if (!isset($this->arguments[$key])) {
             return null;
         }
@@ -107,8 +109,9 @@ class Request implements Dumpable
     /**
      * Is command arg set?
      */
-    public function hasArgument(string $key): bool
-    {
+    public function hasArgument(
+        string $key
+    ): bool {
         return isset($this->arguments[$key]);
     }
 
@@ -117,8 +120,9 @@ class Request implements Dumpable
      *
      * @param array<string, string> $arguments
      */
-    public function withArguments(array $arguments): static
-    {
+    public function withArguments(
+        array $arguments
+    ): static {
         $output = clone $this;
         $output->arguments = $arguments;
 
@@ -139,8 +143,9 @@ class Request implements Dumpable
     /**
      * Get single server param
      */
-    public function getServerParameter(string $key): ?string
-    {
+    public function getServerParameter(
+        string $key
+    ): ?string {
         if (!isset($this->server[$key])) {
             return null;
         }
@@ -151,8 +156,9 @@ class Request implements Dumpable
     /**
      * Is $key in $server?
      */
-    public function hasServerParameter(string $key): bool
-    {
+    public function hasServerParameter(
+        string $key
+    ): bool {
         return isset($this->server[$key]);
     }
 

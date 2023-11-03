@@ -17,8 +17,9 @@ abstract class AdapterAbstract implements Adapter
     /**
      * Load for current OS
      */
-    public static function load(?string $name = null): Adapter
-    {
+    public static function load(
+        ?string $name = null
+    ): Adapter {
         if ($name === null) {
             $name = php_uname('s');
 
