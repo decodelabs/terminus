@@ -30,17 +30,33 @@ interface Controller extends
     public function isAnsi(): bool;
     public function hasStty(): bool;
     public function snapshotStty(): ?string;
-    public function restoreStty(?string $snapshot): bool;
+
+    public function restoreStty(
+        ?string $snapshot
+    ): bool;
+
     public function resetStty(): bool;
 
     public function getWidth(): int;
     public function getHeight(): int;
 
-    public function newLine(int $times = 1): bool;
-    public function newErrorLine(int $times = 1): bool;
+    public function newLine(
+        int $times = 1
+    ): bool;
 
-    public function deleteLine(int $times = 1): bool;
-    public function deleteErrorLine(int $times = 1): bool;
+    public function newErrorLine(
+        int $times = 1
+    ): bool;
+
+
+    public function deleteLine(
+        int $times = 1
+    ): bool;
+
+    public function deleteErrorLine(
+        int $times = 1
+    ): bool;
+
 
     public function clearLine(): bool;
     public function clearErrorLine(): bool;
@@ -49,28 +65,82 @@ interface Controller extends
     public function clearLineAfter(): bool;
     public function clearErrorLineAfter(): bool;
 
-    public function backspace(int $times = 1): bool;
-    public function backspaceError(int $times = 1): bool;
+    public function backspace(
+        int $times = 1
+    ): bool;
 
-    public function tab(int $times = 1): bool;
-    public function tabError(int $times = 1): bool;
+    public function backspaceError(
+        int $times = 1
+    ): bool;
 
-    public function cursorUp(int $times = 1): bool;
-    public function cursorLineUp(int $times = 1): bool;
-    public function cursorDown(int $times = 1): bool;
-    public function cursorLineDown(int $times = 1): bool;
-    public function errorCursorUp(int $times = 1): bool;
-    public function errorCursorLineUp(int $times = 1): bool;
-    public function errorCursorDown(int $times = 1): bool;
-    public function errorCursorLineDown(int $times = 1): bool;
 
-    public function cursorLeft(int $times = 1): bool;
-    public function cursorRight(int $times = 1): bool;
-    public function errorCursorLeft(int $times = 1): bool;
-    public function errorCursorRight(int $times = 1): bool;
+    public function tab(
+        int $times = 1
+    ): bool;
 
-    public function setCursor(int $pos): bool;
-    public function setErrorCursor(int $pos): bool;
+    public function tabError(
+        int $times = 1
+    ): bool;
+
+
+    public function cursorUp(
+        int $times = 1
+    ): bool;
+
+    public function cursorLineUp(
+        int $times = 1
+    ): bool;
+
+    public function cursorDown(
+        int $times = 1
+    ): bool;
+
+    public function cursorLineDown(
+        int $times = 1
+    ): bool;
+
+    public function errorCursorUp(
+        int $times = 1
+    ): bool;
+
+    public function errorCursorLineUp(
+        int $times = 1
+    ): bool;
+
+    public function errorCursorDown(
+        int $times = 1
+    ): bool;
+
+    public function errorCursorLineDown(
+        int $times = 1
+    ): bool;
+
+
+    public function cursorLeft(
+        int $times = 1
+    ): bool;
+
+    public function cursorRight(
+        int $times = 1
+    ): bool;
+
+    public function errorCursorLeft(
+        int $times = 1
+    ): bool;
+
+    public function errorCursorRight(
+        int $times = 1
+    ): bool;
+
+
+    public function setCursor(
+        int $pos
+    ): bool;
+
+    public function setErrorCursor(
+        int $pos
+    ): bool;
+
 
     public function setCursorLine(
         int $line,
@@ -104,8 +174,14 @@ interface Controller extends
 
     //public function getDefaultBackgroundColor(): ?string;
 
-    public function toggleInputEcho(bool $flag): bool;
-    public function toggleInputBuffer(bool $flag): bool;
+    public function toggleInputEcho(
+        bool $flag
+    ): bool;
+
+    public function toggleInputBuffer(
+        bool $flag
+    ): bool;
+
 
     /**
      * @param array{0?: string|null} $args

@@ -39,8 +39,9 @@ class Spinner
      *
      * @return $this
      */
-    public function setStyle(?string $style): static
-    {
+    public function setStyle(
+        ?string $style
+    ): static {
         $this->style = $style;
         return $this;
     }
@@ -97,8 +98,9 @@ class Spinner
      *
      * @return $this
      */
-    public function waitFor(float $seconds): static
-    {
+    public function waitFor(
+        float $seconds
+    ): static {
         if ($seconds <= 0) {
             throw Exceptional::InvalidArgument('Wait time must be a positive value');
         }

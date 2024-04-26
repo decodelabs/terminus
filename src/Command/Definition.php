@@ -25,8 +25,9 @@ class Definition
     /**
      * Init with name
      */
-    public function __construct(string $name)
-    {
+    public function __construct(
+        string $name
+    ) {
         $this->setName($name);
     }
 
@@ -35,8 +36,9 @@ class Definition
      *
      * @return $this
      */
-    public function setName(string $name): static
-    {
+    public function setName(
+        string $name
+    ): static {
         $this->name = $name;
         return $this;
     }
@@ -55,8 +57,9 @@ class Definition
      *
      * @return $this
      */
-    public function setHelp(?string $help): static
-    {
+    public function setHelp(
+        ?string $help
+    ): static {
         $this->help = $help;
         return $this;
     }
@@ -99,8 +102,9 @@ class Definition
      *
      * @return $this
      */
-    public function setArgument(Argument $arg): static
-    {
+    public function setArgument(
+        Argument $arg
+    ): static {
         $this->arguments[$arg->getName()] = $arg;
         return $this;
     }
@@ -108,8 +112,9 @@ class Definition
     /**
      * Lookup a named argument
      */
-    public function getArgument(string $name): ?Argument
-    {
+    public function getArgument(
+        string $name
+    ): ?Argument {
         return $this->arguments[$name] ?? null;
     }
 
@@ -128,8 +133,9 @@ class Definition
      *
      * @return $this
      */
-    public function removeArgument(string $name): static
-    {
+    public function removeArgument(
+        string $name
+    ): static {
         unset($this->arguments[$name]);
         return $this;
     }
@@ -151,8 +157,9 @@ class Definition
      *
      * @return array<string, bool|string|array<bool|string>|null>
      */
-    public function apply(Request $request): array
-    {
+    public function apply(
+        Request $request
+    ): array {
         // Sort arguments
         $args = $opts = $output = [];
         $lastIsList = $lastIsOptional = false;
@@ -298,8 +305,9 @@ class Definition
     /**
      * Render help text
      */
-    public function renderHelp(Session $session): void
-    {
+    public function renderHelp(
+        Session $session
+    ): void {
         $session->writeLine();
         $session->style('yellow|bold', $this->name);
         $session->write(' - ');

@@ -12,7 +12,10 @@ namespace DecodeLabs\Terminus;
 interface Adapter
 {
     public function hasStty(): bool;
-    public function setStty(string $config): void;
+
+    public function setStty(
+        string $config
+    ): void;
 
     public function getShellWidth(): int;
     public function getShellHeight(): int;

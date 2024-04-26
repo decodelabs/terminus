@@ -82,8 +82,9 @@ class Session implements Controller
      *
      * @return $this
      */
-    public function setRequest(Request $request): static
-    {
+    public function setRequest(
+        Request $request
+    ): static {
         $this->request = $request;
         return $this;
     }
@@ -102,8 +103,9 @@ class Session implements Controller
      *
      * @return $this
      */
-    public function setBroker(Broker $broker): static
-    {
+    public function setBroker(
+        Broker $broker
+    ): static {
         $this->broker = $broker;
         return $this;
     }
@@ -148,8 +150,9 @@ class Session implements Controller
     /**
      * Reset stty back to value at script start
      */
-    public function restoreStty(?string $snapshot): bool
-    {
+    public function restoreStty(
+        ?string $snapshot
+    ): bool {
         if (!$this->hasStty) {
             return false;
         } elseif ($snapshot === null) {
@@ -199,8 +202,9 @@ class Session implements Controller
      *
      * @return $this
      */
-    public function setReadBlocking(bool $flag): static
-    {
+    public function setReadBlocking(
+        bool $flag
+    ): static {
         $this->broker->setReadBlocking($flag);
         return $this;
     }
@@ -225,8 +229,9 @@ class Session implements Controller
     /**
      * Read chunk from broker
      */
-    public function read(int $length): ?string
-    {
+    public function read(
+        int $length
+    ): ?string {
         return $this->broker->read($length);
     }
 
@@ -259,8 +264,9 @@ class Session implements Controller
      *
      * @return $this
      */
-    public function readTo(DataReceiver $writer): static
-    {
+    public function readTo(
+        DataReceiver $writer
+    ): static {
         $this->broker->readTo($writer);
         return $this;
     }
@@ -295,8 +301,9 @@ class Session implements Controller
     /**
      * Write line to broker
      */
-    public function writeLine(?string $data = ''): int
-    {
+    public function writeLine(
+        ?string $data = ''
+    ): int {
         return $this->broker->writeLine($data);
     }
 
@@ -333,8 +340,9 @@ class Session implements Controller
     /**
      * Write error line to broker
      */
-    public function writeErrorLine(?string $data = ''): int
-    {
+    public function writeErrorLine(
+        ?string $data = ''
+    ): int {
         return $this->broker->writeErrorLine($data);
     }
 
@@ -354,8 +362,9 @@ class Session implements Controller
     /**
      * New line
      */
-    public function newLine(int $times = 1): bool
-    {
+    public function newLine(
+        int $times = 1
+    ): bool {
         for ($i = 0; $i < $times; $i++) {
             $this->broker->writeLine('');
         }
@@ -366,8 +375,9 @@ class Session implements Controller
     /**
      * New error line
      */
-    public function newErrorLine(int $times = 1): bool
-    {
+    public function newErrorLine(
+        int $times = 1
+    ): bool {
         for ($i = 0; $i < $times; $i++) {
             $this->broker->writeErrorLine('');
         }
@@ -378,8 +388,9 @@ class Session implements Controller
     /**
      * Delete n previous lines
      */
-    public function deleteLine(int $times = 1): bool
-    {
+    public function deleteLine(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -391,8 +402,9 @@ class Session implements Controller
     /**
      * Delete n previous error lines
      */
-    public function deleteErrorLine(int $times = 1): bool
-    {
+    public function deleteErrorLine(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -482,8 +494,9 @@ class Session implements Controller
     /**
      * Clear single char
      */
-    public function backspace(int $times = 1): bool
-    {
+    public function backspace(
+        int $times = 1
+    ): bool {
         $this->broker->write(str_repeat(chr(8), $times));
         return true;
     }
@@ -491,8 +504,9 @@ class Session implements Controller
     /**
      * Clear single error char
      */
-    public function backspaceError(int $times = 1): bool
-    {
+    public function backspaceError(
+        int $times = 1
+    ): bool {
         $this->broker->writeError(str_repeat(chr(8), $times));
         return true;
     }
@@ -500,8 +514,9 @@ class Session implements Controller
     /**
      * Write tabs to line
      */
-    public function tab(int $times = 1): bool
-    {
+    public function tab(
+        int $times = 1
+    ): bool {
         $this->broker->write(str_repeat("\t", $times));
         return true;
     }
@@ -509,8 +524,9 @@ class Session implements Controller
     /**
      * Write tabs to error line
      */
-    public function tabError(int $times = 1): bool
-    {
+    public function tabError(
+        int $times = 1
+    ): bool {
         $this->broker->writeError(str_repeat("\t", $times));
         return true;
     }
@@ -520,8 +536,9 @@ class Session implements Controller
     /**
      * Move cursor up a line
      */
-    public function cursorUp(int $times = 1): bool
-    {
+    public function cursorUp(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -533,8 +550,9 @@ class Session implements Controller
     /**
      * Move cursor up a line pos 0
      */
-    public function cursorLineUp(int $times = 1): bool
-    {
+    public function cursorLineUp(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -546,8 +564,9 @@ class Session implements Controller
     /**
      * Move cursor down a line
      */
-    public function cursorDown(int $times = 1): bool
-    {
+    public function cursorDown(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -559,8 +578,9 @@ class Session implements Controller
     /**
      * Move cursor down a line pos 0
      */
-    public function cursorLineDown(int $times = 1): bool
-    {
+    public function cursorLineDown(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -572,8 +592,9 @@ class Session implements Controller
     /**
      * Move cursor left
      */
-    public function cursorLeft(int $times = 1): bool
-    {
+    public function cursorLeft(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -585,8 +606,9 @@ class Session implements Controller
     /**
      * Move cursor right
      */
-    public function cursorRight(int $times = 1): bool
-    {
+    public function cursorRight(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -598,8 +620,9 @@ class Session implements Controller
     /**
      * Move error cursor up a line
      */
-    public function errorCursorUp(int $times = 1): bool
-    {
+    public function errorCursorUp(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -611,8 +634,9 @@ class Session implements Controller
     /**
      * Move error cursor up a line pos 0
      */
-    public function errorCursorLineUp(int $times = 1): bool
-    {
+    public function errorCursorLineUp(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -624,8 +648,9 @@ class Session implements Controller
     /**
      * Move error cursor down a line
      */
-    public function errorCursorDown(int $times = 1): bool
-    {
+    public function errorCursorDown(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -637,8 +662,9 @@ class Session implements Controller
     /**
      * Move error cursor down a line
      */
-    public function errorCursorLineDown(int $times = 1): bool
-    {
+    public function errorCursorLineDown(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -650,8 +676,9 @@ class Session implements Controller
     /**
      * Move error cursor left
      */
-    public function errorCursorLeft(int $times = 1): bool
-    {
+    public function errorCursorLeft(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -663,8 +690,9 @@ class Session implements Controller
     /**
      * Move error cursor right
      */
-    public function errorCursorRight(int $times = 1): bool
-    {
+    public function errorCursorRight(
+        int $times = 1
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -677,8 +705,9 @@ class Session implements Controller
     /**
      * Set cursor line position
      */
-    public function setCursor(int $pos): bool
-    {
+    public function setCursor(
+        int $pos
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -690,8 +719,9 @@ class Session implements Controller
     /**
      * Set error cursor line position
      */
-    public function setErrorCursor(int $pos): bool
-    {
+    public function setErrorCursor(
+        int $pos
+    ): bool {
         if (!$this->isAnsi) {
             return false;
         }
@@ -941,8 +971,9 @@ class Session implements Controller
     /**
      * Switch echo on and off via stty
      */
-    public function toggleInputEcho(bool $flag): bool
-    {
+    public function toggleInputEcho(
+        bool $flag
+    ): bool {
         if (!$this->hasStty) {
             return false;
         }
@@ -954,8 +985,9 @@ class Session implements Controller
     /**
      * Switch icanon on and off via stty
      */
-    public function toggleInputBuffer(bool $flag): bool
-    {
+    public function toggleInputBuffer(
+        bool $flag
+    ): bool {
         if (!$this->hasStty) {
             return false;
         }
@@ -1078,8 +1110,9 @@ class Session implements Controller
     /**
      * Show progress indicator
      */
-    public function newSpinner(string $style = null): Spinner
-    {
+    public function newSpinner(
+        string $style = null
+    ): Spinner {
         return new Spinner($this, $style);
     }
 

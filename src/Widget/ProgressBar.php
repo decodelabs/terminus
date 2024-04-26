@@ -67,8 +67,9 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setMin(float $min): static
-    {
+    public function setMin(
+        float $min
+    ): static {
         $this->min = $min;
         return $this;
     }
@@ -86,8 +87,9 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setMax(float $max): static
-    {
+    public function setMax(
+        float $max
+    ): static {
         $this->max = $max;
         return $this;
     }
@@ -129,8 +131,9 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setPrecision(int $precision): static
-    {
+    public function setPrecision(
+        int $precision
+    ): static {
         $this->precision = $precision;
         return $this;
     }
@@ -150,8 +153,9 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setShowPercent(bool $flag): static
-    {
+    public function setShowPercent(
+        bool $flag
+    ): static {
         $this->showPercent = $flag;
         return $this;
     }
@@ -169,8 +173,9 @@ class ProgressBar
      *
      * @return $this
      */
-    public function setShowCompleted(bool $flag): static
-    {
+    public function setShowCompleted(
+        bool $flag
+    ): static {
         $this->showCompleted = $flag;
         return $this;
     }
@@ -190,8 +195,9 @@ class ProgressBar
      *
      * @return $this
      */
-    public function advance(float $value): static
-    {
+    public function advance(
+        float $value
+    ): static {
         $width = min($this->session->getWidth(), 82);
 
         if ($value < $this->min) {

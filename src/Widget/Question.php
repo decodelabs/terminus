@@ -60,8 +60,9 @@ class Question implements Requirable
      *
      * @return $this
      */
-    public function setMessage(string $message): static
-    {
+    public function setMessage(
+        string $message
+    ): static {
         $this->message = $message;
         return $this;
     }
@@ -80,8 +81,9 @@ class Question implements Requirable
      *
      * @return $this
      */
-    public function setOptions(string ...$options): static
-    {
+    public function setOptions(
+        string ...$options
+    ): static {
         $this->options = $options;
         return $this;
     }
@@ -101,8 +103,9 @@ class Question implements Requirable
      *
      * @return $this
      */
-    public function setShowOptions(bool $show): static
-    {
+    public function setShowOptions(
+        bool $show
+    ): static {
         $this->showOptions = $show;
         return $this;
     }
@@ -121,8 +124,9 @@ class Question implements Requirable
      *
      * @return $this
      */
-    public function setStrict(bool $strict): static
-    {
+    public function setStrict(
+        bool $strict
+    ): static {
         $this->strict = $strict;
         return $this;
     }
@@ -140,8 +144,9 @@ class Question implements Requirable
      *
      * @return $this
      */
-    public function setConfirm(bool $flag): static
-    {
+    public function setConfirm(
+        bool $flag
+    ): static {
         $this->confirm = $flag;
         return $this;
     }
@@ -185,8 +190,9 @@ class Question implements Requirable
      *
      * @return $this
      */
-    public function setValidator(?callable $validator): static
-    {
+    public function setValidator(
+        ?callable $validator
+    ): static {
         $this->validator = $validator;
         return $this;
     }
@@ -278,8 +284,9 @@ class Question implements Requirable
     /**
      * Check answer
      */
-    protected function validate(string &$answer): bool
-    {
+    protected function validate(
+        string &$answer
+    ): bool {
         if (!strlen($answer) && $this->default !== null) {
             $answer = $this->default;
         }
