@@ -1159,7 +1159,7 @@ class Session implements Controller
 
 
 
-    public const LOG_STYLES = [
+    protected const LogStyles = [
         'debug' => ['β ', '#996300'], // @ignore-non-ascii
         'info' => ['ℹ ', 'cyan'], // @ignore-non-ascii
         'notice' => ['☛ ', 'cyan|bold'], // @ignore-non-ascii
@@ -1347,12 +1347,12 @@ class Session implements Controller
     ): void {
         $message = $this->interpolate((string)$message, $context);
 
-        if (!isset(self::LOG_STYLES[$level])) {
+        if (!isset(self::LogStyles[$level])) {
             $this->writeLine($message);
             return;
         }
 
-        [$prefix, $style] = self::LOG_STYLES[$level];
+        [$prefix, $style] = self::LogStyles[$level];
 
         $message = $prefix . $message;
         $this->style('.' . $style, $message);
@@ -1368,12 +1368,12 @@ class Session implements Controller
     ): void {
         $message = $this->interpolate((string)$message, $context);
 
-        if (!isset(self::LOG_STYLES[$level])) {
+        if (!isset(self::LogStyles[$level])) {
             $this->writeLine($message);
             return;
         }
 
-        [$prefix, $style] = self::LOG_STYLES[$level];
+        [$prefix, $style] = self::LogStyles[$level];
 
         $message = $prefix . $message;
         $this->style($style, $message);

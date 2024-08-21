@@ -14,7 +14,7 @@ use DecodeLabs\Terminus\Session;
 
 class Style
 {
-    public const FG_COLORS = [
+    protected const FgColors = [
         'black' => 30,
         'red' => 31,
         'green' => 32,
@@ -35,7 +35,7 @@ class Style
         'brightWhite' => 97
     ];
 
-    public const BG_COLORS = [
+    protected const BgColors = [
         'black' => 40,
         'red' => 41,
         'green' => 42,
@@ -56,7 +56,7 @@ class Style
         'brightWhite' => 107
     ];
 
-    public const OPTIONS = [
+    protected const Options = [
         'bold' => [1, 22],
         'dim' => [2, 22],
         'italic' => [3, 23],
@@ -91,8 +91,8 @@ class Style
         string $string
     ): bool {
         return
-            isset(self::FG_COLORS[$string]) ||
-            isset(self::OPTIONS[$string]);
+            isset(self::FgColors[$string]) ||
+            isset(self::Options[$string]);
     }
 
     /**
@@ -120,13 +120,13 @@ class Style
                 $testPart = '_select';
             }
 
-            if (isset(self::FG_COLORS[$testPart])) {
+            if (isset(self::FgColors[$testPart])) {
                 if (!$fg) {
                     $fg = $part;
                 } elseif (!$bg) {
                     $bg = $part;
                 }
-            } elseif (isset(self::OPTIONS[$testPart])) {
+            } elseif (isset(self::Options[$testPart])) {
                 $options[] = $part;
             } elseif (!empty($part)) {
                 throw Exceptional::InvalidArgument(
@@ -203,7 +203,7 @@ class Style
                     $bits = 24;
                     $foreground = $this->hexToRgb($colorMatches[3]);
                 }
-            } elseif (!isset(self::FG_COLORS[$foreground])) {
+            } elseif (!isset(self::FgColors[$foreground])) {
                 throw Exceptional::InvalidArgument(
                     'Invalid foreground color: ' . $foreground
                 );
@@ -253,7 +253,7 @@ class Style
                     $bits = 24;
                     $background = $this->hexToRgb($colorMatches[3]);
                 }
-            } elseif (!isset(self::FG_COLORS[$background])) {
+            } elseif (!isset(self::FgColors[$background])) {
                 throw Exceptional::InvalidArgument(
                     'Invalid background color: ' . $background
                 );
@@ -326,7 +326,7 @@ class Style
                 continue;
             }
 
-            if (!isset(self::OPTIONS[$option])) {
+            if (!isset(self::Options[$option])) {
                 throw Exceptional::InvalidArgument(
                     'Invalid option: ' . $option
                 );
@@ -511,42 +511,42 @@ class Style
         if ($this->foreground !== null) {
             switch ($this->foregroundBits) {
                 case 4:
-                    $setCodes[] = static::FG_COLORS[$this->foreground];
+                    $setCodes[] = static::FgColors[$this->foreground];
                     break;
 
                 case 8:
-                    $setCodes[] = static::FG_COLORS['_select'] . ';5;' . $this->foreground;
+                    $setCodes[] = static::FgColors['_select'] . ';5;' . $this->foreground;
                     break;
 
                 case 24:
-                    $setCodes[] = static::FG_COLORS['_select'] . ';2;' . str_replace(',', ';', $this->foreground);
+                    $setCodes[] = static::FgColors['_select'] . ';2;' . str_replace(',', ';', $this->foreground);
                     break;
             }
 
-            $unsetCodes[] = static::FG_COLORS['reset'];
+            $unsetCodes[] = static::FgColors['reset'];
         }
 
         if ($this->background !== null) {
             switch ($this->backgroundBits) {
                 case 4:
-                    $setCodes[] = static::BG_COLORS[$this->background];
+                    $setCodes[] = static::BgColors[$this->background];
                     break;
 
                 case 8:
-                    $setCodes[] = static::BG_COLORS['_select'] . ';5;' . $this->background;
+                    $setCodes[] = static::BgColors['_select'] . ';5;' . $this->background;
                     break;
 
                 case 24:
-                    $setCodes[] = static::BG_COLORS['_select'] . ';2;' . str_replace(',', ';', $this->background);
+                    $setCodes[] = static::BgColors['_select'] . ';2;' . str_replace(',', ';', $this->background);
                     break;
             }
 
-            $unsetCodes[] = static::BG_COLORS['reset'];
+            $unsetCodes[] = static::BgColors['reset'];
         }
 
         foreach ($this->options as $option) {
-            $setCodes[] = static::OPTIONS[$option][0];
-            $unsetCodes[] = static::OPTIONS[$option][1];
+            $setCodes[] = static::Options[$option][0];
+            $unsetCodes[] = static::Options[$option][1];
         }
 
         return sprintf("\e[%sm%s\e[%sm", implode(';', $setCodes), $message, implode(';', $unsetCodes));

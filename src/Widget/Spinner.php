@@ -14,8 +14,8 @@ use DecodeLabs\Terminus\Session;
 
 class Spinner
 {
-    public const TICK = 0.08;
-    public const CHARS = ['-', '\\', '|', '/'];
+    protected const Tick = 0.08;
+    protected const Chars = ['-', '\\', '|', '/'];
 
     protected ?string $style = null;
     protected Session $session;
@@ -65,7 +65,7 @@ class Spinner
     {
         $time = microtime(true);
 
-        if ($this->lastTime + self::TICK > $time) {
+        if ($this->lastTime + self::Tick > $time) {
             return $this;
         }
 
@@ -74,10 +74,10 @@ class Spinner
                 $this->session->backspace();
             }
 
-            $char = self::CHARS[$this->char];
+            $char = self::Chars[$this->char];
             $this->char++;
 
-            if (!isset(self::CHARS[$this->char])) {
+            if (!isset(self::Chars[$this->char])) {
                 $this->char = 0;
             }
 
