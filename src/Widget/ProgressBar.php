@@ -13,8 +13,8 @@ use DecodeLabs\Terminus\Session;
 
 class ProgressBar
 {
-    public const EMPTY = '░'; // @ignore-non-ascii
-    public const FULL = '▓'; // @ignore-non-ascii
+    protected const Empty = '░'; // @ignore-non-ascii
+    protected const Full = '▓'; // @ignore-non-ascii
 
     protected float $min = 0;
     protected float $max = 100;
@@ -279,8 +279,8 @@ class ProgressBar
                 $this->session->style('brightWhite', $maxVal . ' ');
             }
 
-            $this->session->style($color, str_repeat(self::FULL, (int)$chars));
-            $this->session->style('dim', str_repeat(self::EMPTY, (int)($barSize - $chars)));
+            $this->session->style($color, str_repeat(self::Full, (int)$chars));
+            $this->session->style('dim', str_repeat(self::Empty, (int)($barSize - $chars)));
 
             if ($this->showPercent) {
                 $this->session->style('white|bold', str_pad(ceil($percent * 100) . '%', 5, ' ', STR_PAD_LEFT));
@@ -292,7 +292,7 @@ class ProgressBar
             }
 
             while ($chars > $this->written) {
-                $this->session->write(self::FULL);
+                $this->session->write(self::Full);
                 $this->written++;
             }
         }

@@ -22,7 +22,6 @@ use Stringable;
 /**
  * @mixin Session
  */
-#[LazyLoad]
 class Context
 {
     #[Plugin(Command::class)]

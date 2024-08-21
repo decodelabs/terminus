@@ -21,8 +21,8 @@ class Terminus implements Proxy
 {
     use ProxyTrait;
 
-    const VENEER = 'DecodeLabs\\Terminus';
-    const VENEER_TARGET = Inst::class;
+    const Veneer = 'DecodeLabs\\Terminus';
+    const VeneerTarget = Inst::class;
 
     public static Inst $instance;
     /** @var CommandPlugin|PluginWrapper<CommandPlugin> $command */
