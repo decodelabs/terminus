@@ -107,8 +107,8 @@ class Style
             );
         }
 
-        $mods = (string)($matches[1] ?? null);
-        $style = (string)($matches[2] ?? null);
+        $mods = $matches[1];
+        $style = $matches[2];
         $parts = explode('|', $style);
         $fg = $bg = null;
         $options = [];
@@ -193,13 +193,13 @@ class Style
 
         if ($foreground !== null) {
             if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $foreground, $colorMatches)) {
-                if (isset($colorMatches[1]) && !empty($colorMatches[1])) {
+                if (!empty($colorMatches[1])) {
                     $bits = 8;
                     $foreground = $colorMatches[1];
                 } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
                     $bits = 24;
                     $foreground = $colorMatches[2];
-                } elseif (isset($colorMatches[3]) && !empty($colorMatches[3])) {
+                } elseif (!empty($colorMatches[3])) {
                     $bits = 24;
                     $foreground = $this->hexToRgb($colorMatches[3]);
                 }
@@ -243,13 +243,13 @@ class Style
 
         if ($background !== null) {
             if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $background, $colorMatches)) {
-                if (isset($colorMatches[1]) && !empty($colorMatches[1])) {
+                if (!empty($colorMatches[1])) {
                     $bits = 8;
                     $background = $colorMatches[1];
                 } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
                     $bits = 24;
                     $background = $colorMatches[2];
-                } elseif (isset($colorMatches[3]) && !empty($colorMatches[3])) {
+                } elseif (!empty($colorMatches[3])) {
                     $bits = 24;
                     $background = $this->hexToRgb($colorMatches[3]);
                 }
