@@ -1,3 +1,4 @@
+## v0.10.6 (2024-10-19)
 * Detect and strip quotes from arguments
 
 ## v0.10.5 (2024-08-21)
