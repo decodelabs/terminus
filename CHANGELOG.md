@@ -1,3 +1,5 @@
+* Detect and strip quotes from arguments
+
 ## v0.10.5 (2024-08-21)
 * Converted consts to protected PascalCase
 * Updated Veneer dependency and Stub
