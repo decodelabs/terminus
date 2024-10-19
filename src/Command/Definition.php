@@ -223,6 +223,13 @@ class Definition
                 } else {
                     $param = array_shift($parts);
 
+                    if (
+                        is_string($param) &&
+                        preg_match('/^([\'"]).*\1$/', $param)
+                    ) {
+                        $param = substr($param, 1, -1);
+                    }
+
                     if ($param === null) {
                         $param = true;
                     }
