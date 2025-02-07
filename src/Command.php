@@ -95,7 +95,7 @@ class Command extends Definition implements
     public function addArgument(
         string $name,
         string $description,
-        callable $setup = null
+        ?callable $setup = null
     ): static {
         $this->values = null;
         return parent::addArgument($name, $description, $setup);

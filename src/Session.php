@@ -293,7 +293,7 @@ class Session implements Controller
      */
     public function write(
         ?string $data,
-        int $length = null
+        ?int $length = null
     ): int {
         return $this->broker->write($data, $length);
     }
@@ -332,7 +332,7 @@ class Session implements Controller
      */
     public function writeError(
         ?string $data,
-        int $length = null
+        ?int $length = null
     ): int {
         return $this->broker->writeError($data, $length);
     }
@@ -1111,7 +1111,7 @@ class Session implements Controller
      * Show progress indicator
      */
     public function newSpinner(
-        string $style = null
+        ?string $style = null
     ): Spinner {
         return new Spinner($this, $style);
     }
@@ -1133,7 +1133,7 @@ class Session implements Controller
      */
     public static function stringToBoolean(
         string $string,
-        bool $default = null
+        ?bool $default = null
     ): ?bool {
         switch ($string = strtolower(trim($string))) {
             case 'false':

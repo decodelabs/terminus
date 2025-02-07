@@ -1,3 +1,6 @@
+## v0.10.7 (2025-02-07)
+* Fixed implicit nullable arguments
+
 ## v0.10.6 (2024-10-19)
 * Detect and strip quotes from arguments
 

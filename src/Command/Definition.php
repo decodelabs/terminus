@@ -80,7 +80,7 @@ class Definition
     public function addArgument(
         string $name,
         string $description,
-        callable $setup = null
+        ?callable $setup = null
     ): static {
         if (isset($this->arguments[$name])) {
             throw Exceptional::Logic(

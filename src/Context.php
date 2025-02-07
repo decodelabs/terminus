@@ -135,8 +135,8 @@ class Context
      * @param array<string, string>|null $server
      */
     public function newRequest(
-        array $argv = null,
-        array $server = null
+        ?array $argv = null,
+        ?array $server = null
     ): Request {
         $server = $server ?? $_SERVER;
         $args = $argv ?? $_SERVER['argv'] ?? [];

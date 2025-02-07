@@ -27,7 +27,7 @@ class Spinner
      */
     public function __construct(
         Session $session,
-        string $style = null
+        ?string $style = null
     ) {
         $this->session = $session;
         $this->setStyle($style);
