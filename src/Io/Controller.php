@@ -204,13 +204,13 @@ interface Controller extends
 
     public function ask(
         string $message,
-        string $default = null,
+        ?string $default = null,
         ?callable $validator = null
     ): ?string;
 
     public function newQuestion(
         string $message,
-        string $default = null,
+        ?string $default = null,
         ?callable $validator = null
     ): Question;
 
@@ -228,16 +228,16 @@ interface Controller extends
 
     public function confirm(
         string $message,
-        bool $default = null
+        ?bool $default = null
     ): bool;
 
     public function newConfirmation(
         string $message,
-        bool $default = null
+        ?bool $default = null
     ): Confirmation;
 
     public function newSpinner(
-        string $style = null
+        ?string $style = null
     ): Spinner;
 
     public function newProgressBar(
