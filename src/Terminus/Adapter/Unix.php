@@ -13,19 +13,22 @@ use DecodeLabs\Terminus\AdapterAbstract;
 
 class Unix extends AdapterAbstract
 {
+    private ?bool $hasStty = null;
+    private ?int $shellWidth = null;
+    private ?int $shellHeight = null;
+    private ?bool $canColorShell = null;
+
     /**
      * Can the shell support TTY
      */
     public function hasStty(): bool
     {
-        static $output;
-
-        if (isset($output)) {
-            return $output;
+        if (isset($this->hasStty)) {
+            return $this->hasStty;
         }
 
         exec('which stty', $result);
-        return $output = !empty(trim($result[0]));
+        return $this->hasStty = !empty(trim($result[0]));
     }
 
     /**
@@ -43,14 +46,12 @@ class Unix extends AdapterAbstract
      */
     public function getShellWidth(): int
     {
-        static $output;
-
-        if (isset($output)) {
-            return $output;
+        if (isset($this->shellWidth)) {
+            return $this->shellWidth;
         }
 
         exec('tput cols 2>/dev/null', $result);
-        return $output = (int)($result[0] ?? 80);
+        return $this->shellWidth = (int)($result[0] ?? 80);
     }
 
     /**
@@ -58,14 +59,12 @@ class Unix extends AdapterAbstract
      */
     public function getShellHeight(): int
     {
-        static $output;
-
-        if (isset($output)) {
-            return $output;
+        if (isset($this->shellHeight)) {
+            return $this->shellHeight;
         }
 
         exec('tput lines 2>/dev/null', $result);
-        return $output = (int)($result[0] ?? 30);
+        return $this->shellHeight = (int)($result[0] ?? 30);
     }
 
     /**
@@ -73,32 +72,30 @@ class Unix extends AdapterAbstract
      */
     public function canColorShell(): bool
     {
-        static $output;
-
-        if (isset($output)) {
-            return $output;
+        if (isset($this->canColorShell)) {
+            return $this->canColorShell;
         }
 
         if (!defined('STDOUT')) {
-            return $output = false;
+            return $this->canColorShell = false;
         }
 
         if (function_exists('stream_isatty')) {
-            return $output = stream_isatty(\STDOUT);
+            return $this->canColorShell = stream_isatty(\STDOUT);
         }
 
         if (function_exists('posix_isatty')) {
-            return $output = posix_isatty(\STDOUT);
+            return $this->canColorShell = posix_isatty(\STDOUT);
         }
 
         if (($_SERVER['TERM'] ?? null) === 'xterm-256color') {
-            return $output = true;
+            return $this->canColorShell = true;
         }
 
         if (($_SERVER['CLICOLOR'] ?? null) === '1') {
-            return $output = true;
+            return $this->canColorShell = true;
         }
 
-        return $output = false;
+        return $this->canColorShell = false;
     }
 }

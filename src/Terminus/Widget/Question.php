@@ -11,12 +11,12 @@ namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Coercion;
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Tightrope\Manifest\Requirable;
-use DecodeLabs\Tightrope\Manifest\RequirableTrait;
+use DecodeLabs\Tightrope\RequiredSet;
+use DecodeLabs\Tightrope\RequiredSetTrait;
 
-class Question implements Requirable
+class Question implements RequiredSet
 {
-    use RequirableTrait;
+    use RequiredSetTrait;
 
     protected string $message;
 
@@ -239,7 +239,10 @@ class Question implements Requirable
     {
         $this->session->style('cyan', $this->message);
 
-        if (!empty($this->options) && $this->showOptions) {
+        if (
+            !empty($this->options) &&
+            $this->showOptions
+        ) {
             $this->session->style('white', ' [');
             $fDefault = $this->strict ? $this->default : trim(strtolower((string)$this->default));
             $first = true;
@@ -262,7 +265,10 @@ class Question implements Requirable
                 $this->session->style($style, $option);
             }
 
-            if (!$defaultFound && $this->default !== null) {
+            if (
+                !$defaultFound &&
+                $this->default !== null
+            ) {
                 $this->session->style('white', ' : ');
                 $this->session->style('brightWhite|bold|underline', $this->default);
             }
@@ -285,9 +291,16 @@ class Question implements Requirable
      * Check answer
      */
     protected function validate(
-        string &$answer
+        ?string &$answer
     ): bool {
-        if (!strlen($answer) && $this->default !== null) {
+        if($answer === null) {
+            $answer = '';
+        }
+
+        if (
+            !strlen($answer) &&
+            $this->default !== null
+        ) {
             $answer = $this->default;
         }
 

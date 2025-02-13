@@ -9,7 +9,6 @@ use DecodeLabs\Veneer\Proxy as Proxy;
 use DecodeLabs\Veneer\ProxyTrait as ProxyTrait;
 use DecodeLabs\Terminus\Context as Inst;
 use DecodeLabs\Terminus\Command as CommandPlugin;
-use DecodeLabs\Veneer\Plugin\Wrapper as PluginWrapper;
 use DecodeLabs\Terminus\Adapter as Ref0;
 use DecodeLabs\Terminus\Session as Ref1;
 use DecodeLabs\Terminus\Command\Request as Ref2;
@@ -21,51 +20,50 @@ class Terminus implements Proxy
 {
     use ProxyTrait;
 
-    const Veneer = 'DecodeLabs\\Terminus';
-    const VeneerTarget = Inst::class;
+    public const Veneer = 'DecodeLabs\\Terminus';
+    public const VeneerTarget = Inst::class;
 
-    public static Inst $instance;
-    /** @var CommandPlugin|PluginWrapper<CommandPlugin> $command */
-    public static CommandPlugin|PluginWrapper $command;
+    protected static Inst $_veneerInstance;
+    public static CommandPlugin $command;
 
     public static function isActiveSapi(): bool {
-        return static::$instance->isActiveSapi();
+        return static::$_veneerInstance->isActiveSapi();
     }
     public static function getAdapter(): Ref0 {
-        return static::$instance->getAdapter();
+        return static::$_veneerInstance->getAdapter();
     }
     public static function setSession(Ref1 $session): Inst {
-        return static::$instance->setSession(...func_get_args());
+        return static::$_veneerInstance->setSession(...func_get_args());
     }
     public static function replaceSession(?Ref2 $request = NULL, ?Ref3 $broker = NULL): ?Ref1 {
-        return static::$instance->replaceSession(...func_get_args());
+        return static::$_veneerInstance->replaceSession(...func_get_args());
     }
     public static function getSession(): Ref1 {
-        return static::$instance->getSession();
+        return static::$_veneerInstance->getSession();
     }
     public static function newSession(?Ref2 $request = NULL, ?Ref3 $broker = NULL): Ref1 {
-        return static::$instance->newSession(...func_get_args());
+        return static::$_veneerInstance->newSession(...func_get_args());
     }
     public static function setRequest(Ref2 $request): Inst {
-        return static::$instance->setRequest(...func_get_args());
+        return static::$_veneerInstance->setRequest(...func_get_args());
     }
     public static function newRequest(?array $argv = NULL, ?array $server = NULL): Ref2 {
-        return static::$instance->newRequest(...func_get_args());
+        return static::$_veneerInstance->newRequest(...func_get_args());
     }
     public static function newCommandDefinition(?string $name = NULL): Ref4 {
-        return static::$instance->newCommandDefinition(...func_get_args());
+        return static::$_veneerInstance->newCommandDefinition(...func_get_args());
     }
     public static function getCommand(): CommandPlugin {
-        return static::$instance->getCommand();
+        return static::$_veneerInstance->getCommand();
     }
     public static function getShellWidth(): int {
-        return static::$instance->getShellWidth();
+        return static::$_veneerInstance->getShellWidth();
     }
     public static function getShellHeight(): int {
-        return static::$instance->getShellHeight();
+        return static::$_veneerInstance->getShellHeight();
     }
     public static function canColor(): bool {
-        return static::$instance->canColor();
+        return static::$_veneerInstance->canColor();
     }
     public static function info(Ref5|string|int|float $message, array $context = []): void {}
     public static function notice(Ref5|string|int|float $message, array $context = []): void {}

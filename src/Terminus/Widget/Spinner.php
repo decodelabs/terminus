@@ -102,7 +102,9 @@ class Spinner
         float $seconds
     ): static {
         if ($seconds <= 0) {
-            throw Exceptional::InvalidArgument('Wait time must be a positive value');
+            throw Exceptional::InvalidArgument(
+                message: 'Wait time must be a positive value'
+            );
         }
 
         $tick = 100000;

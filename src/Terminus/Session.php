@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Deliverance\Channel\Buffer;
 use DecodeLabs\Deliverance\DataReceiver;
@@ -144,7 +145,13 @@ class Session implements Controller
             return null;
         }
 
-        return trim((string)`stty -g`);
+        $output = Coercion::toStringOrNull(`stty -g`);
+
+        if($output !== null) {
+            $output = trim($output);
+        }
+
+        return $output;
     }
 
     /**
@@ -769,13 +776,13 @@ class Session implements Controller
     {
         if (null === ($response = $this->captureAnsi("\e[6n"))) {
             throw Exceptional::Runtime(
-                'Unable to detect cursor position'
+                message: 'Unable to detect cursor position'
             );
         }
 
         if (!preg_match('/^\e\[(\d+);(\d+)R$/', $response, $matches)) {
             throw Exceptional::InvalidArgument(
-                'Invalid cursor response from terminal: ' . $response
+                message: 'Invalid cursor response from terminal: ' . $response
             );
         }
 
@@ -789,13 +796,13 @@ class Session implements Controller
     {
         if (null === ($response = $this->captureAnsi("\e[6n", true))) {
             throw Exceptional::Runtime(
-                'Unable to detect cursor position'
+                message: 'Unable to detect cursor position'
             );
         }
 
         if (!preg_match('/^\e\[(\d+);(\d+)R$/', $response, $matches)) {
             throw Exceptional::InvalidArgument(
-                'Invalid cursor response from terminal: ' . $response
+                message: 'Invalid cursor response from terminal: ' . $response
             );
         }
 
@@ -817,7 +824,7 @@ class Session implements Controller
     {
         if ($this->captureAnsi("\e[6n", true) === null) {
             throw Exceptional::Runtime(
-                'Unable to detect cursor position'
+                message: 'Unable to detect cursor position'
             );
         }
 
@@ -1006,7 +1013,7 @@ class Session implements Controller
     ): static {
         if (preg_match('/^[a-z][a-zA-Z0-9]+$/', $method) && !Style::isKeyword($method)) {
             throw Exceptional::BadMethodCall(
-                'CLI method not found: ' . $method
+                message: 'CLI method not found: ' . $method
             );
         }
 
@@ -1339,6 +1346,8 @@ class Session implements Controller
 
     /**
      * Render generic log message
+     *
+     * @param array<string,mixed> $context
      */
     public function log(
         mixed $level,

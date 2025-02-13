@@ -14,8 +14,8 @@ use DecodeLabs\Terminus\Session;
 
 class Definition
 {
-    protected string $name;
-    protected ?string $help = null;
+    public string $name;
+    public ?string $help = null;
 
     /**
      * @var array<string, Argument>
@@ -84,7 +84,7 @@ class Definition
     ): static {
         if (isset($this->arguments[$name])) {
             throw Exceptional::Logic(
-                'Named argument "' . $name . '" has already been defined'
+                message: 'Named argument "' . $name . '" has already been defined'
             );
         }
 
@@ -105,7 +105,7 @@ class Definition
     public function setArgument(
         Argument $arg
     ): static {
-        $this->arguments[$arg->getName()] = $arg;
+        $this->arguments[$arg->name] = $arg;
         return $this;
     }
 
@@ -155,7 +155,7 @@ class Definition
     /**
      * Convert request params to list of args
      *
-     * @return array<string, bool|string|array<bool|string>|null>
+     * @return array<string,bool|string|list<string>|null>
      */
     public function apply(
         Request $request
@@ -167,29 +167,29 @@ class Definition
         $unnamed = 0;
 
         foreach ($this->arguments as $arg) {
-            if ($arg->isNamed()) {
-                $opts[$arg->getName()] = $arg;
+            if ($arg->named) {
+                $opts[$arg->name] = $arg;
 
-                if (null !== ($shortcut = $arg->getShortcut())) {
+                if (null !== ($shortcut = $arg->shortcut)) {
                     $opts[$shortcut] = $arg;
                 }
             } else {
                 if ($lastIsList) {
                     throw Exceptional::Logic(
-                        'List arguments must come last in the command definition'
+                        message: 'List arguments must come last in the command definition'
                     );
                 }
 
-                $args[$arg->getName()] = $arg;
+                $args[$arg->name] = $arg;
 
-                if ($arg->isList()) {
+                if ($arg->many) {
                     $lastIsList = true;
                 }
 
-                if (!$arg->isOptional()) {
+                if (!$arg->optional) {
                     if ($lastIsOptional) {
                         throw Exceptional::Logic(
-                            'Optional arguments cannot appear before required arguments'
+                            message: 'Optional arguments cannot appear before required arguments'
                         );
                     }
 
@@ -215,7 +215,7 @@ class Definition
                 }
 
                 if ($isShortcut) {
-                    if ($arg->isBoolean()) {
+                    if ($arg->boolean) {
                         $param = true;
                     } else {
                         $param = array_shift($params);
@@ -236,10 +236,10 @@ class Definition
                 }
 
 
-                if (!$arg->isList()) {
-                    unset($opts[$arg->getName()]);
+                if (!$arg->many) {
+                    unset($opts[$arg->name]);
 
-                    if (null !== ($shortcut = $arg->getShortcut())) {
+                    if (null !== ($shortcut = $arg->shortcut)) {
                         unset($opts[$shortcut]);
                     }
                 }
@@ -251,7 +251,7 @@ class Definition
                     );
                 }
 
-                if ($arg->isList()) {
+                if ($arg->many) {
                     array_unshift($args, $arg);
                 }
             }
@@ -272,27 +272,27 @@ class Definition
 
 
     /**
-     * @param array<string, bool|string|array<bool|string>|null> $output
+     * @param array<string,bool|string|list<string>|null> $output
      */
     private function validate(
         Argument $arg,
         mixed $param,
         array &$output
     ): void {
-        $name = $arg->getName();
+        $name = $arg->name;
 
-        if ($arg->isList()) {
+        if ($arg->many) {
             if ($param === null) {
                 if (!isset($output[$name])) {
-                    if ($arg->isOptional()) {
-                        if (null !== ($default = $arg->getDefaultValue())) {
+                    if ($arg->optional) {
+                        if (null !== ($default = $arg->defaultValue)) {
                             $output[$name] = [$default];
                         } else {
                             $output[$name] = null;
                         }
                     } else {
                         throw Exceptional::UnexpectedValue(
-                            'No list values defined for argument: ' . $name
+                            message: 'No list values defined for argument: ' . $name
                         );
                     }
                 }
@@ -301,7 +301,11 @@ class Definition
                     $output[$name] = [];
                 }
 
-                $output[$name][] = $arg->validate($param);
+                $value = $arg->validate($param);
+
+                if(is_string($value)) {
+                    $output[$name][] = $value;
+                }
             }
         } else {
             $output[$name] = $arg->validate($param);
@@ -323,7 +327,7 @@ class Definition
         $session->writeLine();
 
         foreach ($this->arguments as $arg) {
-            if ($arg->isNamed()) {
+            if ($arg->named) {
                 continue;
             }
 
@@ -331,7 +335,7 @@ class Definition
         }
 
         foreach ($this->arguments as $arg) {
-            if (!$arg->isNamed()) {
+            if (!$arg->named) {
                 continue;
             }
 
@@ -347,10 +351,10 @@ class Definition
         Session $session,
         Argument $arg
     ): void {
-        if (!$arg->isNamed()) {
-            $session->style('cyan|bold', $arg->getName());
+        if (!$arg->named) {
+            $session->style('cyan|bold', $arg->name);
 
-            if ($default = $arg->getDefaultValue()) {
+            if ($default = $arg->defaultValue) {
                 $session->write(' [=');
                 $session->style('green', $default);
                 $session->write(']');
@@ -358,20 +362,20 @@ class Definition
 
             $session->newLine();
         } else {
-            $name = '--' . $arg->getName();
+            $name = '--' . $arg->name;
 
-            if (null !== ($shortcut = $arg->getShortcut())) {
+            if (null !== ($shortcut = $arg->shortcut)) {
                 $name .= ' | -' . $shortcut;
             }
 
             $session->style('magenta|bold', $name);
 
-            if (!$arg->isBoolean()) {
-                if ($pattern = $arg->getPattern()) {
+            if (!$arg->boolean) {
+                if ($pattern = $arg->pattern) {
                     $session->write(' <');
                     $session->style('yellow', $pattern);
                     $session->write('>');
-                } elseif ($default = $arg->getDefaultValue()) {
+                } elseif ($default = $arg->defaultValue) {
                     $session->write(' [=');
                     $session->style('green', $default);
                     $session->write(']');
@@ -385,7 +389,7 @@ class Definition
             $session->newLine();
         }
 
-        $session->style('>.white|bold', $arg->getDescription());
+        $session->style('>.white|bold', $arg->description);
         $session->newLine();
     }
 }
