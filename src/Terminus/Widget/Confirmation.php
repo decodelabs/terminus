@@ -140,7 +140,10 @@ class Confirmation
                 $answer = $this->session->read(1);
                 $this->session->restoreStty($snapshot);
 
-                if ($answer === "\n" && $this->default !== null) {
+                if (
+                    $answer === "\n" &&
+                    $this->default !== null
+                ) {
                     $answer = $this->default ? 'y' : 'n';
                 }
 
@@ -163,7 +166,7 @@ class Confirmation
             }
         }
 
-        return $answer;
+        return $done;
     }
 
     /**

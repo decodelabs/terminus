@@ -16,20 +16,20 @@ class Request implements Dumpable
     protected ?string $script = null;
 
     /**
-     * @var array<string, string>
+     * @var array<int|string,string>
      */
     protected array $arguments = [];
 
     /**
-     * @var array<string, string>
+     * @var array<string,string>
      */
     protected array $server = [];
 
     /**
      * Init
      *
-     * @param array<string, string> $server
-     * @param array<string, string> $arguments
+     * @param array<string,string> $server
+     * @param array<int|string,string> $arguments
      */
     public function __construct(
         array $server = [],
@@ -86,7 +86,7 @@ class Request implements Dumpable
     /**
      * Get list of command arguments
      *
-     * @return array<string, string>
+     * @return array<int|string,string>
      */
     public function getArguments(): array
     {
@@ -97,7 +97,7 @@ class Request implements Dumpable
      * Lookup single command arg
      */
     public function getArgument(
-        string $key
+        int|string $key
     ): ?string {
         if (!isset($this->arguments[$key])) {
             return null;
@@ -110,7 +110,7 @@ class Request implements Dumpable
      * Is command arg set?
      */
     public function hasArgument(
-        string $key
+        int|string $key
     ): bool {
         return isset($this->arguments[$key]);
     }
@@ -118,7 +118,7 @@ class Request implements Dumpable
     /**
      * New instance with params set
      *
-     * @param array<string, string> $arguments
+     * @param array<int|string,string> $arguments
      */
     public function withArguments(
         array $arguments
@@ -133,7 +133,7 @@ class Request implements Dumpable
     /**
      * Get $_SERVER equiv
      *
-     * @return array<string, string>
+     * @return array<string,string>
      */
     public function getServerParameters(): array
     {

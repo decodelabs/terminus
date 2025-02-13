@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus;
 
+use DecodeLabs\Coercion;
 use DecodeLabs\Deliverance;
 use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Terminus;
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Veneer;
-use DecodeLabs\Veneer\LazyLoad;
 use DecodeLabs\Veneer\Plugin;
 use Stringable;
 
@@ -24,9 +24,10 @@ use Stringable;
  */
 class Context
 {
-    #[Plugin(Command::class)]
-    #[LazyLoad]
-    public Command $command;
+    #[Plugin]
+    protected(set) Command $command {
+        get => $this->command ??= new Command($this->getSession()->getRequest());
+    }
 
 
     protected ?Session $session = null;
@@ -94,7 +95,7 @@ class Context
         }
 
         if (null === ($name = $request->getScript())) {
-            $name = $_SERVER['PHP_SELF'];
+            $name = Coercion::toString($_SERVER['PHP_SELF']);
         }
 
         $name = pathinfo($name, \PATHINFO_FILENAME);
@@ -132,16 +133,20 @@ class Context
      * Create request from environment
      *
      * @param array<string>|null $argv
-     * @param array<string, string>|null $server
+     * @param array<string,string>|null $server
      */
     public function newRequest(
         ?array $argv = null,
         ?array $server = null
     ): Request {
         $server = $server ?? $_SERVER;
-        $args = $argv ?? $_SERVER['argv'] ?? [];
-        $script = array_shift($args);
+        $args = Coercion::forceArray($argv ?? $_SERVER['argv'] ?? []);
+        $script = Coercion::toStringOrNull(array_shift($args));
 
+        /**
+         * @var array<string,string> $server
+         * @var array<int|string,string> $args
+         */
         return new Request($server, $args, $script);
     }
 
@@ -153,7 +158,7 @@ class Context
     ): Definition {
         if ($name === null) {
             if (null === ($name = $this->getSession()->getRequest()->getScript())) {
-                $name = $_SERVER['PHP_SELF'];
+                $name = Coercion::toString($_SERVER['PHP_SELF']);
             }
 
             $name = pathinfo($name, \PATHINFO_FILENAME);
@@ -169,7 +174,6 @@ class Context
      */
     public function getCommand(): Command
     {
-        Veneer::ensurePlugin($this, 'command');
         return $this->command;
     }
 
@@ -506,4 +510,7 @@ class Context
 
 
 // Register Veneer
-Veneer::register(Context::class, Terminus::class);
+Veneer\Manager::getGlobalManager()->register(
+    Context::class,
+    Terminus::class
+);

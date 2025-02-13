@@ -16,16 +16,14 @@ use DecodeLabs\Glitch\Dumpable;
 use DecodeLabs\Terminus\Command\Argument;
 use DecodeLabs\Terminus\Command\Definition;
 use DecodeLabs\Terminus\Command\Request;
-use DecodeLabs\Veneer\Plugin\SelfLoader;
 use IteratorAggregate;
 use Traversable;
 
 /**
- * @implements ArrayAccess<string, bool|string|array<bool|string>|null>
- * @implements IteratorAggregate<string, bool|string|array<bool|string>|null>
+ * @implements ArrayAccess<string,bool|string|list<string>|null>
+ * @implements IteratorAggregate<string,bool|string|list<string>|null>
  */
 class Command extends Definition implements
-    SelfLoader,
     ArrayAccess,
     IteratorAggregate,
     Dumpable
@@ -33,20 +31,9 @@ class Command extends Definition implements
     public Request $request;
 
     /**
-     * @var array<string, bool|string|array<bool|string>|null>|null
+     * @var array<string, bool|string|list<string>|null>|null
      */
     protected ?array $values = null;
-
-    /**
-     * @param Context $instance
-     */
-    public static function loadAsVeneerPlugin(
-        object $instance
-    ): static {
-        /** @var static $output */
-        $output = new self($instance->getSession()->getRequest());
-        return $output;
-    }
 
     /**
      * Init with Request
@@ -146,7 +133,7 @@ class Command extends Definition implements
     /**
      * Prepare arguments from command definition
      *
-     * @return array<string, bool|string|array<bool|string>|null>
+     * @return array<string,bool|string|list<string>|null>
      */
     public function prepare(): array
     {
@@ -156,7 +143,7 @@ class Command extends Definition implements
     /**
      * Get argument
      *
-     * @return bool|string|array<bool|string>|null
+     * @return bool|string|list<string>|null
      */
     public function get(
         string $name
@@ -189,7 +176,7 @@ class Command extends Definition implements
     /**
      * Get argument as list
      *
-     * @return array<string|bool>
+     * @return list<string>
      */
     public function getList(
         string $name
@@ -202,6 +189,10 @@ class Command extends Definition implements
 
         if (is_array($value)) {
             return $value;
+        }
+
+        if(!is_string($value)) {
+            return [];
         }
 
         return [$value];

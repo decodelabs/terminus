@@ -103,7 +103,7 @@ class Style
     ): Style {
         if (!preg_match('/^([\^\+\.\<\>\!]*)((([a-zA-Z0-9]+|\#[a-fA-F0-9]+|\:[0-9]+)\|?)*)$/', $modifier, $matches)) {
             throw Exceptional::InvalidArgument(
-                'Invalid style modifier: ' . $modifier
+                message: 'Invalid style modifier: ' . $modifier
             );
         }
 
@@ -130,7 +130,7 @@ class Style
                 $options[] = $part;
             } elseif (!empty($part)) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid style part: ' . $part
+                    message: 'Invalid style part: ' . $part
                 );
             }
         }
@@ -205,7 +205,7 @@ class Style
                 }
             } elseif (!isset(self::FgColors[$foreground])) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid foreground color: ' . $foreground
+                    message: 'Invalid foreground color: ' . $foreground
                 );
             }
         }
@@ -255,7 +255,7 @@ class Style
                 }
             } elseif (!isset(self::FgColors[$background])) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid background color: ' . $background
+                    message: 'Invalid background color: ' . $background
                 );
             }
         }
@@ -328,7 +328,7 @@ class Style
 
             if (!isset(self::Options[$option])) {
                 throw Exceptional::InvalidArgument(
-                    'Invalid option: ' . $option
+                    message: 'Invalid option: ' . $option
                 );
             }
 
@@ -511,42 +511,42 @@ class Style
         if ($this->foreground !== null) {
             switch ($this->foregroundBits) {
                 case 4:
-                    $setCodes[] = static::FgColors[$this->foreground];
+                    $setCodes[] = self::FgColors[$this->foreground];
                     break;
 
                 case 8:
-                    $setCodes[] = static::FgColors['_select'] . ';5;' . $this->foreground;
+                    $setCodes[] = self::FgColors['_select'] . ';5;' . $this->foreground;
                     break;
 
                 case 24:
-                    $setCodes[] = static::FgColors['_select'] . ';2;' . str_replace(',', ';', $this->foreground);
+                    $setCodes[] = self::FgColors['_select'] . ';2;' . str_replace(',', ';', $this->foreground);
                     break;
             }
 
-            $unsetCodes[] = static::FgColors['reset'];
+            $unsetCodes[] = self::FgColors['reset'];
         }
 
         if ($this->background !== null) {
             switch ($this->backgroundBits) {
                 case 4:
-                    $setCodes[] = static::BgColors[$this->background];
+                    $setCodes[] = self::BgColors[$this->background];
                     break;
 
                 case 8:
-                    $setCodes[] = static::BgColors['_select'] . ';5;' . $this->background;
+                    $setCodes[] = self::BgColors['_select'] . ';5;' . $this->background;
                     break;
 
                 case 24:
-                    $setCodes[] = static::BgColors['_select'] . ';2;' . str_replace(',', ';', $this->background);
+                    $setCodes[] = self::BgColors['_select'] . ';2;' . str_replace(',', ';', $this->background);
                     break;
             }
 
-            $unsetCodes[] = static::BgColors['reset'];
+            $unsetCodes[] = self::BgColors['reset'];
         }
 
         foreach ($this->options as $option) {
-            $setCodes[] = static::Options[$option][0];
-            $unsetCodes[] = static::Options[$option][1];
+            $setCodes[] = self::Options[$option][0];
+            $unsetCodes[] = self::Options[$option][1];
         }
 
         return sprintf("\e[%sm%s\e[%sm", implode(';', $setCodes), $message, implode(';', $unsetCodes));

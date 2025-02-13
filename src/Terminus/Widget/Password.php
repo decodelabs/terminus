@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Tightrope\Manifest\Requirable;
-use DecodeLabs\Tightrope\Manifest\RequirableTrait;
+use DecodeLabs\Tightrope\RequiredSet;
+use DecodeLabs\Tightrope\RequiredSetTrait;
 
-class Password implements Requirable
+class Password implements RequiredSet
 {
-    use RequirableTrait;
+    use RequiredSetTrait;
 
     protected string $message = 'Please enter your password';
     protected string $repeatMessage = 'Please repeat your password';
@@ -115,7 +115,10 @@ class Password implements Requirable
             while (true) {
                 $password = $this->renderQuestion($this->message);
 
-                if ($password === null && $this->required) {
+                if (
+                    $password === null &&
+                    $this->required
+                ) {
                     $this->session->error('Your password is required');
                     $this->session->newLine();
                     continue;
@@ -124,11 +127,17 @@ class Password implements Requirable
                 break;
             }
 
-            if ($this->repeat && $password !== null) {
+            if (
+                $this->repeat &&
+                $password !== null
+            ) {
                 while (true) {
                     $repeat = $this->renderQuestion($this->repeatMessage);
 
-                    if ($repeat === null && $this->required) {
+                    if (
+                        $repeat === null &&
+                        $this->required
+                    ) {
                         $this->session->error('Your repeat password is required');
                         $this->session->newLine();
                         continue;
