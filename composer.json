@@ -11,13 +11,13 @@
     "require": {
         "php": "^8.4",
 
-        "decodelabs/archetype": "^0.3",
-        "decodelabs/coercion": "^0.2",
-        "decodelabs/deliverance": "^0.2",
-        "decodelabs/exceptional": "^0.5",
-        "decodelabs/glitch-support": "^0.5",
+        "decodelabs/archetype": "^0.3.8",
+        "decodelabs/coercion": "^0.2.15",
+        "decodelabs/deliverance": "^0.2.14",
+        "decodelabs/exceptional": "^0.5.2",
+        "decodelabs/glitch-support": "^0.5.1",
         "decodelabs/tightrope": "^0.2",
-        "decodelabs/veneer": "^0.12",
+        "decodelabs/veneer": "^0.12.2",
 
         "psr/log": "^3"
     },
