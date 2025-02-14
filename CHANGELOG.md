@@ -1,3 +1,6 @@
+## v0.11.1 (2025-02-14)
+* Fixed list argument modifier
+
 ## v0.11.0 (2025-02-13)
 * Replaced accessors with properties
 * Upgraded PHPStan to v2

@@ -36,7 +36,7 @@ class Argument
 
             if (str_ends_with($value, '[]')) {
                 $this->many = true;
-                $value = substr($value, 0, -1);
+                $value = substr($value, 0, -2);
             }
 
             if (str_contains($value, '|')) {
