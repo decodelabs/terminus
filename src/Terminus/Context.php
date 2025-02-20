@@ -95,7 +95,7 @@ class Context
         }
 
         if (null === ($name = $request->getScript())) {
-            $name = Coercion::toString($_SERVER['PHP_SELF']);
+            $name = Coercion::asString($_SERVER['PHP_SELF']);
         }
 
         $name = pathinfo($name, \PATHINFO_FILENAME);
@@ -140,8 +140,8 @@ class Context
         ?array $server = null
     ): Request {
         $server = $server ?? $_SERVER;
-        $args = Coercion::forceArray($argv ?? $_SERVER['argv'] ?? []);
-        $script = Coercion::toStringOrNull(array_shift($args));
+        $args = Coercion::toArray($argv ?? $_SERVER['argv'] ?? []);
+        $script = Coercion::tryString(array_shift($args));
 
         /**
          * @var array<string,string> $server
@@ -158,7 +158,7 @@ class Context
     ): Definition {
         if ($name === null) {
             if (null === ($name = $this->getSession()->getRequest()->getScript())) {
-                $name = Coercion::toString($_SERVER['PHP_SELF']);
+                $name = Coercion::asString($_SERVER['PHP_SELF']);
             }
 
             $name = pathinfo($name, \PATHINFO_FILENAME);

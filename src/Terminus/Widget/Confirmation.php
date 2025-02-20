@@ -107,7 +107,7 @@ class Confirmation
         bool|callable|null $default
     ): static {
         if (is_callable($default)) {
-            $default = Coercion::toBoolOrNull($default());
+            $default = Coercion::tryBool($default());
         }
 
         $this->default = $default;
@@ -204,7 +204,7 @@ class Confirmation
         }
 
         if (!is_bool($answer)) {
-            $answer = Session::stringToBoolean(Coercion::forceString($answer));
+            $answer = Session::stringToBoolean(Coercion::toString($answer));
         }
 
         if ($answer === null) {

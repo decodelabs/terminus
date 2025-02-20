@@ -1,3 +1,6 @@
+## v0.11.2 (2025-02-20)
+* Upgraded Coercion dependency
+
 ## v0.11.1 (2025-02-14)
 * Fixed list argument modifier
 

@@ -145,7 +145,7 @@ class Session implements Controller
             return null;
         }
 
-        $output = Coercion::toStringOrNull(`stty -g`);
+        $output = Coercion::tryString(`stty -g`);
 
         if($output !== null) {
             $output = trim($output);

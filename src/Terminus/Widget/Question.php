@@ -170,7 +170,7 @@ class Question implements RequiredSet
         string|callable|null $default
     ): static {
         if (is_callable($default)) {
-            $default = Coercion::toStringOrNull($default());
+            $default = Coercion::tryString($default());
         }
 
         $this->default = $default;

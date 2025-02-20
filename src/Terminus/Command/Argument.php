@@ -161,7 +161,7 @@ class Argument
                 }
             }
 
-            $value = Coercion::toString($value);
+            $value = Coercion::asString($value);
 
             if (
                 $this->pattern !== null &&

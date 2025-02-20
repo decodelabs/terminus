@@ -161,7 +161,7 @@ class Command extends Definition implements
     public function getString(
         string $name
     ): string {
-        return Coercion::forceString($this->get($name));
+        return Coercion::toString($this->get($name));
     }
 
     /**
@@ -226,7 +226,7 @@ class Command extends Definition implements
 
         foreach ($this->values ?? [] as $name => $value) {
             if (substr($name, 0, 7) === 'unnamed') {
-                $output[] = Coercion::forceString($value);
+                $output[] = Coercion::toString($value);
             }
         }
 
@@ -253,7 +253,7 @@ class Command extends Definition implements
             }
 
             if (substr($name, 0, 7) === 'unnamed') {
-                $output[] = Coercion::toString($value);
+                $output[] = Coercion::asString($value);
             } elseif (is_string($value)) {
                 $output[] = '--' . $name . '="' . $value . '"';
             } elseif ($value) {
