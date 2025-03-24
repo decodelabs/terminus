@@ -12,6 +12,7 @@ namespace DecodeLabs\PHPStan;
 use DecodeLabs\PHPStan\MethodReflection;
 use DecodeLabs\PHPStan\StaticMethodReflection;
 use DecodeLabs\Terminus\Context;
+use DecodeLabs\Terminus\Io\Style;
 use DecodeLabs\Terminus\Session;
 use Exception;
 use PHPStan\Analyser\OutOfClassScope;
@@ -45,7 +46,8 @@ class TerminusReflectionExtension implements MethodsClassReflectionExtension
         string $methodName
     ): MethodReflectionInterface {
         if(
-            preg_match('/^[a-z]/', $classReflection->getName()) &&
+            preg_match('/^[a-z]/', $methodName) &&
+            !Style::isKeyword($methodName) &&
             $this->reflectionProvider->getClass(Session::class)->hasMethod($methodName)
         ) {
             $method = $this->reflectionProvider->getClass(Session::class)->getMethod($methodName, new OutOfClassScope());

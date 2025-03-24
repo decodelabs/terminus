@@ -1,3 +1,6 @@
+## v0.11.4 (2025-03-24)
+* Fixed PHPStan method check
+
 ## v0.11.3 (2025-03-24)
 * Fixed PHPStan extension for style calls
 
