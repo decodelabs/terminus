@@ -1,3 +1,6 @@
+## v0.11.5 (2025-03-24)
+* Improved PHPStan method check fix
+
 ## v0.11.4 (2025-03-24)
 * Fixed PHPStan method check
 
