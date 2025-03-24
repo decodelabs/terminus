@@ -1,3 +1,6 @@
+## v0.11.3 (2025-03-24)
+* Fixed PHPStan extension for style calls
+
 ## v0.11.2 (2025-02-20)
 * Upgraded Coercion dependency
 

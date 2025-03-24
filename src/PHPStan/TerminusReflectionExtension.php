@@ -9,12 +9,14 @@ declare(strict_types=1);
 
 namespace DecodeLabs\PHPStan;
 
+use DecodeLabs\PHPStan\MethodReflection;
 use DecodeLabs\PHPStan\StaticMethodReflection;
 use DecodeLabs\Terminus\Context;
 use DecodeLabs\Terminus\Session;
 use Exception;
 use PHPStan\Analyser\OutOfClassScope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Reflection\MethodReflection as MethodReflectionInterface;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Reflection\ReflectionProvider;
@@ -33,27 +35,35 @@ class TerminusReflectionExtension implements MethodsClassReflectionExtension
         ClassReflection $classReflection,
         string $methodName
     ): bool {
-        $class = $classReflection->getName();
-
-        if ($class === Context::class) {
-            return $this->reflectionProvider->getClass(Session::class)->hasMethod($methodName);
-        }
-
-        return false;
+        return
+            $classReflection->getName() === Context::class ||
+            $classReflection->getName() === Session::class;
     }
 
     public function getMethod(
         ClassReflection $classReflection,
         string $methodName
     ): MethodReflectionInterface {
-        $class = $classReflection->getName();
+        if(
+            preg_match('/^[a-z]/', $classReflection->getName()) &&
+            $this->reflectionProvider->getClass(Session::class)->hasMethod($methodName)
+        ) {
+            $method = $this->reflectionProvider->getClass(Session::class)->getMethod($methodName, new OutOfClassScope());
 
-        if ($class !== Context::class) {
-            throw new Exception('Unable to get method');
+            if($classReflection->getName() === Session::class) {
+                return $method;
+            }
+
+            return new StaticMethodReflection($method);
         }
 
-        return new StaticMethodReflection(
-            $this->reflectionProvider->getClass(Session::class)->getMethod($methodName, new OutOfClassScope())
-        );
+        $method = $this->reflectionProvider->getClass(Session::class)->getNativeMethod('style');
+
+        /** @var FunctionVariant $variant */
+        $variant = $method->getVariants()[0];
+        $params = array_slice($variant->getParameters(), 1);
+
+        $newVariant = MethodReflection::alterVariant($variant, $params);
+        return new MethodReflection($classReflection, $methodName, [$newVariant]);
     }
 }
