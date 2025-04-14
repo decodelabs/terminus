@@ -12,8 +12,6 @@
 
 Terminus provides everything you need to build highly interactive, beautiful CLI processes.
 
-_Get news and updates on the [DecodeLabs blog](https://blog.decodelabs.com)._
-
 ---
 
 
