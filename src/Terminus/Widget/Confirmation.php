@@ -128,7 +128,7 @@ class Confirmation
      */
     public function prompt(): bool
     {
-        $done = false;
+        $done = $answer = false;
 
         while (!$done) {
             $this->renderQuestion();
@@ -139,15 +139,15 @@ class Confirmation
                 $this->session->toggleInputEcho(false);
                 $answer = $this->session->read(1);
                 $this->session->restoreStty($snapshot);
+                $answer = trim((string)$answer);
 
                 if (
-                    $answer === "\n" &&
+                    $answer === '' &&
                     $this->default !== null
                 ) {
                     $answer = $this->default ? 'y' : 'n';
                 }
 
-                $answer = rtrim((string)$answer, "\n");
                 $bool = Session::stringToBoolean($answer);
 
                 if ($bool === null) {
@@ -166,7 +166,7 @@ class Confirmation
             }
         }
 
-        return $done;
+        return (bool)$answer;
     }
 
     /**
