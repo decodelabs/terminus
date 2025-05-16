@@ -1,176 +1,436 @@
-## v0.11.5 (2025-03-24)
-* Improved PHPStan method check fix
+# Changelog
 
-## v0.11.4 (2025-03-24)
-* Fixed PHPStan method check
+All notable changes to this project will be documented in this file.<br>
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.11.3 (2025-03-24)
-* Fixed PHPStan extension for style calls
+### Unreleased
+--
 
-## v0.11.2 (2025-02-20)
-* Upgraded Coercion dependency
+---
 
-## v0.11.1 (2025-02-14)
-* Fixed list argument modifier
+### [v0.11.6](https://github.com/decodelabs/terminus/commits/v0.11.6) - 16th May 2025
 
-## v0.11.0 (2025-02-13)
-* Replaced accessors with properties
-* Upgraded PHPStan to v2
-* Tidied boolean logic
-* Fixed Exceptional syntax
-* Added PHP8.4 to CI workflow
-* Made PHP8.4 minimum version
+- Fixed Confirmation boolean handling
 
-## v0.10.7 (2025-02-07)
-* Fixed implicit nullable arguments
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.11.5...v0.11.6)
 
-## v0.10.6 (2024-10-19)
-* Detect and strip quotes from arguments
+---
 
-## v0.10.5 (2024-08-21)
-* Converted consts to protected PascalCase
-* Updated Veneer dependency and Stub
-* Removed unneeded LazyLoad binding attribute
-* Updated dependency versions
+### [v0.11.5](https://github.com/decodelabs/terminus/commits/v0.11.5) - 24th March 2025
 
-## v0.10.4 (2024-07-17)
-* Updated Veneer dependency
+- Improved PHPStan method check fix
 
-## v0.10.3 (2024-04-29)
-* Fixed Veneer stubs in gitattributes
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.11.4...v0.11.5)
 
-## v0.10.2 (2024-04-26)
-* Updated Archetype dependency
-* Made PHP8.1 minimum version
-* Refactored package file structure
+---
 
-## v0.10.1 (2023-10-05)
-* Fixed Request replacement
-* Added argument get helpers
+### [v0.11.4](https://github.com/decodelabs/terminus/commits/v0.11.4) - 24th March 2025
 
-## v0.10.0 (2023-10-05)
-* Restructured command / argument interface
+- Fixed PHPStan method check
 
-## v0.9.8 (2022-12-06)
-* Fixed list argument modifier
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.11.3...v0.11.4)
 
-## v0.9.7 (2022-11-28)
-* Added platform adapter structure
-* Removed Systemic dependency
+---
 
-## v0.9.6 (2022-11-25)
-* Added getUnnamedArguments()
-* Added getPassthroughArguments()
+### [v0.11.3](https://github.com/decodelabs/terminus/commits/v0.11.3) - 24th March 2025
 
-## v0.9.5 (2022-11-24)
-* Ensure stty snapshot is string
+- Fixed PHPStan extension for style calls
 
-## v0.9.4 (2022-11-22)
-* Replaced bracket string interpolation
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.11.2...v0.11.3)
 
-## v0.9.3 (2022-11-21)
-* Resolve callable as default value in widgets
-* Migrated to use effigy in CI workflow
+---
 
-## v0.9.2 (2022-10-05)
-* Updated Systemic dependency
-* Fixed PHP8.1 testing
+### [v0.11.2](https://github.com/decodelabs/terminus/commits/v0.11.2) - 20th February 2025
 
-## v0.9.1 (2022-10-05)
-* Parse undefined arguments in Commands
+- Upgraded Coercion dependency
 
-## v0.9.0 (2022-10-03)
-* Improved Request interface
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.11.1...v0.11.2)
 
-## v0.8.5 (2022-09-27)
-* Improved Request interface
+---
 
-## v0.8.4 (2022-09-27)
-* Updated Veneer dependency
+### [v0.11.1](https://github.com/decodelabs/terminus/commits/v0.11.1) - 14th February 2025
 
-## v0.8.3 (2022-08-30)
-* Use Tightrope in Question Widgets
-* Updated CI environment
+- Fixed list argument modifier
 
-## v0.8.2 (2022-08-24)
-* Fixed Session DataProvider static return type
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.11.0...v0.11.1)
 
-## v0.8.1 (2022-08-24)
-* Added concrete types to all members
+---
 
-## v0.8.0 (2022-08-23)
-* Removed PHP7 compatibility
-* Updated PSR Log interface to v3
-* Updated ECS to v11
-* Updated PHPUnit to v9
+### [v0.11.0](https://github.com/decodelabs/terminus/commits/v0.11.0) - 13th February 2025
 
-## v0.7.7 (2022-03-10)
-* Transitioned from Travis to GHA
-* Updated PHPStan and ECS dependencies
+- Replaced accessors with properties
+- Upgraded PHPStan to v2
+- Tidied boolean logic
+- Fixed Exceptional syntax
+- Added PHP8.4 to CI workflow
+- Made PHP8.4 minimum version
 
-## v0.7.6 (2021-10-20)
-* Updated Veneer dependency
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.10.7...v0.11.0)
 
-## v0.7.5 (2021-05-11)
-* Added Veneer IDE support stub
+---
 
-## v0.7.4 (2021-05-11)
-* Fixed option validation in Question widget
+### [v0.10.7](https://github.com/decodelabs/terminus/commits/v0.10.7) - 7th February 2025
 
-## v0.7.3 (2021-05-01)
-* Improved return type hints
-* Allow numbers in Veneer passthrough to Logger interface
+- Fixed implicit nullable arguments
 
-## v0.7.2 (2021-04-21)
-* Added waitFor() to Spinner
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.10.6...v0.10.7)
 
-## v0.7.1 (2021-04-09)
-* Updated Systemic dependency
+---
 
-## v0.7.0 (2021-04-09)
-* Swapped Atlas for Deliverance
+### [v0.10.6](https://github.com/decodelabs/terminus/commits/v0.10.6) - 19th October 2024
 
-## v0.6.2 (2021-04-08)
-* Added call arg massaging to Context
+- Detect and strip quotes from arguments
 
-## v0.6.1 (2021-04-08)
-* Updated for max PHPStan conformance
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.10.5...v0.10.6)
 
-## v0.6.0 (2021-03-18)
-* Enabled PHP8 testing
-* Applied full PSR12 standards
-* Added PSR12 check to Travis build
+---
 
-## v0.5.8 (2020-10-05)
-* Improved readme
-* Updated PHPStan
+### [v0.10.5](https://github.com/decodelabs/terminus/commits/v0.10.5) - 21st August 2024
 
-## v0.5.7 (2020-10-05)
-* Updated to Veneer 0.6
+- Converted consts to protected PascalCase
+- Updated Veneer dependency and Stub
+- Removed unneeded LazyLoad binding attribute
+- Updated dependency versions
 
-## v0.5.6 (2020-10-02)
-* Updated glitch-support
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.10.4...v0.10.5)
 
-## v0.5.5 (2020-10-02)
-* Removed Glitch dependency
+---
 
-## v0.5.4 (2020-09-30)
-* Switched to Exceptional for exception generation
+### [v0.10.4](https://github.com/decodelabs/terminus/commits/v0.10.4) - 17th July 2024
 
-## v0.5.3 (2020-09-25)
-* Switched to Glitch Dumpable interface
+- Updated Veneer dependency
 
-## v0.5.2 (2020-09-24)
-* Updated Composer dependency handling
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.10.3...v0.10.4)
 
-## v0.5.1 (2019-10-31)
-* Fleshed out Widget interfaces and rendering
-* Improved logging styles
-* Improved Session and Context interfaces
+---
 
-## v0.5.0 (2019-10-28)
-* Ported initial codebase from DF
-* Merged session functionality into single context
-* Added Veneer facade as primary access
-* Added controlled stty support
-* Normalized ansi code support
+### [v0.10.3](https://github.com/decodelabs/terminus/commits/v0.10.3) - 29th April 2024
+
+- Fixed Veneer stubs in gitattributes
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.10.2...v0.10.3)
+
+---
+
+### [v0.10.2](https://github.com/decodelabs/terminus/commits/v0.10.2) - 26th April 2024
+
+- Updated Archetype dependency
+- Made PHP8.1 minimum version
+- Refactored package file structure
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.10.1...v0.10.2)
+
+---
+
+### [v0.10.1](https://github.com/decodelabs/terminus/commits/v0.10.1) - 5th October 2023
+
+- Fixed Request replacement
+- Added argument get helpers
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.10.0...v0.10.1)
+
+---
+
+### [v0.10.0](https://github.com/decodelabs/terminus/commits/v0.10.0) - 5th October 2023
+
+- Restructured command / argument interface
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.8...v0.10.0)
+
+---
+
+### [v0.9.8](https://github.com/decodelabs/terminus/commits/v0.9.8) - 6th December 2022
+
+- Fixed list argument modifier
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.7...v0.9.8)
+
+---
+
+### [v0.9.7](https://github.com/decodelabs/terminus/commits/v0.9.7) - 28th November 2022
+
+- Added platform adapter structure
+- Removed Systemic dependency
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.6...v0.9.7)
+
+---
+
+### [v0.9.6](https://github.com/decodelabs/terminus/commits/v0.9.6) - 25th November 2022
+
+- Added getUnnamedArguments()
+- Added getPassthroughArguments()
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.5...v0.9.6)
+
+---
+
+### [v0.9.5](https://github.com/decodelabs/terminus/commits/v0.9.5) - 24th November 2022
+
+- Ensure stty snapshot is string
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.4...v0.9.5)
+
+---
+
+### [v0.9.4](https://github.com/decodelabs/terminus/commits/v0.9.4) - 22nd November 2022
+
+- Replaced bracket string interpolation
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.3...v0.9.4)
+
+---
+
+### [v0.9.3](https://github.com/decodelabs/terminus/commits/v0.9.3) - 21st November 2022
+
+- Resolve callable as default value in widgets
+- Migrated to use effigy in CI workflow
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.2...v0.9.3)
+
+---
+
+### [v0.9.2](https://github.com/decodelabs/terminus/commits/v0.9.2) - 5th October 2022
+
+- Updated Systemic dependency
+- Fixed PHP8.1 testing
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.1...v0.9.2)
+
+---
+
+### [v0.9.1](https://github.com/decodelabs/terminus/commits/v0.9.1) - 5th October 2022
+
+- Parse undefined arguments in Commands
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.9.0...v0.9.1)
+
+---
+
+### [v0.9.0](https://github.com/decodelabs/terminus/commits/v0.9.0) - 3rd October 2022
+
+- Improved Request interface
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.8.5...v0.9.0)
+
+---
+
+### [v0.8.5](https://github.com/decodelabs/terminus/commits/v0.8.5) - 27th September 2022
+
+- Improved Request interface
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.8.4...v0.8.5)
+
+---
+
+### [v0.8.4](https://github.com/decodelabs/terminus/commits/v0.8.4) - 27th September 2022
+
+- Updated Veneer dependency
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.8.3...v0.8.4)
+
+---
+
+### [v0.8.3](https://github.com/decodelabs/terminus/commits/v0.8.3) - 30th August 2022
+
+- Use Tightrope in Question Widgets
+- Updated CI environment
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.8.2...v0.8.3)
+
+---
+
+### [v0.8.2](https://github.com/decodelabs/terminus/commits/v0.8.2) - 24th August 2022
+
+- Fixed Session DataProvider static return type
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.8.1...v0.8.2)
+
+---
+
+### [v0.8.1](https://github.com/decodelabs/terminus/commits/v0.8.1) - 24th August 2022
+
+- Added concrete types to all members
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.8.0...v0.8.1)
+
+---
+
+### [v0.8.0](https://github.com/decodelabs/terminus/commits/v0.8.0) - 23rd August 2022
+
+- Removed PHP7 compatibility
+- Updated PSR Log interface to v3
+- Updated ECS to v11
+- Updated PHPUnit to v9
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.7.7...v0.8.0)
+
+---
+
+### [v0.7.7](https://github.com/decodelabs/terminus/commits/v0.7.7) - 10th March 2022
+
+- Transitioned from Travis to GHA
+- Updated PHPStan and ECS dependencies
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.7.6...v0.7.7)
+
+---
+
+### [v0.7.6](https://github.com/decodelabs/terminus/commits/v0.7.6) - 20th October 2021
+
+- Updated Veneer dependency
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.7.5...v0.7.6)
+
+---
+
+### [v0.7.5](https://github.com/decodelabs/terminus/commits/v0.7.5) - 11th May 2021
+
+- Added Veneer IDE support stub
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.7.4...v0.7.5)
+
+---
+
+### [v0.7.4](https://github.com/decodelabs/terminus/commits/v0.7.4) - 11th May 2021
+
+- Fixed option validation in Question widget
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.7.3...v0.7.4)
+
+---
+
+### [v0.7.3](https://github.com/decodelabs/terminus/commits/v0.7.3) - 1st May 2021
+
+- Improved return type hints
+- Allow numbers in Veneer passthrough to Logger interface
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.7.2...v0.7.3)
+
+---
+
+### [v0.7.2](https://github.com/decodelabs/terminus/commits/v0.7.2) - 21st April 2021
+
+- Added waitFor() to Spinner
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.7.1...v0.7.2)
+
+---
+
+### [v0.7.1](https://github.com/decodelabs/terminus/commits/v0.7.1) - 9th April 2021
+
+- Updated Systemic dependency
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.7.0...v0.7.1)
+
+---
+
+### [v0.7.0](https://github.com/decodelabs/terminus/commits/v0.7.0) - 9th April 2021
+
+- Swapped Atlas for Deliverance
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.6.2...v0.7.0)
+
+---
+
+### [v0.6.2](https://github.com/decodelabs/terminus/commits/v0.6.2) - 8th April 2021
+
+- Added call arg massaging to Context
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.6.1...v0.6.2)
+
+---
+
+### [v0.6.1](https://github.com/decodelabs/terminus/commits/v0.6.1) - 8th April 2021
+
+- Updated for max PHPStan conformance
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.6.0...v0.6.1)
+
+---
+
+### [v0.6.0](https://github.com/decodelabs/terminus/commits/v0.6.0) - 18th March 2021
+
+- Enabled PHP8 testing
+- Applied full PSR12 standards
+- Added PSR12 check to Travis build
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.8...v0.6.0)
+
+---
+
+### [v0.5.8](https://github.com/decodelabs/terminus/commits/v0.5.8) - 5th October 2020
+
+- Improved readme
+- Updated PHPStan
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.7...v0.5.8)
+
+---
+
+### [v0.5.7](https://github.com/decodelabs/terminus/commits/v0.5.7) - 5th October 2020
+
+- Updated to Veneer 0.6
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.6...v0.5.7)
+
+---
+
+### [v0.5.6](https://github.com/decodelabs/terminus/commits/v0.5.6) - 2nd October 2020
+
+- Updated glitch-support
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.5...v0.5.6)
+
+---
+
+### [v0.5.5](https://github.com/decodelabs/terminus/commits/v0.5.5) - 2nd October 2020
+
+- Removed Glitch dependency
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.4...v0.5.5)
+
+---
+
+### [v0.5.4](https://github.com/decodelabs/terminus/commits/v0.5.4) - 30th September 2020
+
+- Switched to Exceptional for exception generation
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.3...v0.5.4)
+
+---
+
+### [v0.5.3](https://github.com/decodelabs/terminus/commits/v0.5.3) - 25th September 2020
+
+- Switched to Glitch Dumpable interface
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.2...v0.5.3)
+
+---
+
+### [v0.5.2](https://github.com/decodelabs/terminus/commits/v0.5.2) - 24th September 2020
+
+- Updated Composer dependency handling
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.1...v0.5.2)
+
+---
+
+### [v0.5.1](https://github.com/decodelabs/terminus/commits/v0.5.1) - 31st October 2019
+
+- Fleshed out Widget interfaces and rendering
+- Improved logging styles
+- Improved Session and Context interfaces
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.5.0...v0.5.1)
+
+---
+
+### [v0.5.0](https://github.com/decodelabs/terminus/commits/v0.5.0) - 28th October 2019
+
+- Ported initial codebase from DF
+- Merged session functionality into single context
+- Added Veneer facade as primary access
+- Added controlled stty support
+- Normalized ansi code support
