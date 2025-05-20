@@ -161,7 +161,7 @@ class Question implements RequiredSet
     protected function validate(
         ?string &$answer
     ): bool {
-        if($answer === null) {
+        if ($answer === null) {
             $answer = '';
         }
 

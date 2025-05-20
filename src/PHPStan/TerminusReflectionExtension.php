@@ -45,14 +45,14 @@ class TerminusReflectionExtension implements MethodsClassReflectionExtension
         ClassReflection $classReflection,
         string $methodName
     ): MethodReflectionInterface {
-        if(
+        if (
             !preg_match('/[^a-zA-Z0-9_]/', $methodName) &&
             !Style::isKeyword($methodName) &&
             $this->reflectionProvider->getClass(Session::class)->hasMethod($methodName)
         ) {
             $method = $this->reflectionProvider->getClass(Session::class)->getMethod($methodName, new OutOfClassScope());
 
-            if($classReflection->getName() === Session::class) {
+            if ($classReflection->getName() === Session::class) {
                 return $method;
             }
 

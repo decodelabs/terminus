@@ -39,7 +39,9 @@ class Session implements Controller
 
     public bool $readBlocking {
         get => $this->isReadBlocking();
-        set { $this->setReadBlocking($value); }
+        set {
+            $this->setReadBlocking($value);
+        }
     }
 
     public Broker $broker;
@@ -108,7 +110,7 @@ class Session implements Controller
 
         $output = Coercion::tryString(`stty -g`);
 
-        if($output !== null) {
+        if ($output !== null) {
             $output = trim($output);
         }
 
