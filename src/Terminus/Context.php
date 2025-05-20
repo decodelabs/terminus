@@ -13,8 +13,6 @@ use DecodeLabs\Coercion;
 use DecodeLabs\Deliverance;
 use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Terminus;
-use DecodeLabs\Terminus\Command\Definition;
-use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Veneer;
 use DecodeLabs\Veneer\Plugin;
 use Stringable;
@@ -24,34 +22,19 @@ use Stringable;
  */
 class Context
 {
-    #[Plugin]
-    protected(set) Command $command {
-        get => $this->command ??= new Command($this->getSession()->getRequest());
-    }
-
-
     protected ?Session $session = null;
 
 
-    /**
-     * Is CLI sapi?
-     */
     public function isActiveSapi(): bool
     {
         return \PHP_SAPI === 'cli';
     }
 
-    /**
-     * Get adapter
-     */
     public function getAdapter(): Adapter
     {
-        return $this->getSession()->getAdapter();
+        return $this->getSession()->adapter;
     }
 
-    /**
-     * Set active session
-     */
     public function setSession(
         Session $session
     ): Context {
@@ -59,21 +42,14 @@ class Context
         return $this;
     }
 
-    /**
-     * Replace active session with new session based on args
-     */
     public function replaceSession(
-        ?Request $request = null,
         ?Broker $broker = null
     ): ?Session {
         $output = $this->session;
-        $this->setSession($this->newSession($request, $broker));
+        $this->setSession($this->newSession($broker));
         return $output;
     }
 
-    /**
-     * Get active session, create default if needed
-     */
     public function getSession(): Session
     {
         if ($this->session === null) {
@@ -83,23 +59,9 @@ class Context
         return $this->session;
     }
 
-    /**
-     * Create a new session from defaults
-     */
     public function newSession(
-        ?Request $request = null,
         ?Broker $broker = null
     ): Session {
-        if ($request === null) {
-            $request = $this->newRequest();
-        }
-
-        if (null === ($name = $request->getScript())) {
-            $name = Coercion::asString($_SERVER['PHP_SELF']);
-        }
-
-        $name = pathinfo($name, \PATHINFO_FILENAME);
-
         if ($broker === null) {
             $broker = defined('STDOUT') ?
                 Deliverance::newCliBroker() :
@@ -108,96 +70,9 @@ class Context
 
         return new Session(
             $broker,
-            $request
         );
     }
 
-    /**
-     * Set request - must be done early in process
-     *
-     * @return $this
-     */
-    public function setRequest(
-        Request $request
-    ): static {
-        $this->session?->setRequest($request);
-
-        if (isset($this->command)) {
-            $this->command->setRequest($request);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Create request from environment
-     *
-     * @param array<string>|null $argv
-     * @param array<string,string>|null $server
-     */
-    public function newRequest(
-        ?array $argv = null,
-        ?array $server = null
-    ): Request {
-        $server = $server ?? $_SERVER;
-        $args = Coercion::toArray($argv ?? $_SERVER['argv'] ?? []);
-        $script = Coercion::tryString(array_shift($args));
-
-        /**
-         * @var array<string,string> $server
-         * @var array<int|string,string> $args
-         */
-        return new Request($server, $args, $script);
-    }
-
-    /**
-     * Create new command definition
-     */
-    public function newCommandDefinition(
-        ?string $name = null
-    ): Definition {
-        if ($name === null) {
-            if (null === ($name = $this->getSession()->getRequest()->getScript())) {
-                $name = Coercion::asString($_SERVER['PHP_SELF']);
-            }
-
-            $name = pathinfo($name, \PATHINFO_FILENAME);
-        }
-
-        return new Definition($name);
-    }
-
-
-
-    /**
-     * Get active command
-     */
-    public function getCommand(): Command
-    {
-        return $this->command;
-    }
-
-
-
-    /**
-     * Get TTY width
-     */
-    public function getShellWidth(): int
-    {
-        return $this->getAdapter()->getShellWidth();
-    }
-
-    /**
-     * Get TTY height
-     */
-    public function getShellHeight(): int
-    {
-        return $this->getAdapter()->getShellHeight();
-    }
-
-    /**
-     * Can color output?
-     */
     public function canColor(): bool
     {
         return $this->getAdapter()->canColorShell();
@@ -205,8 +80,6 @@ class Context
 
 
     /**
-     * Pass method calls through to active session
-     *
      * @param array<mixed> $args
      * @return mixed
      */
@@ -218,8 +91,6 @@ class Context
     }
 
     /**
-     * Render info line
-     *
      * @param array<string, string> $context
      */
     public function info(
@@ -230,8 +101,6 @@ class Context
     }
 
     /**
-     * Render notice line
-     *
      * @param array<string, string> $context
      */
     public function notice(
@@ -242,8 +111,6 @@ class Context
     }
 
     /**
-     * Render comment line
-     *
      * @param array<string, string> $context
      */
     public function comment(
@@ -254,8 +121,6 @@ class Context
     }
 
     /**
-     * Render success line
-     *
      * @param array<string, string> $context
      */
     public function success(
@@ -266,8 +131,6 @@ class Context
     }
 
     /**
-     * Render operative line
-     *
      * @param array<string, string> $context
      */
     public function operative(
@@ -278,8 +141,6 @@ class Context
     }
 
     /**
-     * Render deleteSuccess line
-     *
      * @param array<string, string> $context
      */
     public function deleteSuccess(
@@ -290,8 +151,6 @@ class Context
     }
 
     /**
-     * Render warning line
-     *
      * @param array<string, string> $context
      */
     public function warning(
@@ -302,8 +161,6 @@ class Context
     }
 
     /**
-     * Render critical line
-     *
      * @param array<string, string> $context
      */
     public function critical(
@@ -314,8 +171,6 @@ class Context
     }
 
     /**
-     * Render alert line
-     *
      * @param array<string, string> $context
      */
     public function alert(
@@ -326,8 +181,6 @@ class Context
     }
 
     /**
-     * Render emergency line
-     *
      * @param array<string, string> $context
      */
     public function emergency(
@@ -338,8 +191,6 @@ class Context
     }
 
     /**
-     * Render log line
-     *
      * @param array<string, string> $context
      */
     public function log(
@@ -351,8 +202,6 @@ class Context
     }
 
     /**
-     * Render inlineDebug line
-     *
      * @param array<string, string> $context
      */
     public function inlineDebug(
@@ -363,8 +212,6 @@ class Context
     }
 
     /**
-     * Render inlineInfo line
-     *
      * @param array<string, string> $context
      */
     public function inlineInfo(
@@ -375,8 +222,6 @@ class Context
     }
 
     /**
-     * Render inlineNotice line
-     *
      * @param array<string, string> $context
      */
     public function inlineNotice(
@@ -387,8 +232,6 @@ class Context
     }
 
     /**
-     * Render inlineComment line
-     *
      * @param array<string, string> $context
      */
     public function inlineComment(
@@ -399,8 +242,6 @@ class Context
     }
 
     /**
-     * Render inlineSuccess line
-     *
      * @param array<string, string> $context
      */
     public function inlineSuccess(
@@ -411,8 +252,6 @@ class Context
     }
 
     /**
-     * Render inlineOperative line
-     *
      * @param array<string, string> $context
      */
     public function inlineOperative(
@@ -423,8 +262,6 @@ class Context
     }
 
     /**
-     * Render inlineDeleteSuccess line
-     *
      * @param array<string, string> $context
      */
     public function inlineDeleteSuccess(
@@ -435,8 +272,6 @@ class Context
     }
 
     /**
-     * Render inlineWarning line
-     *
      * @param array<string, string> $context
      */
     public function inlineWarning(
@@ -447,8 +282,6 @@ class Context
     }
 
     /**
-     * Render inlineError line
-     *
      * @param array<string, string> $context
      */
     public function inlineError(
@@ -459,8 +292,6 @@ class Context
     }
 
     /**
-     * Render inlineCritical line
-     *
      * @param array<string, string> $context
      */
     public function inlineCritical(
@@ -471,8 +302,6 @@ class Context
     }
 
     /**
-     * Render inlineAlert line
-     *
      * @param array<string, string> $context
      */
     public function inlineAlert(
@@ -483,8 +312,6 @@ class Context
     }
 
     /**
-     * Render inlineEmergency line
-     *
      * @param array<string, string> $context
      */
     public function inlineEmergency(
@@ -495,8 +322,6 @@ class Context
     }
 
     /**
-     * Render inlineLog line
-     *
      * @param array<string, string> $context
      */
     public function inlineLog(

@@ -17,48 +17,22 @@ class Spinner
     protected const Tick = 0.08;
     protected const Chars = ['-', '\\', '|', '/'];
 
-    protected ?string $style = null;
-    protected Session $session;
+    public ?string $style = null;
+
     protected ?float $lastTime = null;
     protected int $char = 0;
+    protected Session $session;
 
-    /**
-     * Init with session and style
-     */
     public function __construct(
         Session $session,
         ?string $style = null
     ) {
         $this->session = $session;
-        $this->setStyle($style);
-    }
-
-
-    /**
-     * Set style
-     *
-     * @return $this
-     */
-    public function setStyle(
-        ?string $style
-    ): static {
         $this->style = $style;
-        return $this;
-    }
-
-    /**
-     * Get style
-     */
-    public function getStyle(): ?string
-    {
-        return $this->style;
     }
 
 
-
     /**
-     * Render
-     *
      * @return $this
      */
     public function advance(): static
@@ -94,8 +68,6 @@ class Spinner
 
 
     /**
-     * Spin for a defined amount of time
-     *
      * @return $this
      */
     public function waitFor(
@@ -121,8 +93,6 @@ class Spinner
 
 
     /**
-     * Finalise
-     *
      * @return $this
      */
     public function complete(

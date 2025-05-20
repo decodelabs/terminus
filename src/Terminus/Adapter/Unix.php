@@ -18,9 +18,6 @@ class Unix extends AdapterAbstract
     private ?int $shellHeight = null;
     private ?bool $canColorShell = null;
 
-    /**
-     * Can the shell support TTY
-     */
     public function hasStty(): bool
     {
         if (isset($this->hasStty)) {
@@ -31,9 +28,6 @@ class Unix extends AdapterAbstract
         return $this->hasStty = !empty(trim($result[0]));
     }
 
-    /**
-     * Set stty config
-     */
     public function setStty(
         string $config
     ): void {
@@ -41,9 +35,6 @@ class Unix extends AdapterAbstract
     }
 
 
-    /**
-     * Get shell width
-     */
     public function getShellWidth(): int
     {
         if (isset($this->shellWidth)) {
@@ -54,9 +45,6 @@ class Unix extends AdapterAbstract
         return $this->shellWidth = (int)($result[0] ?? 80);
     }
 
-    /**
-     * Get shell height
-     */
     public function getShellHeight(): int
     {
         if (isset($this->shellHeight)) {
@@ -67,9 +55,6 @@ class Unix extends AdapterAbstract
         return $this->shellHeight = (int)($result[0] ?? 30);
     }
 
-    /**
-     * Get shell be coloured?
-     */
     public function canColorShell(): bool
     {
         if (isset($this->canColorShell)) {

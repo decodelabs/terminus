@@ -14,15 +14,28 @@ use DecodeLabs\Terminus\Session;
 
 class Confirmation
 {
-    protected string $message;
-    protected bool $showOptions = true;
-    protected ?bool $default = null;
-    protected ?string $input = null;
+    public string $message;
+    public bool $showOptions = true;
+
+    public ?bool $default = null {
+        /**
+         * @param bool|(callable():?bool)|null $default
+         */
+        set(
+            bool|callable|null $default
+        ) {
+            if (is_callable($default)) {
+                $default = Coercion::tryBool($default());
+            }
+
+            $this->default = $default;
+        }
+    }
+
+    public ?string $input = null;
     protected Session $session;
 
     /**
-     * Init with message
-     *
      * @param bool|(callable():?bool)|null $default
      */
     public function __construct(
@@ -31,101 +44,10 @@ class Confirmation
         bool|callable|null $default = null
     ) {
         $this->session = $session;
-        $this->setMessage($message);
-        $this->setDefaultValue($default);
-    }
-
-    /**
-     * Set message body
-     *
-     * @return $this
-     */
-    public function setMessage(
-        string $message
-    ): static {
         $this->message = $message;
-        return $this;
-    }
-
-    /**
-     * Get body of the question
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * Set message input
-     *
-     * @return $this
-     */
-    public function setMessageInput(
-        ?string $input
-    ): static {
-        $this->input = $input;
-        return $this;
-    }
-
-    /**
-     * Get message input
-     */
-    public function getMessageInput(): ?string
-    {
-        return $this->input;
-    }
-
-
-    /**
-     * Should options be shown?
-     *
-     * @return $this
-     */
-    public function setShowOptions(
-        bool $show
-    ): static {
-        $this->showOptions = $show;
-        return $this;
-    }
-
-    /**
-     * Show options?
-     */
-    public function shouldShowOptions(): bool
-    {
-        return $this->showOptions;
-    }
-
-
-    /**
-     * Set default value
-     *
-     * @param bool|(callable():?bool)|null $default
-     * @return $this
-     */
-    public function setDefaultValue(
-        bool|callable|null $default
-    ): static {
-        if (is_callable($default)) {
-            $default = Coercion::tryBool($default());
-        }
-
         $this->default = $default;
-        return $this;
     }
 
-    /**
-     * Get default value
-     */
-    public function getDefaultValue(): ?bool
-    {
-        return $this->default;
-    }
-
-
-    /**
-     * Ask the question
-     */
     public function prompt(): bool
     {
         $done = $answer = false;
@@ -169,9 +91,6 @@ class Confirmation
         return (bool)$answer;
     }
 
-    /**
-     * Render question
-     */
     protected function renderQuestion(): void
     {
         $this->session->style('cyan', $this->message . ' ');
@@ -189,9 +108,6 @@ class Confirmation
         }
     }
 
-    /**
-     * Check answer
-     */
     protected function validate(
         mixed &$answer
     ): bool {

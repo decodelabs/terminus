@@ -68,25 +68,121 @@ class Style
         'strike' => [9, 29],
     ];
 
-    protected ?string $foreground = 'reset';
-    protected int $foregroundBits = 4;
-    protected ?string $background = 'reset';
-    protected int $backgroundBits = 4;
+    public ?string $foreground = 'reset' {
+        set(
+            ?string $foreground
+        ) {
+            $bits = 4;
+
+            if ($foreground !== null) {
+                if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $foreground, $colorMatches)) {
+                    if (!empty($colorMatches[1])) {
+                        $bits = 8;
+                        $foreground = $colorMatches[1];
+                    } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
+                        $bits = 24;
+                        $foreground = $colorMatches[2];
+                    } elseif (!empty($colorMatches[3])) {
+                        $bits = 24;
+                        $foreground = $this->hexToRgb($colorMatches[3]);
+                    }
+                } elseif (!isset(self::FgColors[$foreground])) {
+                    throw Exceptional::InvalidArgument(
+                        message: 'Invalid foreground color: ' . $foreground
+                    );
+                }
+            }
+
+            $this->foreground = $foreground;
+            $this->foregroundBits = $bits;
+        }
+    }
+
+    protected(set) int $foregroundBits = 4;
+
+    public ?string $background = 'reset' {
+        set(
+            ?string $background
+        ) {
+            $bits = 4;
+
+            if ($background !== null) {
+                if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $background, $colorMatches)) {
+                    if (!empty($colorMatches[1])) {
+                        $bits = 8;
+                        $background = $colorMatches[1];
+                    } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
+                        $bits = 24;
+                        $background = $colorMatches[2];
+                    } elseif (!empty($colorMatches[3])) {
+                        $bits = 24;
+                        $background = $this->hexToRgb($colorMatches[3]);
+                    }
+                } elseif (!isset(self::FgColors[$background])) {
+                    throw Exceptional::InvalidArgument(
+                        message: 'Invalid background color: ' . $background
+                    );
+                }
+            }
+
+            $this->background = $background;
+            $this->backgroundBits = $bits;
+        }
+    }
+
+    protected(set) int $backgroundBits = 4;
 
     /**
      * @var array<string>
      */
-    protected array $options = [];
+    public array $options = [] {
+        set(
+            array $options
+        ) {
+            foreach ($options as $option) {
+                if (empty($option)) {
+                    continue;
+                }
 
-    protected bool $error = false;
-    protected int $linesBefore = 0;
-    protected int $linesAfter = 0;
-    protected int $tabs = 0;
-    protected int $backspaces = 0;
+                if (!isset(self::Options[$option])) {
+                    throw Exceptional::InvalidArgument(
+                        message: 'Invalid option: ' . $option
+                    );
+                }
+            }
 
-    /**
-     * Is string a color or option keyword?
-     */
+            $this->options = array_unique($options);
+        }
+    }
+
+    public bool $error = false;
+    public int $linesBefore = 0;
+    public int $linesAfter = 0;
+
+    public int $tabs = 0 {
+        set(
+            int $tabs
+        ) {
+            if ($tabs < 0) {
+                $tabs = 0;
+            }
+
+            $this->tabs = $tabs;
+        }
+    }
+
+    public int $backspaces = 0 {
+        set(
+            int $backspaces
+        ) {
+            if ($backspaces < 0) {
+                $backspaces = 0;
+            }
+
+            $this->backspaces = $backspaces;
+        }
+    }
+
     public static function isKeyword(
         string $string
     ): bool {
@@ -95,9 +191,6 @@ class Style
             isset(self::Options[$string]);
     }
 
-    /**
-     * Parse modifier string
-     */
     public static function parse(
         string $modifier
     ): Style {
@@ -168,122 +261,16 @@ class Style
         return $output;
     }
 
-    /**
-     * Init with fg, gb and options
-     */
     public function __construct(
         ?string $foreground,
         ?string $background = null,
         string ...$options
     ) {
-        $this->setForeground($foreground);
-        $this->setBackground($background);
-        $this->setOptions(...$options);
-    }
-
-    /**
-     * Set foreground color
-     *
-     * @return $this
-     */
-    public function setForeground(
-        ?string $foreground
-    ): static {
-        $bits = 4;
-
-        if ($foreground !== null) {
-            if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $foreground, $colorMatches)) {
-                if (!empty($colorMatches[1])) {
-                    $bits = 8;
-                    $foreground = $colorMatches[1];
-                } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
-                    $bits = 24;
-                    $foreground = $colorMatches[2];
-                } elseif (!empty($colorMatches[3])) {
-                    $bits = 24;
-                    $foreground = $this->hexToRgb($colorMatches[3]);
-                }
-            } elseif (!isset(self::FgColors[$foreground])) {
-                throw Exceptional::InvalidArgument(
-                    message: 'Invalid foreground color: ' . $foreground
-                );
-            }
-        }
-
         $this->foreground = $foreground;
-        $this->foregroundBits = $bits;
-        return $this;
-    }
-
-    /**
-     * Get foreground color
-     */
-    public function getForeground(): ?string
-    {
-        return $this->foreground;
-    }
-
-    /**
-     * Get foreground select color
-     */
-    public function getForegroundBits(): int
-    {
-        return $this->foregroundBits;
-    }
-
-    /**
-     * Set background color
-     *
-     * @return $this
-     */
-    public function setBackground(
-        ?string $background
-    ): static {
-        $bits = 4;
-
-        if ($background !== null) {
-            if (preg_match('/^\:([0-9]{3})|\:([0-9]{3}\,[0-9]{3}\,[0-9]{3})|\#([a-fA-F0-9]{3,6})$/', $background, $colorMatches)) {
-                if (!empty($colorMatches[1])) {
-                    $bits = 8;
-                    $background = $colorMatches[1];
-                } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
-                    $bits = 24;
-                    $background = $colorMatches[2];
-                } elseif (!empty($colorMatches[3])) {
-                    $bits = 24;
-                    $background = $this->hexToRgb($colorMatches[3]);
-                }
-            } elseif (!isset(self::FgColors[$background])) {
-                throw Exceptional::InvalidArgument(
-                    message: 'Invalid background color: ' . $background
-                );
-            }
-        }
-
         $this->background = $background;
-        $this->backgroundBits = $bits;
-        return $this;
+        $this->options = $options;
     }
 
-    /**
-     * Get background color
-     */
-    public function getBackground(): ?string
-    {
-        return $this->background;
-    }
-
-    /**
-     * Get background select color
-     */
-    public function getbackgroundBits(): ?int
-    {
-        return $this->backgroundBits;
-    }
-
-    /**
-     * Convert hex color to rgb
-     */
     protected function hexToRgb(
         string $hex
     ): string {
@@ -311,149 +298,7 @@ class Style
         return hexdec($rx) . ',' . hexdec($gx) . ',' . hexdec($bx);
     }
 
-    /**
-     * Set options
-     *
-     * @return $this
-     */
-    public function setOptions(
-        string ...$options
-    ): static {
-        $this->options = [];
 
-        foreach ($options as $option) {
-            if (empty($option)) {
-                continue;
-            }
-
-            if (!isset(self::Options[$option])) {
-                throw Exceptional::InvalidArgument(
-                    message: 'Invalid option: ' . $option
-                );
-            }
-
-            $this->options[] = $option;
-        }
-
-        $this->options = array_unique($this->options);
-        return $this;
-    }
-
-    /**
-     * Get options
-     *
-     * @return array<string>
-     */
-    public function getOptions(): array
-    {
-        return $this->options;
-    }
-
-
-    /**
-     * Set as error
-     *
-     * @return $this
-     */
-    public function setError(
-        bool $flag
-    ): static {
-        $this->error = $flag;
-        return $this;
-    }
-
-    /**
-     * Is error
-     */
-    public function isError(): bool
-    {
-        return $this->error;
-    }
-
-    /**
-     * Set pre new line count
-     *
-     * @return $this
-     */
-    public function setLinesBefore(
-        int $lines
-    ): static {
-        $this->linesBefore = $lines;
-        return $this;
-    }
-
-    /**
-     * Get pre line count
-     */
-    public function getLinesBefore(): int
-    {
-        return $this->linesBefore;
-    }
-
-    /**
-     * Set post new line count
-     *
-     * @return $this
-     */
-    public function setLinesAfter(
-        int $lines
-    ): static {
-        $this->linesAfter = $lines;
-        return $this;
-    }
-
-    /**
-     * Get post line count
-     */
-    public function getLinesAfter(): int
-    {
-        return $this->linesAfter;
-    }
-
-    /**
-     * Set tab count
-     *
-     * @return $this
-     */
-    public function setTabs(
-        int $tabs
-    ): static {
-        if ($tabs < 0) {
-            $tabs = 0;
-        }
-
-        $this->tabs = $tabs;
-        return $this;
-    }
-
-    /**
-     * Get tab count
-     */
-    public function getTabs(): int
-    {
-        return $this->tabs;
-    }
-
-    /**
-     * Set backspaces
-     *
-     * @return $this
-     */
-    public function setBackspaces(
-        int $spaces
-    ): static {
-        if ($spaces < 0) {
-            $spaces = 0;
-        }
-
-        $this->backspaces = $spaces;
-        return $this;
-    }
-
-
-    /**
-     * Appy to message
-     */
     public function apply(
         ?string $message,
         Session $session
@@ -495,9 +340,6 @@ class Style
         }
     }
 
-    /**
-     * Format message with style info
-     */
     protected function format(
         ?string $message
     ): ?string {

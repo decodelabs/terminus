@@ -14,7 +14,6 @@ use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Deliverance\Channel\Buffer;
 use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Exceptional;
-use DecodeLabs\Terminus\Command\Request;
 use DecodeLabs\Terminus\Io\Controller;
 use DecodeLabs\Terminus\Io\Style;
 use DecodeLabs\Terminus\Widget\Confirmation;
@@ -30,28 +29,30 @@ class Session implements Controller
 {
     use LoggerTrait;
 
-    /**
-     * @var array<string, mixed>
-     */
-    protected array $arguments = [];
+    public int $width {
+        get => $this->getWidth();
+    }
 
-    protected Request $request;
-    protected Broker $broker;
+    public int $height {
+        get => $this->getHeight();
+    }
+
+    public bool $readBlocking {
+        get => $this->isReadBlocking();
+        set { $this->setReadBlocking($value); }
+    }
+
+    public Broker $broker;
 
     protected bool $isAnsi = true;
     protected bool $hasStty = false;
     protected ?string $sttyReset = null;
 
-    protected Adapter $adapter;
+    protected(set) Adapter $adapter;
 
-    /**
-     * Init with IO broker and command info
-     */
     public function __construct(
         Broker $broker,
-        Request $request
     ) {
-        $this->request = $request;
         $this->broker = $broker;
         $this->adapter = AdapterAbstract::load();
         $this->isAnsi = $this->adapter->canColorShell();
@@ -62,46 +63,18 @@ class Session implements Controller
         }
     }
 
-    /**
-     * Ensure stty is reset at end of run
-     */
     public function __destruct()
     {
         $this->resetStty();
     }
 
-    /**
-     * Get adapter
-     */
     public function getAdapter(): Adapter
     {
         return $this->adapter;
     }
 
-    /**
-     * Set request - must be done early in process
-     *
-     * @return $this
-     */
-    public function setRequest(
-        Request $request
-    ): static {
-        $this->request = $request;
-        return $this;
-    }
 
     /**
-     * Get request
-     */
-    public function getRequest(): Request
-    {
-        return $this->request;
-    }
-
-
-    /**
-     * Replace IO broker
-     *
      * @return $this
      */
     public function setBroker(
@@ -111,34 +84,22 @@ class Session implements Controller
         return $this;
     }
 
-    /**
-     * Get broker
-     */
     public function getBroker(): Broker
     {
         return $this->broker;
     }
 
 
-    /**
-     * Is this an ANSI supporting TTY?
-     */
     public function isAnsi(): bool
     {
         return $this->isAnsi;
     }
 
-    /**
-     * Is stty available?
-     */
     public function hasStty(): bool
     {
         return $this->hasStty;
     }
 
-    /**
-     * Get current snapshot of stty state
-     */
     public function snapshotStty(): ?string
     {
         if (!$this->hasStty) {
@@ -154,9 +115,6 @@ class Session implements Controller
         return $output;
     }
 
-    /**
-     * Reset stty back to value at script start
-     */
     public function restoreStty(
         ?string $snapshot
     ): bool {
@@ -170,9 +128,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Reset stty back to value at script start
-     */
     public function resetStty(): bool
     {
         if (!$this->hasStty) {
@@ -184,17 +139,11 @@ class Session implements Controller
     }
 
 
-    /**
-     * Get TTY width
-     */
     public function getWidth(): int
     {
         return $this->adapter->getShellWidth();
     }
 
-    /**
-     * Get TTY height
-     */
     public function getHeight(): int
     {
         return $this->adapter->getShellHeight();
@@ -205,8 +154,6 @@ class Session implements Controller
 
 
     /**
-     * Request read blocking on broker
-     *
      * @return $this
      */
     public function setReadBlocking(
@@ -216,59 +163,39 @@ class Session implements Controller
         return $this;
     }
 
-    /**
-     * Is broker blocking for reads?
-     */
     public function isReadBlocking(): bool
     {
         return $this->broker->isReadBlocking();
     }
 
-    /**
-     * Can read from broker?
-     */
     public function isReadable(): bool
     {
         return $this->broker->isReadable();
     }
 
 
-    /**
-     * Read chunk from broker
-     */
     public function read(
         int $length
     ): ?string {
         return $this->broker->read($length);
     }
 
-    /**
-     * Read all available data from broker
-     */
     public function readAll(): ?string
     {
         return $this->broker->readAll();
     }
 
-    /**
-     * Read single ascii char from broker
-     */
     public function readChar(): ?string
     {
         return $this->broker->readChar();
     }
 
-    /**
-     * Read line from broker
-     */
     public function readLine(): ?string
     {
         return $this->broker->readLine();
     }
 
     /**
-     * Read data from broker to receiver
-     *
      * @return $this
      */
     public function readTo(
@@ -278,26 +205,17 @@ class Session implements Controller
         return $this;
     }
 
-    /**
-     * Is broker at end of input?
-     */
     public function isAtEnd(): bool
     {
         return $this->broker->isAtEnd();
     }
 
 
-    /**
-     * Is broker writable?
-     */
     public function isWritable(): bool
     {
         return $this->broker->isWritable();
     }
 
-    /**
-     * Write chunk to broker
-     */
     public function write(
         ?string $data,
         ?int $length = null
@@ -305,18 +223,12 @@ class Session implements Controller
         return $this->broker->write($data, $length);
     }
 
-    /**
-     * Write line to broker
-     */
     public function writeLine(
         ?string $data = ''
     ): int {
         return $this->broker->writeLine($data);
     }
 
-    /**
-     * Write buffer to broker
-     */
     public function writeBuffer(
         Buffer $buffer,
         int $length
@@ -326,17 +238,11 @@ class Session implements Controller
 
 
 
-    /**
-     * Is broker error writable?
-     */
     public function isErrorWritable(): bool
     {
         return $this->broker->isErrorWritable();
     }
 
-    /**
-     * Write error chunk to broker
-     */
     public function writeError(
         ?string $data,
         ?int $length = null
@@ -344,18 +250,12 @@ class Session implements Controller
         return $this->broker->writeError($data, $length);
     }
 
-    /**
-     * Write error line to broker
-     */
     public function writeErrorLine(
         ?string $data = ''
     ): int {
         return $this->broker->writeErrorLine($data);
     }
 
-    /**
-     * Write error buffer to broker
-     */
     public function writeErrorBuffer(
         Buffer $buffer,
         int $length
@@ -366,9 +266,6 @@ class Session implements Controller
 
 
 
-    /**
-     * New line
-     */
     public function newLine(
         int $times = 1
     ): bool {
@@ -379,9 +276,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * New error line
-     */
     public function newErrorLine(
         int $times = 1
     ): bool {
@@ -392,9 +286,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Delete n previous lines
-     */
     public function deleteLine(
         int $times = 1
     ): bool {
@@ -406,9 +297,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Delete n previous error lines
-     */
     public function deleteErrorLine(
         int $times = 1
     ): bool {
@@ -420,9 +308,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Clear current line
-     */
     public function clearLine(): bool
     {
         if (!$this->isAnsi) {
@@ -433,9 +318,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Clear current error line
-     */
     public function clearErrorLine(): bool
     {
         if (!$this->isAnsi) {
@@ -446,9 +328,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Clear current line before cursor
-     */
     public function clearLineBefore(): bool
     {
         if (!$this->isAnsi) {
@@ -459,9 +338,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Clear current error line before cursor
-     */
     public function clearErrorLineBefore(): bool
     {
         if (!$this->isAnsi) {
@@ -472,9 +348,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Clear current line after cursor
-     */
     public function clearLineAfter(): bool
     {
         if (!$this->isAnsi) {
@@ -485,9 +358,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Clear current error line after cursor
-     */
     public function clearErrorLineAfter(): bool
     {
         if (!$this->isAnsi) {
@@ -498,9 +368,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Clear single char
-     */
     public function backspace(
         int $times = 1
     ): bool {
@@ -508,9 +375,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Clear single error char
-     */
     public function backspaceError(
         int $times = 1
     ): bool {
@@ -518,9 +382,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Write tabs to line
-     */
     public function tab(
         int $times = 1
     ): bool {
@@ -528,9 +389,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Write tabs to error line
-     */
     public function tabError(
         int $times = 1
     ): bool {
@@ -540,9 +398,6 @@ class Session implements Controller
 
 
 
-    /**
-     * Move cursor up a line
-     */
     public function cursorUp(
         int $times = 1
     ): bool {
@@ -554,9 +409,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move cursor up a line pos 0
-     */
     public function cursorLineUp(
         int $times = 1
     ): bool {
@@ -568,9 +420,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move cursor down a line
-     */
     public function cursorDown(
         int $times = 1
     ): bool {
@@ -582,9 +431,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move cursor down a line pos 0
-     */
     public function cursorLineDown(
         int $times = 1
     ): bool {
@@ -596,9 +442,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move cursor left
-     */
     public function cursorLeft(
         int $times = 1
     ): bool {
@@ -610,9 +453,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move cursor right
-     */
     public function cursorRight(
         int $times = 1
     ): bool {
@@ -624,9 +464,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move error cursor up a line
-     */
     public function errorCursorUp(
         int $times = 1
     ): bool {
@@ -638,9 +475,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move error cursor up a line pos 0
-     */
     public function errorCursorLineUp(
         int $times = 1
     ): bool {
@@ -652,9 +486,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move error cursor down a line
-     */
     public function errorCursorDown(
         int $times = 1
     ): bool {
@@ -666,9 +497,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move error cursor down a line
-     */
     public function errorCursorLineDown(
         int $times = 1
     ): bool {
@@ -680,9 +508,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move error cursor left
-     */
     public function errorCursorLeft(
         int $times = 1
     ): bool {
@@ -694,9 +519,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Move error cursor right
-     */
     public function errorCursorRight(
         int $times = 1
     ): bool {
@@ -709,9 +531,6 @@ class Session implements Controller
     }
 
 
-    /**
-     * Set cursor line position
-     */
     public function setCursor(
         int $pos
     ): bool {
@@ -723,9 +542,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Set error cursor line position
-     */
     public function setErrorCursor(
         int $pos
     ): bool {
@@ -737,9 +553,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Set cursor absolute position
-     */
     public function setCursorLine(
         int $line,
         int $pos = 1
@@ -752,9 +565,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Set cursor absolute position
-     */
     public function setErrorCursorLine(
         int $line,
         int $pos = 1
@@ -769,9 +579,6 @@ class Session implements Controller
 
 
 
-    /**
-     * Get cursor position
-     */
     public function getCursor(): array
     {
         if (null === ($response = $this->captureAnsi("\e[6n"))) {
@@ -789,9 +596,6 @@ class Session implements Controller
         return [(int)$matches[1], (int)$matches[2]];
     }
 
-    /**
-     * Get error cursor position
-     */
     public function getErrorCursor(): array
     {
         if (null === ($response = $this->captureAnsi("\e[6n", true))) {
@@ -809,17 +613,11 @@ class Session implements Controller
         return [(int)$matches[1], (int)$matches[2]];
     }
 
-    /**
-     * Get cursor horizontal position
-     */
     public function getCursorH(): int
     {
         return $this->getCursor()[1];
     }
 
-    /**
-     * Get error cursor horizontal position
-     */
     public function getErrorCursorH(): int
     {
         if ($this->captureAnsi("\e[6n", true) === null) {
@@ -831,17 +629,11 @@ class Session implements Controller
         return $this->getErrorCursor()[1];
     }
 
-    /**
-     * Get cursor vertical position
-     */
     public function getCursorV(): int
     {
         return $this->getCursor()[0];
     }
 
-    /**
-     * Get error cursor vertical position
-     */
     public function getErrorCursorV(): int
     {
         return $this->getErrorCursor()[0];
@@ -851,9 +643,6 @@ class Session implements Controller
 
 
 
-    /**
-     * Store cursor position
-     */
     public function saveCursor(): bool
     {
         if (!$this->isAnsi) {
@@ -864,9 +653,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Store error cursor position
-     */
     public function saveErrorCursor(): bool
     {
         if (!$this->isAnsi) {
@@ -877,9 +663,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Restore cursor position
-     */
     public function restoreCursor(): bool
     {
         if (!$this->isAnsi) {
@@ -890,9 +673,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Restore error cursor position
-     */
     public function restoreErrorCursor(): bool
     {
         if (!$this->isAnsi) {
@@ -905,9 +685,6 @@ class Session implements Controller
 
 
 
-    /**
-     * Detect current background color
-     */
     /*
     public function getDefaultBackgroundColor(): ?string
     {
@@ -928,9 +705,6 @@ class Session implements Controller
      */
 
 
-    /**
-     * Capture ansi response call
-     */
     protected function captureAnsi(
         string $command,
         bool $error = false
@@ -975,9 +749,6 @@ class Session implements Controller
     }
 
 
-    /**
-     * Switch echo on and off via stty
-     */
     public function toggleInputEcho(
         bool $flag
     ): bool {
@@ -989,9 +760,6 @@ class Session implements Controller
         return true;
     }
 
-    /**
-     * Switch icanon on and off via stty
-     */
     public function toggleInputBuffer(
         bool $flag
     ): bool {
@@ -1004,9 +772,6 @@ class Session implements Controller
     }
 
 
-    /**
-     * Shortcut style generation
-     */
     public function __call(
         string $method,
         array $args
@@ -1021,8 +786,6 @@ class Session implements Controller
     }
 
     /**
-     * Style an output line
-     *
      * @return $this
      */
     public function style(
@@ -1041,103 +804,135 @@ class Session implements Controller
 
 
     /**
-     * Ask a question
-     *
      * @param string|(callable():?string)|null $default
+     * @param array<string> $options
      */
     public function ask(
         string $message,
         string|callable|null $default = null,
-        ?callable $validator = null
+        array $options = [],
+        ?callable $validator = null,
+        bool $showOptions = true,
+        bool $strict = false,
+        bool $confirm = false
     ): ?string {
-        return $this->newQuestion($message, $default, $validator)->prompt();
+        return $this->newQuestion(
+            message: $message,
+            default: $default,
+            options: $options,
+            validator: $validator,
+            showOptions: $showOptions,
+            strict: $strict,
+            confirm: $confirm
+        )->prompt();
     }
 
     /**
-     * Begin new question asker
-     *
      * @param string|(callable():?string)|null $default
+     * @param array<string> $options
      */
     public function newQuestion(
         string $message,
         string|callable|null $default = null,
-        ?callable $validator = null
+        array $options = [],
+        ?callable $validator = null,
+        bool $showOptions = true,
+        bool $strict = false,
+        bool $confirm = false
     ): Question {
-        return new Question($this, $message, $default, $validator);
+        return new Question(
+            session: $this,
+            message: $message,
+            default: $default,
+            options: $options,
+            validator: $validator,
+            showOptions: $showOptions,
+            strict: $strict,
+            confirm: $confirm
+        );
     }
 
-    /**
-     * Ask for password
-     */
     public function askPassword(
         ?string $message = null,
         bool $repeat = false,
         bool $required = true
     ): ?string {
-        return $this->newPasswordQuestion($message, $repeat, $required)->prompt();
+        return $this->newPasswordQuestion(
+            message: $message,
+            repeat: $repeat,
+            required: $required
+        )->prompt();
     }
 
-    /**
-     * Begin password asker
-     */
     public function newPasswordQuestion(
         ?string $message = null,
         bool $repeat = false,
         bool $required = true
     ): Password {
-        return new Password($this, $message, $repeat, $required);
+        return new Password(
+            session: $this,
+            message: $message,
+            repeat: $repeat,
+            required: $required
+        );
     }
 
     /**
-     * Ask for confirmation
-     *
      * @param bool|(callable():?bool)|null $default
      */
     public function confirm(
         string $message,
         bool|callable|null $default = null
     ): bool {
-        return $this->newConfirmation($message, $default)->prompt();
+        return $this->newConfirmation(
+            message: $message,
+            default: $default
+        )->prompt();
     }
 
     /**
-     * Begin confirmation
-     *
      * @param bool|(callable():?bool)|null $default
      */
     public function newConfirmation(
         string $message,
         bool|callable|null $default = null
     ): Confirmation {
-        return new Confirmation($this, $message, $default);
+        return new Confirmation(
+            session: $this,
+            message: $message,
+            default: $default
+        );
     }
 
 
 
-    /**
-     * Show progress indicator
-     */
     public function newSpinner(
         ?string $style = null
     ): Spinner {
-        return new Spinner($this, $style);
+        return new Spinner(
+            session: $this,
+            style: $style
+        );
     }
 
-    /**
-     * Show progress bar
-     */
     public function newProgressBar(
         float $min = 0.0,
         float $max = 100.0,
-        ?int $precision = null
+        ?int $precision = null,
+        bool $showPercent = true,
+        bool $showCompleted = true
     ): ProgressBar {
-        return new ProgressBar($this, $min, $max, $precision);
+        return new ProgressBar(
+            session: $this,
+            min: $min,
+            max: $max,
+            precision: $precision,
+            showPercent: $showPercent,
+            showCompleted: $showCompleted
+        );
     }
 
 
-    /**
-     * String to boolean
-     */
     public static function stringToBoolean(
         string $string,
         ?bool $default = null
@@ -1182,9 +977,6 @@ class Session implements Controller
     ];
 
 
-    /**
-     * Render comment line
-     */
     public function comment(
         string $message,
         array $context = []
@@ -1192,9 +984,6 @@ class Session implements Controller
         $this->log('comment', $message, $context);
     }
 
-    /**
-     * Render success log
-     */
     public function success(
         string $message,
         array $context = []
@@ -1202,9 +991,6 @@ class Session implements Controller
         $this->log('success', $message, $context);
     }
 
-    /**
-     * Render operative message line
-     */
     public function operative(
         string $message,
         array $context = []
@@ -1212,9 +998,6 @@ class Session implements Controller
         $this->log('operative', $message, $context);
     }
 
-    /**
-     * Render delete success log
-     */
     public function deleteSuccess(
         string $message,
         array $context = []
@@ -1223,9 +1006,6 @@ class Session implements Controller
     }
 
 
-    /**
-     * Render inline debug log
-     */
     public function inlineDebug(
         string $message,
         array $context = []
@@ -1233,9 +1013,6 @@ class Session implements Controller
         $this->inlineLog('debug', $message, $context);
     }
 
-    /**
-     * Render inline info log
-     */
     public function inlineInfo(
         string $message,
         array $context = []
@@ -1243,9 +1020,6 @@ class Session implements Controller
         $this->inlineLog('info', $message, $context);
     }
 
-    /**
-     * Render inline notice log
-     */
     public function inlineNotice(
         string $message,
         array $context = []
@@ -1253,9 +1027,6 @@ class Session implements Controller
         $this->inlineLog('notice', $message, $context);
     }
 
-    /**
-     * Render inline comment line
-     */
     public function inlineComment(
         string $message,
         array $context = []
@@ -1263,9 +1034,6 @@ class Session implements Controller
         $this->inlineLog('comment', $message, $context);
     }
 
-    /**
-     * Render inline success log
-     */
     public function inlineSuccess(
         string $message,
         array $context = []
@@ -1273,9 +1041,6 @@ class Session implements Controller
         $this->inlineLog('success', $message, $context);
     }
 
-    /**
-     * Render inline operative log
-     */
     public function inlineOperative(
         string $message,
         array $context = []
@@ -1283,9 +1048,6 @@ class Session implements Controller
         $this->inlineLog('operative', $message, $context);
     }
 
-    /**
-     * Render inline delete success log
-     */
     public function inlineDeleteSuccess(
         string $message,
         array $context = []
@@ -1293,9 +1055,6 @@ class Session implements Controller
         $this->inlineLog('deleteSuccess', $message, $context);
     }
 
-    /**
-     * Render inline warning log
-     */
     public function inlineWarning(
         string $message,
         array $context = []
@@ -1303,9 +1062,6 @@ class Session implements Controller
         $this->inlineLog('warning', $message, $context);
     }
 
-    /**
-     * Render inline error log
-     */
     public function inlineError(
         string $message,
         array $context = []
@@ -1313,9 +1069,6 @@ class Session implements Controller
         $this->inlineLog('error', $message, $context);
     }
 
-    /**
-     * Render inline critical log
-     */
     public function inlineCritical(
         string $message,
         array $context = []
@@ -1323,9 +1076,6 @@ class Session implements Controller
         $this->inlineLog('critical', $message, $context);
     }
 
-    /**
-     * Render inline alert log
-     */
     public function inlineAlert(
         string $message,
         array $context = []
@@ -1333,9 +1083,6 @@ class Session implements Controller
         $this->inlineLog('alert', $message, $context);
     }
 
-    /**
-     * Render inline emergency log
-     */
     public function inlineEmergency(
         string $message,
         array $context = []
@@ -1345,8 +1092,6 @@ class Session implements Controller
 
 
     /**
-     * Render generic log message
-     *
      * @param array<string,mixed> $context
      */
     public function log(
@@ -1367,9 +1112,6 @@ class Session implements Controller
         $this->style('.' . $style, $message);
     }
 
-    /**
-     * Render inline generic log message
-     */
     public function inlineLog(
         string $level,
         string|Stringable $message,
@@ -1389,8 +1131,6 @@ class Session implements Controller
     }
 
     /**
-     * Interpolate log message with context
-     *
      * @param array<string, mixed> $context
      */
     private function interpolate(

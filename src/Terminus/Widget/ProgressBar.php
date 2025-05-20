@@ -16,15 +16,15 @@ class ProgressBar
     protected const Empty = '░'; // @ignore-non-ascii
     protected const Full = '▓'; // @ignore-non-ascii
 
-    protected float $min = 0;
-    protected float $max = 100;
+    public float $min = 0;
+    public float $max = 100;
+    public int $precision = 2;
 
-    protected bool $showPercent = true;
-    protected bool $showCompleted = true;
+    public bool $showPercent = true;
+    public bool $showCompleted = true;
 
     protected bool $started = false;
     protected int $written = 0;
-    protected int $precision = 2;
 
     protected Session $session;
 
@@ -35,9 +35,13 @@ class ProgressBar
         Session $session,
         float $min = 0.0,
         float $max = 100.0,
-        ?int $precision = null
+        ?int $precision = null,
+        bool $showPercent = true,
+        bool $showCompleted = true
     ) {
         $this->session = $session;
+        $this->showPercent = $showPercent;
+        $this->showCompleted = $showCompleted;
         $this->setRange($min, $max);
 
         if ($precision === null) {
@@ -63,146 +67,27 @@ class ProgressBar
             }
         }
 
-        $this->setPrecision($precision);
+        $this->precision = $precision;
 
         if ($this->min < 0) {
             $this->showCompleted = false;
         }
     }
 
-
-
     /**
-     * Set min
-     *
-     * @return $this
-     */
-    public function setMin(
-        float $min
-    ): static {
-        $this->min = $min;
-        return $this;
-    }
-
-    /**
-     * Get min
-     */
-    public function getMin(): float
-    {
-        return $this->min;
-    }
-
-    /**
-     * Set max
-     *
-     * @return $this
-     */
-    public function setMax(
-        float $max
-    ): static {
-        $this->max = $max;
-        return $this;
-    }
-
-    /**
-     * Get max
-     */
-    public function getMax(): float
-    {
-        return $this->max;
-    }
-
-    /**
-     * Set range
-     *
      * @return $this
      */
     public function setRange(
         float $min,
         float $max
     ): static {
-        $this->setMin($min);
-        $this->setMax($max);
+        $this->min = $min;
+        $this->max = $max;
         return $this;
     }
 
-    /**
-     * Get range
-     *
-     * @return array<float>
-     */
-    public function getRange(): array
-    {
-        return [$this->min, $this->max];
-    }
 
     /**
-     * Set precision
-     *
-     * @return $this
-     */
-    public function setPrecision(
-        int $precision
-    ): static {
-        $this->precision = $precision;
-        return $this;
-    }
-
-    /**
-     * Get precision
-     */
-    public function getPrecision(): int
-    {
-        return $this->precision;
-    }
-
-
-
-    /**
-     * Toggle showing percent value
-     *
-     * @return $this
-     */
-    public function setShowPercent(
-        bool $flag
-    ): static {
-        $this->showPercent = $flag;
-        return $this;
-    }
-
-    /**
-     * Show percent value?
-     */
-    public function shouldShowPercent(): bool
-    {
-        return $this->showPercent;
-    }
-
-    /**
-     * Toggle showing complected value
-     *
-     * @return $this
-     */
-    public function setShowCompleted(
-        bool $flag
-    ): static {
-        $this->showCompleted = $flag;
-        return $this;
-    }
-
-    /**
-     * Show percent value?
-     */
-    public function shouldShowCompleted(): bool
-    {
-        return $this->showCompleted;
-    }
-
-
-
-    /**
-     * Render
-     *
      * @return $this
      */
     public function advance(
@@ -312,8 +197,6 @@ class ProgressBar
 
 
     /**
-     * Finalise
-     *
      * @return $this
      */
     public function complete(): static

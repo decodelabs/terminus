@@ -17,14 +17,28 @@ class Password implements RequiredSet
 {
     use RequiredSetTrait;
 
-    protected string $message = 'Please enter your password';
-    protected string $repeatMessage = 'Please repeat your password';
-    protected Session $session;
-    protected bool $repeat = false;
+    private const string DefaultMessage = 'Please enter your password';
+    private const string DefaultRepeatMessage = 'Please repeat your password';
 
-    /**
-     * Init with message
-     */
+    public string $message = self::DefaultMessage {
+        set(
+            ?string $message
+        ) {
+            $this->message = $message ?? self::DefaultMessage;
+        }
+    }
+
+    public string $repeatMessage = self::DefaultRepeatMessage {
+        set(
+            ?string $message
+        ) {
+            $this->repeatMessage = $message ?? self::DefaultRepeatMessage;
+        }
+    }
+
+    public bool $repeat = false;
+    protected Session $session;
+
     public function __construct(
         Session $session,
         ?string $message = null,
@@ -32,83 +46,12 @@ class Password implements RequiredSet
         bool $required = true
     ) {
         $this->session = $session;
-        $this->setMessage($message);
-        $this->setRepeat($repeat);
-        $this->setRequired($required);
-    }
-
-    /**
-     * Set message body
-     *
-     * @return $this
-     */
-    public function setMessage(
-        ?string $message
-    ): static {
-        if ($message === null) {
-            $message = 'Please enter your password';
-        }
-
         $this->message = $message;
-        return $this;
-    }
-
-    /**
-     * Get body of the question
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * Set repeat message body
-     *
-     * @return $this
-     */
-    public function setRepeatMessage(
-        ?string $message
-    ): static {
-        if ($message === null) {
-            $message = 'Please repeat your password';
-        }
-
-        $this->repeatMessage = $message;
-        return $this;
-    }
-
-    /**
-     * Get repeat body of the question
-     */
-    public function getRepeatMessage(): string
-    {
-        return $this->repeatMessage;
-    }
-
-    /**
-     * Set repeat
-     *
-     * @return $this
-     */
-    public function setRepeat(
-        bool $flag
-    ): static {
-        $this->repeat = $flag;
-        return $this;
-    }
-
-    /**
-     * Should repeat?
-     */
-    public function shouldRepeat(): bool
-    {
-        return $this->repeat;
+        $this->repeat = $repeat;
+        $this->required = $required;
     }
 
 
-    /**
-     * Ask the question
-     */
     public function prompt(): ?string
     {
         while (true) {
@@ -161,9 +104,6 @@ class Password implements RequiredSet
         return $password;
     }
 
-    /**
-     * Render question
-     */
     protected function renderQuestion(
         string $message
     ): ?string {

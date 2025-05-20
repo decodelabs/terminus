@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus\Widget;
 
+use Closure;
 use DecodeLabs\Coercion;
 use DecodeLabs\Terminus\Session;
 use DecodeLabs\Tightrope\RequiredSet;
@@ -18,197 +19,70 @@ class Question implements RequiredSet
 {
     use RequiredSetTrait;
 
-    protected string $message;
+    public string $message;
 
     /**
      * @var array<string>
      */
-    protected array $options = [];
+    public array $options = [];
 
-    protected bool $showOptions = true;
-    protected bool $strict = false;
-    protected bool $confirm = false;
+    public bool $showOptions = true;
+    public bool $strict = false;
+    public bool $confirm = false;
 
-    protected ?string $default = null;
+    public ?string $default = null {
+        set(
+            string|callable|null $default
+        ) {
+            if (is_callable($default)) {
+                $default = Coercion::tryString($default());
+            }
 
-    /**
-     * @var callable|null
-     */
-    protected $validator;
+            $this->default = $default;
+        }
+    }
+
+    public ?Closure $validator {
+        set(
+            callable|Closure|null $validator
+        ) {
+            if (is_callable($validator)) {
+                $this->validator = Closure::fromCallable($validator);
+            } else {
+                $this->validator = null;
+            }
+        }
+    }
+
     protected Session $session;
 
     /**
      * Init with message
      *
      * @param string|(callable():?string)|null $default
+     * @param array<string> $options
      */
     public function __construct(
         Session $session,
         string $message,
         string|callable|null $default = null,
-        ?callable $validator = null
+        array $options = [],
+        ?callable $validator = null,
+        bool $showOptions = true,
+        bool $strict = false,
+        bool $confirm = false
     ) {
         $this->session = $session;
-        $this->setMessage($message);
-        $this->setDefaultValue($default);
-        $this->setValidator($validator);
-        $this->setRequired(true);
-    }
-
-    /**
-     * Set message body
-     *
-     * @return $this
-     */
-    public function setMessage(
-        string $message
-    ): static {
         $this->message = $message;
-        return $this;
-    }
-
-    /**
-     * Get body of the question
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-
-    /**
-     * Set available options
-     *
-     * @return $this
-     */
-    public function setOptions(
-        string ...$options
-    ): static {
-        $this->options = $options;
-        return $this;
-    }
-
-    /**
-     * Get available options
-     *
-     * @return array<string>
-     */
-    public function getOptions(): array
-    {
-        return $this->options;
-    }
-
-    /**
-     * Should options be shown?
-     *
-     * @return $this
-     */
-    public function setShowOptions(
-        bool $show
-    ): static {
-        $this->showOptions = $show;
-        return $this;
-    }
-
-    /**
-     * Show options?
-     */
-    public function shouldShowOptions(): bool
-    {
-        return $this->showOptions;
-    }
-
-
-    /**
-     * Set strict
-     *
-     * @return $this
-     */
-    public function setStrict(
-        bool $strict
-    ): static {
-        $this->strict = $strict;
-        return $this;
-    }
-
-    /**
-     * Is strict?
-     */
-    public function isStrict(): bool
-    {
-        return $this->strict;
-    }
-
-    /**
-     * Set to confirm
-     *
-     * @return $this
-     */
-    public function setConfirm(
-        bool $flag
-    ): static {
-        $this->confirm = $flag;
-        return $this;
-    }
-
-    /**
-     * Should confirm answer?
-     */
-    public function shouldConfirm(): bool
-    {
-        return $this->confirm;
-    }
-
-
-    /**
-     * Set default value
-     *
-     * @param string|(callable():?string)|null $default
-     * @return $this
-     */
-    public function setDefaultValue(
-        string|callable|null $default
-    ): static {
-        if (is_callable($default)) {
-            $default = Coercion::tryString($default());
-        }
-
         $this->default = $default;
-        return $this;
-    }
-
-    /**
-     * Get default value
-     */
-    public function getDefaultValue(): ?string
-    {
-        return $this->default;
-    }
-
-    /**
-     * Set validator callback
-     *
-     * @return $this
-     */
-    public function setValidator(
-        ?callable $validator
-    ): static {
+        $this->options = $options;
         $this->validator = $validator;
-        return $this;
+        $this->required = true;
+        $this->showOptions = $showOptions;
+        $this->strict = $strict;
+        $this->confirm = $confirm;
     }
 
-    /**
-     * Get validator callback
-     */
-    public function getValidator(): ?callable
-    {
-        return $this->validator;
-    }
-
-
-    /**
-     * Ask the question
-     */
     public function prompt(): ?string
     {
         while (true) {
@@ -217,8 +91,8 @@ class Question implements RequiredSet
 
             if ($this->validate($answer)) {
                 if ($this->confirm) {
-                    $confirmation = $this->session->newConfirmation('Is this correct?', true)
-                        ->setMessageInput($answer);
+                    $confirmation = $this->session->newConfirmation('Is this correct?', true);
+                    $confirmation->input = $answer;
 
                     if (!$confirmation->prompt()) {
                         continue;
@@ -232,9 +106,6 @@ class Question implements RequiredSet
         return $answer;
     }
 
-    /**
-     * Render question
-     */
     protected function renderQuestion(): void
     {
         $this->session->style('cyan', $this->message);
@@ -287,9 +158,6 @@ class Question implements RequiredSet
         }
     }
 
-    /**
-     * Check answer
-     */
     protected function validate(
         ?string &$answer
     ): bool {

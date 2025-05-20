@@ -201,17 +201,32 @@ interface Controller extends
     ): static;
 
 
-
+    /**
+     * @param string|(callable():?string)|null $default
+     * @param array<string> $options
+     */
     public function ask(
         string $message,
-        ?string $default = null,
-        ?callable $validator = null
+        string|callable|null $default = null,
+        array $options = [],
+        ?callable $validator = null,
+        bool $showOptions = true,
+        bool $strict = false,
+        bool $confirm = false
     ): ?string;
 
+    /**
+     * @param string|(callable():?string)|null $default
+     * @param array<string> $options
+     */
     public function newQuestion(
         string $message,
-        ?string $default = null,
-        ?callable $validator = null
+        string|callable|null $default = null,
+        array $options = [],
+        ?callable $validator = null,
+        bool $showOptions = true,
+        bool $strict = false,
+        bool $confirm = false
     ): Question;
 
     public function askPassword(
@@ -226,14 +241,20 @@ interface Controller extends
         bool $required = true
     ): Password;
 
+    /**
+     * @param bool|(callable():?bool)|null $default
+     */
     public function confirm(
         string $message,
-        ?bool $default = null
+        bool|callable|null $default = null
     ): bool;
 
+    /**
+     * @param bool|(callable():?bool)|null $default
+     */
     public function newConfirmation(
         string $message,
-        ?bool $default = null
+        bool|callable|null $default = null
     ): Confirmation;
 
     public function newSpinner(
@@ -243,7 +264,9 @@ interface Controller extends
     public function newProgressBar(
         float $min = 0.0,
         float $max = 100.0,
-        ?int $precision = null
+        ?int $precision = null,
+        bool $showPercent = true,
+        bool $showCompleted = true
     ): ProgressBar;
 
 

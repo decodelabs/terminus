@@ -215,27 +215,38 @@ Simplify common use cases with built in widgets:
 ```php
 use DecodeLabs\Terminus as Cli;
 
-$answer = Cli::newQuestion('How are you?')
-    ->setOptions('Great', 'Fine', 'OK')
-    ->setDefaultValue('great')
+$answer = Cli::newQuestion(
+        message: 'How are you?',
+        options: ['Great', 'Fine', 'OK'],
+        default: 'great'
+    )
     ->prompt();
 
 
 // Or direct..
-$answer = Cli::ask('How are you?', 'great');
+$answer = Cli::ask(
+    message: 'How are you?',
+    default: 'great'
+);
 
 Cli::{'..green'}('You are: '.$answer);
 ```
 
 #### Password
 ```php
-$password = Cli::newPasswordQuestion('Now enter a password...')
-    ->setRequired(true)
-    ->setRepeat(true)
+$password = Cli::newPasswordQuestion(
+        message: 'Now enter a password...',
+        repeat: true,
+        required: true,
+    )
     ->prompt();
 
 // Or direct
-$password = Cli::askPassword('Now enter a password...', true, true);
+$password = Cli::askPassword(
+    message: 'Now enter a password...',
+    repeat: true,
+    required: true
+);
 
 Cli::{'..green'}('Your password is: '.$password);
 ```
@@ -244,7 +255,10 @@ Cli::{'..green'}('Your password is: '.$password);
 ```php
 use DecodeLabs\Terminus as Cli;
 
-if (Cli::confirm('Do you like green?', true)) {
+if (Cli::confirm(
+    message: 'Do you like green?',
+    default: true
+)) {
     Cli::{'..brightGreen'}('Awesome!');
 } else {
     Cli::{'..brightRed'}('Boo!');
@@ -271,7 +285,10 @@ $spinner->complete('Done!');
 use DecodeLabs\Terminus as Cli;
 
 Cli::{'.'}('Progress bar: ');
-$spinner = Cli::newProgressBar(10, 50);
+$spinner = Cli::newProgressBar(
+    min: 10,
+    max: 50
+);
 
 for ($i = 0; $i < 80; $i++) {
     usleep(20000);
@@ -298,24 +315,9 @@ Cli::emergency('Oh no this is an emergency!');
 ```
 
 
-### Argument parsing
-Quickly parse input arguments from the request into the session:
-
-```php
-use DecodeLabs\Terminus as Cli;
-
-Cli::$command
-    ->setHelp('Test out Terminus functionality')
-    ->addArgument('action', 'Unnamed action argument')
-    ->addArgument('?-test|t=Test arg', 'Named test argument with default value');
-
-$action = Cli::$command['action'];
-$test = Cli::$command['test'];
-```
-
 ### Session
 
-Terminus will by default create a standard session communicating via PHP's <code>STDIN</code>, <code>STDOUT</code> and <code>STDERR</code> streams, with arguments from <code>$\_SERVER['argv']</code>.
+Terminus will by default create a standard session communicating via PHP's <code>STDIN</code>, <code>STDOUT</code> and <code>STDERR</code> streams.
 
 You can however customise the session by creating your own and setting it via the main <code>Terminus</code> frontage.
 See [Deliverance Broker](https://github.com/decodelabs/atlas) for more information about controlling IO streams.
@@ -325,8 +327,6 @@ use DecodeLabs\Deliverance;
 use DecodeLabs\Terminus as Cli;
 
 $session = Cli::newSession(
-    Cli::newRequest(['list', 'of', 'argv', 'params']),
-
     // The Io Broker is optional, defaults to best fit
     Deliverance::newIoBroker()
         ->addInputProvider($inputStream)

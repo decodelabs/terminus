@@ -14,9 +14,6 @@ use DecodeLabs\Terminus\Adapter\Unix;
 
 abstract class AdapterAbstract implements Adapter
 {
-    /**
-     * Load for current OS
-     */
     public static function load(
         ?string $name = null
     ): Adapter {
