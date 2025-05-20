@@ -50,7 +50,6 @@ class TerminusReflectionExtension implements MethodsClassReflectionExtension
             !Style::isKeyword($methodName) &&
             $this->reflectionProvider->getClass(Session::class)->hasMethod($methodName)
         ) {
-            echo $methodName.PHP_EOL;
             $method = $this->reflectionProvider->getClass(Session::class)->getMethod($methodName, new OutOfClassScope());
 
             if($classReflection->getName() === Session::class) {
