@@ -27,19 +27,19 @@ composer require decodelabs/terminus
 Write standard text to output:
 
 ```php
-use DecodeLabs\Terminus as Cli;
+use DecodeLabs\Terminus\Session;
 
-Cli::write('Normal text'); // no newline
-Cli::writeLine(' - end of line'); // with newline
+$io = Session::getDefault();
+
+$io->$write('Normal text'); // no newline
+$io->writeLine(' - end of line'); // with newline
 ```
 
 Error output works the same way, with <code>Error</code> in the method name:
 
 ```php
-use DecodeLabs\Terminus as Cli;
-
-Cli::writeError('Error text'); // no newline
-Cli::writeErrorLine(' - end of line'); // with newline
+$io->writeError('Error text'); // no newline
+$io->writeErrorLine(' - end of line'); // with newline
 ```
 
 ### Reading input
@@ -48,21 +48,17 @@ Read input from the user:
 Note, PHP by default buffers the input stream so input requires return to be pressed before it can be read.
 
 ```php
-use DecodeLabs\Terminus as Cli;
-
-$data = Cli::read(3); // Read 3 bytes
-$line = Cli::readLine();
+$data = $io->read(3); // Read 3 bytes
+$line = $io->readLine();
 ```
 
 If the connected terminal supports <code>stty</code> (most Unix emulators), buffering can be turned off for instant input:
 
 ```php
-use DecodeLabs\Terminus as Cli;
-
-Cli::toggleInputBuffer(false);
-Cli::writeLine('Yes or no?')
-$char = Cli::read(1); // y or n
-Cli::toggleInputBuffer(true);
+$io->toggleInputBuffer(false);
+$io->writeLine('Yes or no?')
+$char = $io->read(1); // y or n
+$io->toggleInputBuffer(true);
 ```
 
 More on extended <code>ANSI</code> and <code>stty</code> support below.
@@ -72,25 +68,21 @@ More on extended <code>ANSI</code> and <code>stty</code> support below.
 If the connected terminal can support <code>ANSI</code> codes can be styled easily using a handy shortcut on the facade:
 
 ```php
-use DecodeLabs\Terminus as Cli;
-
-Cli::{'blue'}('This is blue ');
-Cli::{'yellow'}('This is yellow ');
-Cli::{'red|green|underline'}(' This is red on green, underlined');
-Cli::{'+'}('This starts on a new line');
-Cli::{'.'}('- this ends on a new line');
-Cli::{'>>'}('This is tabbed, twice!');
-Cli::{'<'}(' - this backspaces the last character');
-Cli::writeLine();
-Cli::{'++>..:146|#CCC|bold|underline'}('A whole mix of parameters');
+$io->{'blue'}('This is blue ');
+$io->{'yellow'}('This is yellow ');
+$io->{'red|green|underline'}(' This is red on green, underlined');
+$io->{'+'}('This starts on a new line');
+$io->{'.'}('- this ends on a new line');
+$io->{'>>'}('This is tabbed, twice!');
+$io->{'<'}(' - this backspaces the last character');
+$io->writeLine();
+$io->{'++>..:146|#CCC|bold|underline'}('A whole mix of parameters');
 ```
 
 Support for <code>ANSI</code> codes can be checked with:
 
 ```php
-use DecodeLabs\Terminus as Cli;
-
-if(Cli::isAnsi()) {
+if($io->isAnsi()) {
     // do stuff
 }
 ```
@@ -148,61 +140,55 @@ Directly control lines and the cursor:
 All of the below methods allow passing a numeric value to control the number of times it should be applied.
 
 ```php
-use DecodeLabs\Terminus as Cli;
+$io->newLine(); // Write to a new line
+$io->newLine(5); // Write 5 new lines
+$io->deleteLine(); // Delete the previous line
+$io->clearLine(); // Clear the current line
+$io->clearLineBefore(); // Clear the current line from cursor to start
+$io->clearLineAfter(); // Clear the current line from cursor to end
+$io->backspace(); // Clear the previous character
+$io->tab(); // Write \t to output
 
-Cli::newLine(); // Write to a new line
-Cli::newLine(5); // Write 5 new lines
-Cli::deleteLine(); // Delete the previous line
-Cli::clearLine(); // Clear the current line
-Cli::clearLineBefore(); // Clear the current line from cursor to start
-Cli::clearLineAfter(); // Clear the current line from cursor to end
-Cli::backspace(); // Clear the previous character
-Cli::tab(); // Write \t to output
+$io->cursorUp(); // Move cursor up vertically
+$io->cursorLineUp(); // Move cursor up to start of previous line
+$io->cursorDown(); // Move cursor down vertically
+$io->cursorLineDown(); // Move cursor down to start of next line
+$io->cursorLeft(); // Move cursor left
+$io->cursorRight(); // Move cursor right
 
-Cli::cursorUp(); // Move cursor up vertically
-Cli::cursorLineUp(); // Move cursor up to start of previous line
-Cli::cursorDown(); // Move cursor down vertically
-Cli::cursorLineDown(); // Move cursor down to start of next line
-Cli::cursorLeft(); // Move cursor left
-Cli::cursorRight(); // Move cursor right
+$io->setCursor(5); // Set cursor horizontally to index 5
+$io->setCursorLine(30, 10); // Set absolute cursor position
 
-Cli::setCursor(5); // Set cursor horizontally to index 5
-Cli::setCursorLine(30, 10); // Set absolute cursor position
+[$line, $pos] = $io->getCursor(); // Attempt to get absolute cursor position
+$pos = $io->getCursorH(); // Attempt to get horizontal cursor position
+$line = $io->getCursorV(); // Attempt to get vertical cursor position
 
-[$line, $pos] = Cli::getCursor(); // Attempt to get absolute cursor position
-$pos = Cli::getCursorH(); // Attempt to get horizontal cursor position
-$line = Cli::getCursorV(); // Attempt to get vertical cursor position
+$io->saveCursor(); // Store cursor position in terminal memory
+$io->restoreCursor(); // Attempt to restore cursor position from terminal memory
 
-Cli::saveCursor(); // Store cursor position in terminal memory
-Cli::restoreCursor(); // Attempt to restore cursor position from terminal memory
-
-$width = Cli::getWidth(); // Get line width of terminal
-$height = Cli::getHeight(); // Get line height of terminal
+$width = $io->getWidth(); // Get line width of terminal
+$height = $io->getHeight(); // Get line height of terminal
 ```
 
 ### stty
 Some extended functionality is dependent on <code>stty</code> being available (most Unix emulators).
 
 ```php
-use DecodeLabs\Terminus as Cli;
-
-Cli::toggleInputEcho(false); // Hide input characters
-Cli::toggleInputBuffer(false); // Don't wait on return key for input
+$io->toggleInputEcho(false); // Hide input characters
+$io->toggleInputBuffer(false); // Don't wait on return key for input
 ```
 
 <code>stty</code> can be controlled with the following methods:
 
 ```php
-use DecodeLabs\Terminus as Cli;
-
-if(Cli::hasStty()) {
-    $snapshot = Cli::snapshotStty(); // Take a snapshot of current settings
-    Cli::toggleInputEcho(false);
+if($io->hasStty()) {
+    $snapshot = $io->snapshotStty(); // Take a snapshot of current settings
+    $io->toggleInputEcho(false);
     // do some stuff
 
-    Cli::restoreStty($snapshot); // Restore settings
+    $io->restoreStty($snapshot); // Restore settings
     // or
-    Cli::resetStty(); // Reset to original settings at the start of execution
+    $io->resetStty(); // Reset to original settings at the start of execution
 }
 ```
 
@@ -213,9 +199,7 @@ Simplify common use cases with built in widgets:
 
 #### Question
 ```php
-use DecodeLabs\Terminus as Cli;
-
-$answer = Cli::newQuestion(
+$answer = $io->newQuestion(
         message: 'How are you?',
         options: ['Great', 'Fine', 'OK'],
         default: 'great'
@@ -224,17 +208,17 @@ $answer = Cli::newQuestion(
 
 
 // Or direct..
-$answer = Cli::ask(
+$answer = $io->ask(
     message: 'How are you?',
     default: 'great'
 );
 
-Cli::{'..green'}('You are: '.$answer);
+$io->{'..green'}('You are: '.$answer);
 ```
 
 #### Password
 ```php
-$password = Cli::newPasswordQuestion(
+$password = $io->newPasswordQuestion(
         message: 'Now enter a password...',
         repeat: true,
         required: true,
@@ -242,35 +226,31 @@ $password = Cli::newPasswordQuestion(
     ->prompt();
 
 // Or direct
-$password = Cli::askPassword(
+$password = $io->askPassword(
     message: 'Now enter a password...',
     repeat: true,
     required: true
 );
 
-Cli::{'..green'}('Your password is: '.$password);
+$io->{'..green'}('Your password is: '.$password);
 ```
 
 #### Confirmation
 ```php
-use DecodeLabs\Terminus as Cli;
-
-if (Cli::confirm(
+if ($io->confirm(
     message: 'Do you like green?',
     default: true
 )) {
-    Cli::{'..brightGreen'}('Awesome!');
+    $io->{'..brightGreen'}('Awesome!');
 } else {
-    Cli::{'..brightRed'}('Boo!');
+    $io->{'..brightRed'}('Boo!');
 }
 ```
 
 #### Spinner
 ```php
-use DecodeLabs\Terminus as Cli;
-
-Cli::{'.'}('Progress spinner: ');
-$spinner = Cli::newSpinner();
+$io->{'.'}('Progress spinner: ');
+$spinner = $io->newSpinner();
 
 for ($i = 0; $i < 60; $i++) {
     usleep(20000);
@@ -282,10 +262,8 @@ $spinner->complete('Done!');
 
 #### Progress bar
 ```php
-use DecodeLabs\Terminus as Cli;
-
-Cli::{'.'}('Progress bar: ');
-$spinner = Cli::newProgressBar(
+$io->{'.'}('Progress bar: ');
+$spinner = $io->newProgressBar(
     min: 10,
     max: 50
 );
@@ -301,17 +279,15 @@ $spinner->complete();
 
 ### Use Terminus as a PSR Logger
 ```php
-use DecodeLabs\Terminus as Cli;
-
-Cli::debug('This is a debug');
-Cli::info('This is an info message');
-Cli::notice('This is a notice');
-Cli::success('You\'ve done a success, well done!');
-Cli::warning('This is a warning');
-Cli::error('Hold tight, we have an error');
-Cli::critical('This is CRITICAL');
-Cli::alert('alert alert alert');
-Cli::emergency('Oh no this is an emergency!');
+$io->debug('This is a debug');
+$io->info('This is an info message');
+$io->notice('This is a notice');
+$io->success('You\'ve done a success, well done!');
+$io->warning('This is a warning');
+$io->error('Hold tight, we have an error');
+$io->critical('This is CRITICAL');
+$io->alert('alert alert alert');
+$io->emergency('Oh no this is an emergency!');
 ```
 
 
@@ -324,24 +300,16 @@ See [Deliverance Broker](https://github.com/decodelabs/atlas) for more informati
 
 ```php
 use DecodeLabs\Deliverance;
-use DecodeLabs\Terminus as Cli;
+use DecodeLabs\Terminus\Session;
 
-$session = Cli::newSession(
+$io = new Session(
     // The Io Broker is optional, defaults to best fit
     Deliverance::newIoBroker()
         ->addInputProvider($inputStream)
         ->addOutputReceiver($outputStream)
         ->addErrorReceiver($errorStream)
 );
-
-Cli::setSession($session);
 ```
-
-### Veneer
-
-Terminus uses [Veneer](https://github.com/decodelabs/veneer) to provide a unified frontage under <code>DecodeLabs\Terminus</code>.
-You can access all the primary functionality via this static frontage without compromising testing and dependency injection.
-
 
 ## Licensing
 Terminus is licensed under the MIT License. See [LICENSE](./LICENSE) for the full license text.
