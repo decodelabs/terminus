@@ -33,17 +33,17 @@ class Confirmation
     }
 
     public ?string $input = null;
-    protected Session $session;
+    protected Session $io;
 
     /**
      * @param bool|(callable():?bool)|null $default
      */
     public function __construct(
-        Session $session,
+        Session $io,
         string $message,
         bool|callable|null $default = null
     ) {
-        $this->session = $session;
+        $this->io = $io;
         $this->message = $message;
         $this->default = $default;
     }
@@ -55,12 +55,12 @@ class Confirmation
         while (!$done) {
             $this->renderQuestion();
 
-            if ($this->session->hasStty()) {
-                $snapshot = $this->session->snapshotStty();
-                $this->session->toggleInputBuffer(false);
-                $this->session->toggleInputEcho(false);
-                $answer = $this->session->read(1);
-                $this->session->restoreStty($snapshot);
+            if ($this->io->hasStty()) {
+                $snapshot = $this->io->snapshotStty();
+                $this->io->toggleInputBuffer(false);
+                $this->io->toggleInputEcho(false);
+                $answer = $this->io->read(1);
+                $this->io->restoreStty($snapshot);
                 $answer = trim((string)$answer);
 
                 if (
@@ -73,14 +73,14 @@ class Confirmation
                 $bool = Session::stringToBoolean($answer);
 
                 if ($bool === null) {
-                    $this->session->{'.red'}($answer);
+                    $this->io->{'.red'}($answer);
                 } elseif ($bool === true) {
-                    $this->session->{'.brightGreen'}($answer);
+                    $this->io->{'.brightGreen'}($answer);
                 } else {
-                    $this->session->{'.brightYellow'}($answer);
+                    $this->io->{'.brightYellow'}($answer);
                 }
             } else {
-                $answer = $this->session->readLine();
+                $answer = $this->io->readLine();
             }
 
             if ($this->validate($answer)) {
@@ -93,18 +93,18 @@ class Confirmation
 
     protected function renderQuestion(): void
     {
-        $this->session->style('cyan', $this->message . ' ');
+        $this->io->style('cyan', $this->message . ' ');
 
         if ($this->input !== null) {
-            $this->session->style('brightYellow', $this->input . ' ');
+            $this->io->style('brightYellow', $this->input . ' ');
         }
 
         if ($this->showOptions) {
-            $this->session->style('white', '[');
-            $this->session->style($this->default === true ? 'brightWhite|bold|underline' : 'white', 'y');
-            $this->session->style('white', '/');
-            $this->session->style($this->default === false ? 'brightWhite|bold|underline' : 'white', 'n');
-            $this->session->style('white', '] ');
+            $this->io->style('white', '[');
+            $this->io->style($this->default === true ? 'brightWhite|bold|underline' : 'white', 'y');
+            $this->io->style('white', '/');
+            $this->io->style($this->default === false ? 'brightWhite|bold|underline' : 'white', 'n');
+            $this->io->style('white', '] ');
         }
     }
 
@@ -124,7 +124,7 @@ class Confirmation
         }
 
         if ($answer === null) {
-            $this->session->style('.brightRed|bold', 'Sorry, try again..');
+            $this->io->style('.brightRed|bold', 'Sorry, try again..');
             return false;
         }
 

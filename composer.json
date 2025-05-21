@@ -13,11 +13,9 @@
 
         "decodelabs/archetype": "^0.3.8",
         "decodelabs/coercion": "^0.3",
-        "decodelabs/deliverance": "^0.2.14",
+        "decodelabs/deliverance": "^0.3",
         "decodelabs/exceptional": "^0.5.2",
         "decodelabs/glitch-support": "^0.5.1",
-        "decodelabs/tightrope": "^0.2",
-        "decodelabs/veneer": "^0.12.2",
 
         "psr/log": "^3"
     },
@@ -28,14 +26,11 @@
         "psr-4": {
             "DecodeLabs\\Terminus\\": "src/Terminus",
             "DecodeLabs\\PHPStan\\": "src/PHPStan"
-        },
-        "files": [
-            "src/Terminus/Context.php"
-        ]
+        }
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.12.x-dev"
+            "dev-develop": "0.13.x-dev"
         },
         "effigy": {
             "exports": [

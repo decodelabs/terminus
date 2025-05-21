@@ -21,13 +21,13 @@ class Spinner
 
     protected ?float $lastTime = null;
     protected int $char = 0;
-    protected Session $session;
+    protected Session $io;
 
     public function __construct(
-        Session $session,
+        Session $io,
         ?string $style = null
     ) {
-        $this->session = $session;
+        $this->io = $io;
         $this->style = $style;
     }
 
@@ -43,9 +43,9 @@ class Spinner
             return $this;
         }
 
-        if ($this->session->isAnsi()) {
+        if ($this->io->isAnsi()) {
             if ($this->lastTime !== null) {
-                $this->session->backspace();
+                $this->io->backspace();
             }
 
             $char = self::Chars[$this->char];
@@ -56,9 +56,9 @@ class Spinner
             }
 
             $style = $this->style ?? 'yellow';
-            $this->session->{$style}($char);
+            $this->io->{$style}($char);
         } else {
-            $this->session->write('.');
+            $this->io->write('.');
         }
 
         $this->lastTime = $time;
@@ -99,16 +99,16 @@ class Spinner
         ?string $message = null,
         ?string $style = null
     ): static {
-        if ($this->session->isAnsi()) {
+        if ($this->io->isAnsi()) {
             if ($this->lastTime !== null) {
-                $this->session->backspace();
+                $this->io->backspace();
             }
 
             if ($message === null) {
                 $message = ' ';
             }
         } else {
-            $this->session->write(' ');
+            $this->io->write(' ');
         }
 
         if ($message !== null) {
@@ -116,7 +116,7 @@ class Spinner
                 $style = 'success';
             }
 
-            $this->session->{$style}($message);
+            $this->io->{$style}($message);
         }
 
         return $this;

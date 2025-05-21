@@ -12,13 +12,9 @@ namespace DecodeLabs\Terminus\Widget;
 use Closure;
 use DecodeLabs\Coercion;
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Tightrope\RequiredSet;
-use DecodeLabs\Tightrope\RequiredSetTrait;
 
-class Question implements RequiredSet
+class Question
 {
-    use RequiredSetTrait;
-
     public string $message;
 
     /**
@@ -29,6 +25,7 @@ class Question implements RequiredSet
     public bool $showOptions = true;
     public bool $strict = false;
     public bool $confirm = false;
+    public bool $required = true;
 
     public ?string $default = null {
         set(
@@ -54,7 +51,7 @@ class Question implements RequiredSet
         }
     }
 
-    protected Session $session;
+    protected Session $io;
 
     /**
      * Init with message
@@ -63,7 +60,7 @@ class Question implements RequiredSet
      * @param array<string> $options
      */
     public function __construct(
-        Session $session,
+        Session $io,
         string $message,
         string|callable|null $default = null,
         array $options = [],
@@ -72,7 +69,7 @@ class Question implements RequiredSet
         bool $strict = false,
         bool $confirm = false
     ) {
-        $this->session = $session;
+        $this->io = $io;
         $this->message = $message;
         $this->default = $default;
         $this->options = $options;
@@ -87,11 +84,11 @@ class Question implements RequiredSet
     {
         while (true) {
             $this->renderQuestion();
-            $answer = $this->session->readLine();
+            $answer = $this->io->readLine();
 
             if ($this->validate($answer)) {
                 if ($this->confirm) {
-                    $confirmation = $this->session->newConfirmation('Is this correct?', true);
+                    $confirmation = $this->io->newConfirmation('Is this correct?', true);
                     $confirmation->input = $answer;
 
                     if (!$confirmation->prompt()) {
@@ -108,20 +105,20 @@ class Question implements RequiredSet
 
     protected function renderQuestion(): void
     {
-        $this->session->style('cyan', $this->message);
+        $this->io->style('cyan', $this->message);
 
         if (
             !empty($this->options) &&
             $this->showOptions
         ) {
-            $this->session->style('white', ' [');
+            $this->io->style('white', ' [');
             $fDefault = $this->strict ? $this->default : trim(strtolower((string)$this->default));
             $first = true;
             $defaultFound = false;
 
             foreach ($this->options as $option) {
                 if (!$first) {
-                    $this->session->style('white', '/');
+                    $this->io->style('white', '/');
                 }
 
                 $first = false;
@@ -133,27 +130,27 @@ class Question implements RequiredSet
                     $defaultFound = true;
                 }
 
-                $this->session->style($style, $option);
+                $this->io->style($style, $option);
             }
 
             if (
                 !$defaultFound &&
                 $this->default !== null
             ) {
-                $this->session->style('white', ' : ');
-                $this->session->style('brightWhite|bold|underline', $this->default);
+                $this->io->style('white', ' : ');
+                $this->io->style('brightWhite|bold|underline', $this->default);
             }
 
-            $this->session->style('white', '] ');
+            $this->io->style('white', '] ');
         } elseif ($this->default !== null) {
-            $this->session->style('white', ' [');
-            $this->session->style('white|bold|underline', $this->default);
-            $this->session->style('white', '] ');
+            $this->io->style('white', ' [');
+            $this->io->style('white|bold|underline', $this->default);
+            $this->io->style('white', '] ');
         } else {
             if (preg_match('/[^a-zA-Z0-0-_ ]$/', $this->message)) {
-                $this->session->write(' ');
+                $this->io->write(' ');
             } else {
-                $this->session->style('cyan', ': ');
+                $this->io->style('cyan', ': ');
             }
         }
     }
@@ -178,7 +175,7 @@ class Question implements RequiredSet
 
         if ($answer === null) {
             if ($this->required) {
-                $this->session->style('.brightRed|bold', 'Sorry, try again..');
+                $this->io->style('.brightRed|bold', 'Sorry, try again..');
                 return false;
             }
         } else {
@@ -194,7 +191,7 @@ class Question implements RequiredSet
 
                 if (!isset($testOptions[$testAnswer])) {
                     if ($answer !== $this->default) {
-                        $this->session->style('.brightRed|bold', 'Sorry, try again..');
+                        $this->io->style('.brightRed|bold', 'Sorry, try again..');
                         return false;
                     }
                 } else {
@@ -203,7 +200,10 @@ class Question implements RequiredSet
             }
         }
 
-        if ($this->validator !== null && (false === ($this->validator)($answer, $this->session))) {
+        if (
+            $this->validator !== null &&
+            (false === ($this->validator)($answer, $this->io))
+        ) {
             return false;
         }
 

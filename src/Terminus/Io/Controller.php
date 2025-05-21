@@ -12,13 +12,11 @@ namespace DecodeLabs\Terminus\Io;
 use DecodeLabs\Deliverance\DataProvider;
 use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Deliverance\ErrorDataReceiver;
-
 use DecodeLabs\Terminus\Widget\Confirmation;
 use DecodeLabs\Terminus\Widget\Password;
 use DecodeLabs\Terminus\Widget\ProgressBar;
 use DecodeLabs\Terminus\Widget\Question;
 use DecodeLabs\Terminus\Widget\Spinner;
-
 use Psr\Log\LoggerInterface;
 
 interface Controller extends
@@ -27,6 +25,9 @@ interface Controller extends
     ErrorDataReceiver,
     LoggerInterface
 {
+    public int $width { get; }
+    public int $height { get; }
+
     public function isAnsi(): bool;
     public function hasStty(): bool;
     public function snapshotStty(): ?string;
@@ -36,9 +37,6 @@ interface Controller extends
     ): bool;
 
     public function resetStty(): bool;
-
-    public function getWidth(): int;
-    public function getHeight(): int;
 
     public function newLine(
         int $times = 1

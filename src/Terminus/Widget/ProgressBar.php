@@ -26,20 +26,17 @@ class ProgressBar
     protected bool $started = false;
     protected int $written = 0;
 
-    protected Session $session;
+    protected Session $io;
 
-    /**
-     * Init with session and style
-     */
     public function __construct(
-        Session $session,
+        Session $io,
         float $min = 0.0,
         float $max = 100.0,
         ?int $precision = null,
         bool $showPercent = true,
         bool $showCompleted = true
     ) {
-        $this->session = $session;
+        $this->io = $io;
         $this->showPercent = $showPercent;
         $this->showCompleted = $showCompleted;
         $this->setRange($min, $max);
@@ -93,7 +90,7 @@ class ProgressBar
     public function advance(
         float $value
     ): static {
-        $width = min($this->session->getWidth(), 82);
+        $width = min($this->io->width, 82);
 
         if ($value < $this->min) {
             $value = $this->min;
@@ -105,7 +102,7 @@ class ProgressBar
 
         $space = $width - 2;
 
-        if ($this->session->isAnsi()) {
+        if ($this->io->isAnsi()) {
             if ($this->showCompleted) {
                 $maxLength = max(
                     strlen((string)round($this->min, $this->precision)),
@@ -151,11 +148,11 @@ class ProgressBar
         }
 
 
-        if ($this->session->isAnsi()) {
+        if ($this->io->isAnsi()) {
             if ($this->started) {
-                $this->session->setCursor(1);
+                $this->io->setCursor(1);
             } else {
-                $this->session->setCursor(1);
+                $this->io->setCursor(1);
                 $this->started = true;
             }
 
@@ -165,29 +162,29 @@ class ProgressBar
                 $valLength = strlen($maxVal);
 
                 if ($value < $this->max) {
-                    $this->session->style('#ffa500', str_pad($stringVal, $valLength));
+                    $this->io->style('#ffa500', str_pad($stringVal, $valLength));
                 } else {
-                    $this->session->style('brightWhite', $stringVal);
+                    $this->io->style('brightWhite', $stringVal);
                 }
 
-                $this->session->style('white|dim', ' / ');
-                $this->session->style('brightWhite', $maxVal . ' ');
+                $this->io->style('white|dim', ' / ');
+                $this->io->style('brightWhite', $maxVal . ' ');
             }
 
-            $this->session->style($color, str_repeat(self::Full, (int)$chars));
-            $this->session->style('dim', str_repeat(self::Empty, (int)($barSize - $chars)));
+            $this->io->style($color, str_repeat(self::Full, (int)$chars));
+            $this->io->style('dim', str_repeat(self::Empty, (int)($barSize - $chars)));
 
             if ($this->showPercent) {
-                $this->session->style('white|bold', str_pad(ceil($percent * 100) . '%', 5, ' ', STR_PAD_LEFT));
+                $this->io->style('white|bold', str_pad(ceil($percent * 100) . '%', 5, ' ', STR_PAD_LEFT));
             }
         } else {
             if (!$this->started) {
-                $this->session->writeLine(str_repeat('_', $space));
+                $this->io->writeLine(str_repeat('_', $space));
                 $this->started = true;
             }
 
             while ($chars > $this->written) {
-                $this->session->write(self::Full);
+                $this->io->write(self::Full);
                 $this->written++;
             }
         }
@@ -202,7 +199,7 @@ class ProgressBar
     public function complete(): static
     {
         $this->advance($this->max);
-        $this->session->newLine();
+        $this->io->newLine();
 
         return $this;
     }

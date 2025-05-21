@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus;
 
 use DecodeLabs\Coercion;
+use DecodeLabs\Deliverance;
 use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Deliverance\Channel\Buffer;
 use DecodeLabs\Deliverance\DataReceiver;
@@ -21,46 +22,58 @@ use DecodeLabs\Terminus\Widget\Password;
 use DecodeLabs\Terminus\Widget\ProgressBar;
 use DecodeLabs\Terminus\Widget\Question;
 use DecodeLabs\Terminus\Widget\Spinner;
-
-use Psr\Log\LoggerTrait;
 use Stringable;
 
 class Session implements Controller
 {
-    use LoggerTrait;
-
     public int $width {
-        get => $this->getWidth();
+        get => $this->adapter->getShellWidth();
     }
 
     public int $height {
-        get => $this->getHeight();
+        get => $this->adapter->getShellHeight();
     }
 
     public bool $readBlocking {
-        get => $this->isReadBlocking();
+        get => $this->broker->readBlocking;
         set {
-            $this->setReadBlocking($value);
+            $this->broker->readBlocking = $value;
         }
     }
 
     public Broker $broker;
 
-    protected bool $isAnsi = true;
-    protected bool $hasStty = false;
+    protected bool $ansi = true;
+    protected bool $stty = false;
     protected ?string $sttyReset = null;
 
     protected(set) Adapter $adapter;
+
+    private static ?Session $default = null;
+
+
+    public static function getDefault(): Session
+    {
+        if(self::$default === null) {
+            self::$default = new self(
+                broker: defined('STDOUT') ?
+                    Deliverance::newCliBroker() :
+                    Deliverance::newHttpBroker()
+            );
+        }
+
+        return self::$default;
+    }
 
     public function __construct(
         Broker $broker,
     ) {
         $this->broker = $broker;
         $this->adapter = AdapterAbstract::load();
-        $this->isAnsi = $this->adapter->canColorShell();
+        $this->ansi = $this->adapter->canColorShell();
 
-        if ($this->isAnsi) {
-            $this->hasStty = $this->adapter->hasStty();
+        if ($this->ansi) {
+            $this->stty = $this->adapter->hasStty();
             $this->sttyReset = $this->snapshotStty();
         }
     }
@@ -94,17 +107,22 @@ class Session implements Controller
 
     public function isAnsi(): bool
     {
-        return $this->isAnsi;
+        return $this->ansi;
+    }
+
+    public function canColor(): bool
+    {
+        return $this->ansi;
     }
 
     public function hasStty(): bool
     {
-        return $this->hasStty;
+        return $this->stty;
     }
 
     public function snapshotStty(): ?string
     {
-        if (!$this->hasStty) {
+        if (!$this->stty) {
             return null;
         }
 
@@ -120,7 +138,7 @@ class Session implements Controller
     public function restoreStty(
         ?string $snapshot
     ): bool {
-        if (!$this->hasStty) {
+        if (!$this->stty) {
             return false;
         } elseif ($snapshot === null) {
             return true;
@@ -132,7 +150,7 @@ class Session implements Controller
 
     public function resetStty(): bool
     {
-        if (!$this->hasStty) {
+        if (!$this->stty) {
             return false;
         }
 
@@ -141,34 +159,6 @@ class Session implements Controller
     }
 
 
-    public function getWidth(): int
-    {
-        return $this->adapter->getShellWidth();
-    }
-
-    public function getHeight(): int
-    {
-        return $this->adapter->getShellHeight();
-    }
-
-
-
-
-
-    /**
-     * @return $this
-     */
-    public function setReadBlocking(
-        bool $flag
-    ): static {
-        $this->broker->setReadBlocking($flag);
-        return $this;
-    }
-
-    public function isReadBlocking(): bool
-    {
-        return $this->broker->isReadBlocking();
-    }
 
     public function isReadable(): bool
     {
@@ -291,7 +281,7 @@ class Session implements Controller
     public function deleteLine(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -302,7 +292,7 @@ class Session implements Controller
     public function deleteErrorLine(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -312,7 +302,7 @@ class Session implements Controller
 
     public function clearLine(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -322,7 +312,7 @@ class Session implements Controller
 
     public function clearErrorLine(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -332,7 +322,7 @@ class Session implements Controller
 
     public function clearLineBefore(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -342,7 +332,7 @@ class Session implements Controller
 
     public function clearErrorLineBefore(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -352,7 +342,7 @@ class Session implements Controller
 
     public function clearLineAfter(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -362,7 +352,7 @@ class Session implements Controller
 
     public function clearErrorLineAfter(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -403,7 +393,7 @@ class Session implements Controller
     public function cursorUp(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -414,7 +404,7 @@ class Session implements Controller
     public function cursorLineUp(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -425,7 +415,7 @@ class Session implements Controller
     public function cursorDown(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -436,7 +426,7 @@ class Session implements Controller
     public function cursorLineDown(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -447,7 +437,7 @@ class Session implements Controller
     public function cursorLeft(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -458,7 +448,7 @@ class Session implements Controller
     public function cursorRight(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -469,7 +459,7 @@ class Session implements Controller
     public function errorCursorUp(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -480,7 +470,7 @@ class Session implements Controller
     public function errorCursorLineUp(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -491,7 +481,7 @@ class Session implements Controller
     public function errorCursorDown(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -502,7 +492,7 @@ class Session implements Controller
     public function errorCursorLineDown(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -513,7 +503,7 @@ class Session implements Controller
     public function errorCursorLeft(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -524,7 +514,7 @@ class Session implements Controller
     public function errorCursorRight(
         int $times = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -536,7 +526,7 @@ class Session implements Controller
     public function setCursor(
         int $pos
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -547,7 +537,7 @@ class Session implements Controller
     public function setErrorCursor(
         int $pos
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -559,7 +549,7 @@ class Session implements Controller
         int $line,
         int $pos = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -571,7 +561,7 @@ class Session implements Controller
         int $line,
         int $pos = 1
     ): bool {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -647,7 +637,7 @@ class Session implements Controller
 
     public function saveCursor(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -657,7 +647,7 @@ class Session implements Controller
 
     public function saveErrorCursor(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -667,7 +657,7 @@ class Session implements Controller
 
     public function restoreCursor(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -677,7 +667,7 @@ class Session implements Controller
 
     public function restoreErrorCursor(): bool
     {
-        if (!$this->isAnsi) {
+        if (!$this->ansi) {
             return false;
         }
 
@@ -712,8 +702,8 @@ class Session implements Controller
         bool $error = false
     ): ?string {
         if (
-            !$this->isAnsi ||
-            !$this->hasStty
+            !$this->ansi ||
+            !$this->stty
         ) {
             return null;
         }
@@ -726,10 +716,10 @@ class Session implements Controller
             $this->broker->write($command) :
             $this->broker->writeError($command);
 
-        $blocking = $this->broker->isReadBlocking();
+        $blocking = $this->broker->readBlocking;
 
         if ($blocking) {
-            $this->broker->setReadBlocking(false);
+            $this->broker->readBlocking = false;
         }
 
         $count = 0;
@@ -741,7 +731,7 @@ class Session implements Controller
 
 
         if ($blocking) {
-            $this->broker->setReadBlocking(true);
+            $this->broker->readBlocking = true;
         }
 
         $this->toggleInputEcho(true);
@@ -754,7 +744,7 @@ class Session implements Controller
     public function toggleInputEcho(
         bool $flag
     ): bool {
-        if (!$this->hasStty) {
+        if (!$this->stty) {
             return false;
         }
 
@@ -765,7 +755,7 @@ class Session implements Controller
     public function toggleInputBuffer(
         bool $flag
     ): bool {
-        if (!$this->hasStty) {
+        if (!$this->stty) {
             return false;
         }
 
@@ -843,7 +833,7 @@ class Session implements Controller
         bool $confirm = false
     ): Question {
         return new Question(
-            session: $this,
+            io: $this,
             message: $message,
             default: $default,
             options: $options,
@@ -872,7 +862,7 @@ class Session implements Controller
         bool $required = true
     ): Password {
         return new Password(
-            session: $this,
+            io: $this,
             message: $message,
             repeat: $repeat,
             required: $required
@@ -900,7 +890,7 @@ class Session implements Controller
         bool|callable|null $default = null
     ): Confirmation {
         return new Confirmation(
-            session: $this,
+            io: $this,
             message: $message,
             default: $default
         );
@@ -912,7 +902,7 @@ class Session implements Controller
         ?string $style = null
     ): Spinner {
         return new Spinner(
-            session: $this,
+            io: $this,
             style: $style
         );
     }
@@ -925,7 +915,7 @@ class Session implements Controller
         bool $showCompleted = true
     ): ProgressBar {
         return new ProgressBar(
-            session: $this,
+            io: $this,
             min: $min,
             max: $max,
             precision: $precision,
@@ -979,126 +969,220 @@ class Session implements Controller
     ];
 
 
-    public function comment(
-        string $message,
-        array $context = []
-    ): void {
-        $this->log('comment', $message, $context);
-    }
-
-    public function success(
-        string $message,
-        array $context = []
-    ): void {
-        $this->log('success', $message, $context);
-    }
-
-    public function operative(
-        string $message,
-        array $context = []
-    ): void {
-        $this->log('operative', $message, $context);
-    }
-
-    public function deleteSuccess(
-        string $message,
-        array $context = []
-    ): void {
-        $this->log('deleteSuccess', $message, $context);
-    }
-
-
-    public function inlineDebug(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('debug', $message, $context);
-    }
-
-    public function inlineInfo(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('info', $message, $context);
-    }
-
-    public function inlineNotice(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('notice', $message, $context);
-    }
-
-    public function inlineComment(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('comment', $message, $context);
-    }
-
-    public function inlineSuccess(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('success', $message, $context);
-    }
-
-    public function inlineOperative(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('operative', $message, $context);
-    }
-
-    public function inlineDeleteSuccess(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('deleteSuccess', $message, $context);
-    }
-
-    public function inlineWarning(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('warning', $message, $context);
-    }
-
-    public function inlineError(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('error', $message, $context);
-    }
-
-    public function inlineCritical(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('critical', $message, $context);
-    }
-
-    public function inlineAlert(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('alert', $message, $context);
-    }
-
-    public function inlineEmergency(
-        string $message,
-        array $context = []
-    ): void {
-        $this->inlineLog('emergency', $message, $context);
-    }
-
 
     /**
      * @param array<string,mixed> $context
      */
+    public function debug(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('debug', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function info(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('info', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function notice(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('notice', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function comment(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('comment', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function success(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('success', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function operative(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('operative', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function deleteSuccess(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('deleteSuccess', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function warning(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('warning', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function error(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('error', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function critical(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('critical', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function alert(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('alert', (string)$message, $context);
+    }
+
+    /**
+     * @param array<string,mixed> $context
+     */
+    public function emergency(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->log('emergency', (string)$message, $context);
+    }
+
+
+    public function inlineDebug(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('debug', (string)$message, $context);
+    }
+
+    public function inlineInfo(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('info', (string)$message, $context);
+    }
+
+    public function inlineNotice(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('notice', (string)$message, $context);
+    }
+
+    public function inlineComment(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('comment', (string)$message, $context);
+    }
+
+    public function inlineSuccess(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('success', (string)$message, $context);
+    }
+
+    public function inlineOperative(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('operative', (string)$message, $context);
+    }
+
+    public function inlineDeleteSuccess(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('deleteSuccess', (string)$message, $context);
+    }
+
+    public function inlineWarning(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('warning', (string)$message, $context);
+    }
+
+    public function inlineError(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('error', (string)$message, $context);
+    }
+
+    public function inlineCritical(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('critical', (string)$message, $context);
+    }
+
+    public function inlineAlert(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('alert', (string)$message, $context);
+    }
+
+    public function inlineEmergency(
+        string|Stringable|int|float $message,
+        array $context = []
+    ): void {
+        $this->inlineLog('emergency', (string)$message, $context);
+    }
+
+
+    /**
+     * @param string $level
+     * @param array<string,mixed> $context
+     */
     public function log(
         mixed $level,
-        string|Stringable $message,
+        string|Stringable|int|float $message,
         array $context = []
     ): void {
         $message = $this->interpolate((string)$message, $context);
@@ -1116,7 +1200,7 @@ class Session implements Controller
 
     public function inlineLog(
         string $level,
-        string|Stringable $message,
+        string|Stringable|int|float $message,
         array $context = []
     ): void {
         $message = $this->interpolate((string)$message, $context);

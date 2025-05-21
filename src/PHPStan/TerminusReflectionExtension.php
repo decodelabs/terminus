@@ -11,7 +11,6 @@ namespace DecodeLabs\PHPStan;
 
 use DecodeLabs\PHPStan\MethodReflection;
 use DecodeLabs\PHPStan\StaticMethodReflection;
-use DecodeLabs\Terminus\Context;
 use DecodeLabs\Terminus\Io\Style;
 use DecodeLabs\Terminus\Session;
 use Exception;
@@ -37,7 +36,6 @@ class TerminusReflectionExtension implements MethodsClassReflectionExtension
         string $methodName
     ): bool {
         return
-            $classReflection->getName() === Context::class ||
             $classReflection->getName() === Session::class;
     }
 

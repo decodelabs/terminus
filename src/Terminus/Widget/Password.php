@@ -10,13 +10,9 @@ declare(strict_types=1);
 namespace DecodeLabs\Terminus\Widget;
 
 use DecodeLabs\Terminus\Session;
-use DecodeLabs\Tightrope\RequiredSet;
-use DecodeLabs\Tightrope\RequiredSetTrait;
 
-class Password implements RequiredSet
+class Password
 {
-    use RequiredSetTrait;
-
     private const string DefaultMessage = 'Please enter your password';
     private const string DefaultRepeatMessage = 'Please repeat your password';
 
@@ -37,15 +33,16 @@ class Password implements RequiredSet
     }
 
     public bool $repeat = false;
-    protected Session $session;
+    public bool $required = true;
+    protected Session $io;
 
     public function __construct(
-        Session $session,
+        Session $io,
         ?string $message = null,
         bool $repeat = false,
         bool $required = true
     ) {
-        $this->session = $session;
+        $this->io = $io;
         $this->message = $message;
         $this->repeat = $repeat;
         $this->required = $required;
@@ -62,8 +59,8 @@ class Password implements RequiredSet
                     $password === null &&
                     $this->required
                 ) {
-                    $this->session->error('Your password is required');
-                    $this->session->newLine();
+                    $this->io->error('Your password is required');
+                    $this->io->newLine();
                     continue;
                 }
 
@@ -81,8 +78,8 @@ class Password implements RequiredSet
                         $repeat === null &&
                         $this->required
                     ) {
-                        $this->session->error('Your repeat password is required');
-                        $this->session->newLine();
+                        $this->io->error('Your repeat password is required');
+                        $this->io->newLine();
                         continue;
                     }
 
@@ -93,8 +90,8 @@ class Password implements RequiredSet
             }
 
             if ($password !== $repeat) {
-                $this->session->error('Your passwords do not match');
-                $this->session->newLine();
+                $this->io->error('Your passwords do not match');
+                $this->io->newLine();
                 continue;
             }
 
@@ -107,27 +104,27 @@ class Password implements RequiredSet
     protected function renderQuestion(
         string $message
     ): ?string {
-        $this->session->style('cyan', $message);
+        $this->io->style('cyan', $message);
 
         if (preg_match('/[^a-zA-Z0-0-_ ]$/', $this->message)) {
-            $this->session->write(' ');
+            $this->io->write(' ');
         } else {
-            $this->session->style('cyan', ': ');
+            $this->io->style('cyan', ': ');
         }
 
-        if ($this->session->hasStty()) {
-            $snapshot = $this->session->snapshotStty();
-            $this->session->toggleInputEcho(false);
-            $password = (string)$this->session->readLine();
-            $this->session->restoreStty($snapshot);
+        if ($this->io->hasStty()) {
+            $snapshot = $this->io->snapshotStty();
+            $this->io->toggleInputEcho(false);
+            $password = (string)$this->io->readLine();
+            $this->io->restoreStty($snapshot);
 
             if (strlen($password)) {
-                $this->session->style('.brightYellow', '••••••••'); // @ignore-non-ascii
+                $this->io->style('.brightYellow', '••••••••'); // @ignore-non-ascii
             } else {
-                $this->session->newLine();
+                $this->io->newLine();
             }
         } else {
-            $password = (string)$this->session->readLine();
+            $password = (string)$this->io->readLine();
         }
 
         if (!strlen($password)) {
