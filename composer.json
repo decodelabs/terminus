@@ -11,13 +11,12 @@
     "require": {
         "php": "^8.4",
 
-        "decodelabs/archetype": "^0.3.8",
-        "decodelabs/coercion": "^0.3",
-        "decodelabs/deliverance": "^0.3",
-        "decodelabs/exceptional": "^0.5.2",
-        "decodelabs/glitch-support": "^0.5.1",
+        "decodelabs/archetype": "^0.3.10",
+        "decodelabs/coercion": "^0.3.3",
+        "decodelabs/deliverance": "^0.3.3",
+        "decodelabs/exceptional": "^0.6.1",
 
-        "psr/log": "^3"
+        "psr/log": "^3.0.2"
     },
     "require-dev": {
         "decodelabs/phpstan-decodelabs": "^0.7"
