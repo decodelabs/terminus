@@ -63,6 +63,18 @@ class Confirmation
                 $this->io->restoreStty($snapshot);
                 $answer = trim((string)$answer);
 
+                if(
+                    (
+                        $answer === "\x03" ||
+                        $answer === "\e"
+                    ) &&
+                    function_exists('posix_kill') &&
+                    function_exists('pcntl_signal_dispatch')
+                ) {
+                    posix_kill(posix_getpid(), SIGINT);
+                    pcntl_signal_dispatch();
+                }
+
                 if (
                     $answer === '' &&
                     $this->default !== null
