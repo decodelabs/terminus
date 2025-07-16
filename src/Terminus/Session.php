@@ -47,14 +47,14 @@ class Session implements Controller
     protected bool $stty = false;
     protected ?string $sttyReset = null;
 
-    protected(set) Adapter $adapter;
+    public protected(set) Adapter $adapter;
 
     private static ?Session $default = null;
 
 
     public static function getDefault(): Session
     {
-        if(self::$default === null) {
+        if (self::$default === null) {
             self::$default = new self(
                 broker: defined('STDOUT') ?
                     Deliverance::newCliBroker() :

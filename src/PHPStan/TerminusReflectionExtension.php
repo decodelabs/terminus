@@ -9,11 +9,8 @@ declare(strict_types=1);
 
 namespace DecodeLabs\PHPStan;
 
-use DecodeLabs\PHPStan\MethodReflection;
-use DecodeLabs\PHPStan\StaticMethodReflection;
 use DecodeLabs\Terminus\Io\Style;
 use DecodeLabs\Terminus\Session;
-use Exception;
 use PHPStan\Analyser\OutOfClassScope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariant;
@@ -35,8 +32,7 @@ class TerminusReflectionExtension implements MethodsClassReflectionExtension
         ClassReflection $classReflection,
         string $methodName
     ): bool {
-        return
-            $classReflection->getName() === Session::class;
+        return $classReflection->getName() === Session::class;
     }
 
     public function getMethod(

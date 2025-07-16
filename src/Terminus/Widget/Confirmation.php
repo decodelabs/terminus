@@ -63,7 +63,7 @@ class Confirmation
                 $this->io->restoreStty($snapshot);
                 $answer = trim((string)$answer);
 
-                if(
+                if (
                     (
                         $answer === "\x03" ||
                         $answer === "\e"

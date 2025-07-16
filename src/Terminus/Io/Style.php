@@ -98,7 +98,7 @@ class Style
         }
     }
 
-    protected(set) int $foregroundBits = 4;
+    public protected(set) int $foregroundBits = 4;
 
     public ?string $background = 'reset' {
         set(
@@ -130,7 +130,7 @@ class Style
         }
     }
 
-    protected(set) int $backgroundBits = 4;
+    public protected(set) int $backgroundBits = 4;
 
     /**
      * @var array<string>
