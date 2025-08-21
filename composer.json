@@ -11,10 +11,10 @@
     "require": {
         "php": "^8.4",
 
-        "decodelabs/archetype": "^0.3.10",
-        "decodelabs/coercion": "^0.3.3",
-        "decodelabs/deliverance": "^0.3.3",
-        "decodelabs/exceptional": "^0.6.1",
+        "decodelabs/coercion": "^0.3.5",
+        "decodelabs/deliverance": "^0.3.4",
+        "decodelabs/exceptional": "^0.6.3",
+        "decodelabs/kingdom": "^0.1",
 
         "psr/log": "^3.0.2"
     },

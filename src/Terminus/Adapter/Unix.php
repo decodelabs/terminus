@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus\Adapter;
 
-use DecodeLabs\Terminus\AdapterAbstract;
+use DecodeLabs\Terminus\Adapter;
 
-class Unix extends AdapterAbstract
+class Unix implements Adapter
 {
     private ?bool $hasStty = null;
     private ?int $shellWidth = null;

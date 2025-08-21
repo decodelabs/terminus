@@ -15,6 +15,8 @@ use DecodeLabs\Deliverance\Broker;
 use DecodeLabs\Deliverance\Channel\Buffer;
 use DecodeLabs\Deliverance\DataReceiver;
 use DecodeLabs\Exceptional;
+use DecodeLabs\Kingdom\ContainerAdapter;
+use DecodeLabs\Kingdom\Service;
 use DecodeLabs\Terminus\Io\Controller;
 use DecodeLabs\Terminus\Io\Style;
 use DecodeLabs\Terminus\Widget\Confirmation;
@@ -24,7 +26,7 @@ use DecodeLabs\Terminus\Widget\Question;
 use DecodeLabs\Terminus\Widget\Spinner;
 use Stringable;
 
-class Session implements Controller
+class Session implements Controller, Service
 {
     public int $width {
         get => $this->adapter->getShellWidth();
@@ -51,6 +53,13 @@ class Session implements Controller
 
     private static ?Session $default = null;
 
+    public static function provideService(
+        ContainerAdapter $container
+    ): static {
+        // @phpstan-ignore-next-line
+        return static::getDefault();
+    }
+
 
     public static function getDefault(): Session
     {
@@ -66,10 +75,10 @@ class Session implements Controller
     }
 
     public function __construct(
-        Broker $broker,
+        Broker $broker
     ) {
         $this->broker = $broker;
-        $this->adapter = AdapterAbstract::load();
+        $this->adapter = $this->loadAdapter();
         $this->ansi = $this->adapter->canColorShell();
 
         if ($this->ansi) {
@@ -78,14 +87,31 @@ class Session implements Controller
         }
     }
 
+    protected function loadAdapter(): Adapter
+    {
+        $name = php_uname('s');
+
+        if (substr(strtolower($name), 0, 3) == 'win') {
+            $name = 'Windows';
+        }
+
+        if ($name === 'Windows') {
+            throw Exceptional::ComponentUnavailable(
+                message: 'Windows is not supported yet'
+            );
+        }
+
+        $class = match ($name) {
+            //'Windows' => Adapter\Windows::class,
+            default => Adapter\Unix::class,
+        };
+
+        return new $class();
+    }
+
     public function __destruct()
     {
         $this->resetStty();
-    }
-
-    public function getAdapter(): Adapter
-    {
-        return $this->adapter;
     }
 
 
