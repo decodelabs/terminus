@@ -14,7 +14,7 @@
         "decodelabs/coercion": "^0.3.5",
         "decodelabs/deliverance": "^0.3.4",
         "decodelabs/exceptional": "^0.6.3",
-        "decodelabs/kingdom": "^0.1",
+        "decodelabs/kingdom": "^0.2",
 
         "psr/log": "^3.0.2"
     },
