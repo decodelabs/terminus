@@ -31,6 +31,19 @@ class Capture implements Stringable
         $this->buffer = new Buffer();
     }
 
+    /**
+     * @return T
+     */
+    public function resolve(): mixed
+    {
+        if ($this->error) {
+            throw $this->error;
+        }
+
+        /** @var T */
+        return $this->result;
+    }
+
     public function __toString(): string
     {
         $output = (string)$this->buffer;
