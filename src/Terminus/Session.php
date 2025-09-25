@@ -130,6 +130,21 @@ class Session implements Controller, Service
         return $this->broker;
     }
 
+    public function disableAnsi(): void
+    {
+        $this->ansi = false;
+        $this->stty = false;
+    }
+
+    public function enableAnsi(): void
+    {
+        $this->ansi = $this->adapter->canColorShell();
+
+        if ($this->ansi) {
+            $this->stty = $this->adapter->hasStty();
+        }
+    }
+
 
     public function isAnsi(): bool
     {
