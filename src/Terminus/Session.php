@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace DecodeLabs\Terminus;
 
+use Closure;
 use DecodeLabs\Coercion;
 use DecodeLabs\Deliverance;
 use DecodeLabs\Deliverance\Broker;
@@ -197,6 +198,26 @@ class Session implements Controller, Service
 
         $this->adapter->setStty((string)$this->sttyReset);
         return true;
+    }
+
+
+
+    /**
+     * @template T
+     * @param Closure():T $executor
+     * @return Capture<T>
+     */
+    public function capture(
+        Closure $executor
+    ): Capture {
+        /** @var Capture<T> */
+        $capture = new Capture();
+        $this->broker->addChannel($capture->buffer);
+        $this->disableAnsi();
+        $capture->result = $executor();
+        $this->enableAnsi();
+        $this->broker->removeChannel($capture->buffer);
+        return $capture;
     }
 
 
