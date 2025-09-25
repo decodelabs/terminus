@@ -26,6 +26,7 @@ use DecodeLabs\Terminus\Widget\ProgressBar;
 use DecodeLabs\Terminus\Widget\Question;
 use DecodeLabs\Terminus\Widget\Spinner;
 use Stringable;
+use Throwable;
 
 class Session implements Controller, Service
 {
@@ -214,7 +215,14 @@ class Session implements Controller, Service
         $capture = new Capture();
         $this->broker->addChannel($capture->buffer);
         $this->disableAnsi();
-        $capture->result = $executor();
+
+        try {
+            $capture->result = $executor();
+        } catch (Throwable $e) {
+            $capture->error = $e;
+            $capture->result = null;
+        }
+
         $this->enableAnsi();
         $this->broker->removeChannel($capture->buffer);
         return $capture;
