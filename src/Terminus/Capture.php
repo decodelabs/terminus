@@ -21,9 +21,9 @@ class Capture implements Stringable
     public protected(set) Buffer $buffer;
 
     /**
-     * @var ?T
+     * @var T
      */
-    public mixed $result = null;
+    public mixed $result;
     public ?Throwable $error = null;
 
     public function __construct()
