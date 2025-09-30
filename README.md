@@ -16,6 +16,11 @@ Terminus provides everything you need to build highly interactive, beautiful CLI
 
 
 ## Installation
+
+This package requires PHP 8.4 or higher.
+
+Install via Composer:
+
 ```bash
 composer require decodelabs/terminus
 ```
