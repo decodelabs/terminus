@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @package Terminus
- * @license http://opensource.org/licenses/MIT
+ * Terminus
+ * @license https://opensource.org/licenses/MIT
  */
 
 declare(strict_types=1);
