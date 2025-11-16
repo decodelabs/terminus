@@ -79,7 +79,11 @@ class Style
                     if (!empty($colorMatches[1])) {
                         $bits = 8;
                         $foreground = $colorMatches[1];
-                    } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
+                    } elseif (
+                        /** @phpstan-ignore-next-line */
+                        isset($colorMatches[2]) &&
+                        !empty($colorMatches[2])
+                    ) {
                         $bits = 24;
                         $foreground = $colorMatches[2];
                     } elseif (!empty($colorMatches[3])) {
@@ -111,7 +115,11 @@ class Style
                     if (!empty($colorMatches[1])) {
                         $bits = 8;
                         $background = $colorMatches[1];
-                    } elseif (isset($colorMatches[2]) && !empty($colorMatches[2])) {
+                    } elseif (
+                        /** @phpstan-ignore-next-line */
+                        isset($colorMatches[2]) &&
+                        !empty($colorMatches[2])
+                    ) {
                         $bits = 24;
                         $background = $colorMatches[2];
                     } elseif (!empty($colorMatches[3])) {
