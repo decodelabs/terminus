@@ -5,11 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Unreleased
+--
+
+---
+
+### [v0.14.7](https://github.com/decodelabs/terminus/commits/v0.14.7) - 16th November 2026
+
 - Replaced deprecated backtick operator with shell_exec() for stty snapshots
 - Simplified hex color branches for PHPStan compatibility
 - Improved doc comment headers
 - Added AGENTS.md
 - Integrated Chorus dev dependency
+
+[Full list of changes](https://github.com/decodelabs/terminus/compare/v0.14.6...v0.14.7)
 
 ---
 
@@ -544,4 +552,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Veneer facade as primary access
 - Added controlled stty support
 - Normalized ansi code support
-
