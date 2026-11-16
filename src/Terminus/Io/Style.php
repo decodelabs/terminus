@@ -86,7 +86,7 @@ class Style
                     ) {
                         $bits = 24;
                         $foreground = $colorMatches[2];
-                    } elseif (!empty($colorMatches[3])) {
+                    } else {
                         $bits = 24;
                         $foreground = $this->hexToRgb($colorMatches[3]);
                     }
@@ -122,7 +122,7 @@ class Style
                     ) {
                         $bits = 24;
                         $background = $colorMatches[2];
-                    } elseif (!empty($colorMatches[3])) {
+                    } else {
                         $bits = 24;
                         $background = $this->hexToRgb($colorMatches[3]);
                     }

@@ -169,7 +169,7 @@ class Session implements Controller, Service
             return null;
         }
 
-        $output = Coercion::tryString(`stty -g`);
+        $output = Coercion::tryString(shell_exec('stty -g'));
 
         if ($output !== null) {
             $output = trim($output);
