@@ -1247,7 +1247,7 @@ class Session implements Controller, Service
 
 
     /**
-     * @param string $level
+     * @param string|null $level
      * @param array<string,mixed> $context
      */
     public function log(
@@ -1257,7 +1257,7 @@ class Session implements Controller, Service
     ): void {
         $message = $this->interpolate((string)$message, $context);
 
-        if (!isset(self::LogStyles[$level])) {
+        if (!isset(self::LogStyles[$level ?? ''])) {
             $this->writeLine($message);
             return;
         }
