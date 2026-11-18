@@ -56,8 +56,8 @@ class ProgressBar
                 $min < -1
             ) {
                 $precision = min(2, max(
-                    strlen(substr((string)strrchr(rtrim(number_format($this->min, 14 - (int)log10($this->min)), '0'), "."), 1)),
-                    strlen(substr((string)strrchr(rtrim(number_format($this->max, 14 - (int)log10($this->max)), '0'), "."), 1))
+                    self::decimalPlaces($this->min),
+                    self::decimalPlaces($this->max)
                 ));
             } else {
                 $precision = 2;
@@ -69,6 +69,15 @@ class ProgressBar
         if ($this->min < 0) {
             $this->showCompleted = false;
         }
+    }
+
+    private static function decimalPlaces(
+        float $value
+    ): int {
+        $magnitude = $value > 0 && is_finite($value) ? (int)log10($value) : 0;
+        $formatted = rtrim(number_format($value, 14 - $magnitude), '0');
+
+        return strlen(substr((string)strrchr($formatted, '.'), 1));
     }
 
     /**
